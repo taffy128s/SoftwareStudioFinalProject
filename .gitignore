@@ -1,7 +1,8 @@
-/bin
-/out
+bin/
+out/
 .DS_Store
 .idea
-.settings
 .classpath
+.project
+.settings
 
