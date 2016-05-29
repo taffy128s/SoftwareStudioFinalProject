@@ -31,7 +31,7 @@ public class Server extends JFrame {
     	this.setSize(400, 300);
     	this.setVisible(true);
     	this.setResizable(false);
-    	this.setLocation(300, 300);
+    	this.setLocation(200, 200);
     	
     	this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
 		this.textArea.setEditable(false);
