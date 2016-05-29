@@ -110,16 +110,17 @@ public class Server extends JFrame {
 
     public static void main(String[] args) {
         if (args.length != 1) {
-            System.out.println("missing <port> parameter");
+            System.out.println("1 parameter missing: <port number>");
             return;
         }
+        int port;
         try {
-            int port = Integer.parseInt(args[1]);
+            port = Integer.parseInt(args[0]);
         } catch (NumberFormatException e) {
-            System.out.println(args[1] + " is not a valid number");
+            System.out.println(args[0] + " is not a valid number");
             return;
         }
-        Server server = new Server(Integer.valueOf(args[1]));
+        Server server = new Server(port);
         server.startAcceptConnection();
     }
 
