@@ -122,5 +122,4 @@ public class Server extends JFrame {
         Server server = new Server(port);
         server.startAcceptConnection();
     }
-
 }

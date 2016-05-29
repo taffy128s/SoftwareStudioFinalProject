@@ -23,10 +23,15 @@ public class Client extends JFrame {
 		this.setSize(600, 400);
 		this.setVisible(true);
 		this.setResizable(false);
-		this.setLocation(300, 300);
+		this.setLocation(200, 200);
 		
 		this.servIP = IP;
 		this.port = port;
+	}
+	
+	void sendMessage(String string) {
+		writer.println(string);
+		writer.flush();
 	}
 	
 	void connect() {
@@ -56,5 +61,7 @@ public class Client extends JFrame {
     	Client client = new Client(IP, port);
     	client.connect();
     	Applet applet = new Applet(client.socket, client.writer, client.reader);
+    	applet.init();
+    	applet.start();
     }
 }
