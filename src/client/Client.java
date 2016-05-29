@@ -17,7 +17,7 @@ public class Client extends JFrame {
 	private int port;
 	private String servIP;
 	
-	Client() {
+	Client(String IP, int port) {
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(600, 400);
@@ -25,8 +25,11 @@ public class Client extends JFrame {
 		this.setResizable(false);
 		this.setLocation(300, 300);
 		
-		this.servIP = "127.0.0.1";
-		this.port = 6666;
+		this.servIP = IP;
+		this.port = port;
+	}
+	
+	void connect() {
 		try {
 			this.socket = new Socket(servIP, port);
 			this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -37,7 +40,20 @@ public class Client extends JFrame {
 	}
 	
     public static void main(String[] args) {
-    	
+    	if (args.length != 2) {
+            System.out.println("2 parameter missing: <server IP> <port number>");
+            return;
+        }
+    	String IP;
+        int port;
+        try {
+        	IP = args[0];
+            port = Integer.parseInt(args[1]);
+        } catch (NumberFormatException e) {
+            System.out.println(args[1] + " is not a valid number");
+            return;
+        }
+    	Client client = new Client(IP, port);
+    	client.connect();
     }
-
 }
