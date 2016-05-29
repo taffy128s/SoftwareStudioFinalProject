@@ -30,7 +30,7 @@ public class Server extends JFrame {
     	this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
         this.setResizable(false);
-        this.setLocation(300, 300);
+        this.setLocation(200, 200);
 
         this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
         this.textArea.setEditable(false);
@@ -99,17 +99,19 @@ public class Server extends JFrame {
         }
 
         public void run() {
-            while (true) {
-                try {
-                    String name = reader.readLine();
-                    String intent = reader.readLine();
-                    textArea.append(name + " wants to " + intent + ".\n");
-                    usernameToIntent.put(name, intent);
-                    threadToUsername.put(this, name);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    break;
-                }
+            try {
+                String name = reader.readLine();
+                String intent = reader.readLine();
+                if (name == null || intent == null) return;
+                textArea.append(name + " wants to " + intent + ".\n");
+                usernameToIntent.put(name, intent);
+                threadToUsername.put(this, name);
+                // TODO: replace the sendMessage methods with a start button.
+                sendMessage("start");
+                sendMessage("Card test");
+                // TODO: ask each of the users to move.
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

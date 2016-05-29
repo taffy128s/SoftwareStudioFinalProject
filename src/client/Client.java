@@ -26,7 +26,7 @@ public class Client extends JFrame {
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setSize(600, 400);
 		this.setResizable(false);
-		this.setLocation(200, 200);
+		this.setLocation(300, 300);
 		
 		JTextField nameField = new JTextField(30);
 		JTextField intentField = new JTextField(30);
@@ -74,7 +74,7 @@ public class Client extends JFrame {
             return;
         }
     	Client client = new Client(IP, port);
-    	Applet applet = new Applet(client.socket, client.writer, client.reader);
+    	Applet applet = new Applet(client.writer, client.reader);
     	applet.init();
     	applet.start();
     }
