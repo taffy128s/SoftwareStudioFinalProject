@@ -6,7 +6,13 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
 @SuppressWarnings("serial")
 public class Client extends JFrame {
@@ -14,34 +20,43 @@ public class Client extends JFrame {
 	private Socket socket;
 	private PrintWriter writer;
 	private BufferedReader reader;
-	private int port;
-	private String servIP;
 	
 	Client(String IP, int port) {
 		
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setSize(600, 400);
-		this.setVisible(true);
 		this.setResizable(false);
 		this.setLocation(200, 200);
 		
-		this.servIP = IP;
-		this.port = port;
+		JTextField nameField = new JTextField(30);
+		JTextField intentField = new JTextField(30);
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		panel.add(new JLabel("Enter your nickname:"));
+		panel.add(nameField);
+		panel.add(new JLabel("Enter your intent:"));
+		panel.add(intentField);
+		
+		try {
+			this.socket = new Socket(IP, port);
+			this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+			this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		
+		int result = JOptionPane.showConfirmDialog(null, panel, "Please fill the both blanks.", JOptionPane.OK_OPTION);
+		if (result == JOptionPane.OK_OPTION) {
+			sendMessage(nameField.getText());
+			sendMessage(intentField.getText());
+			this.setVisible(true);
+		} else System.exit(0);
 	}
 	
 	void sendMessage(String string) {
 		writer.println(string);
 		writer.flush();
-	}
-	
-	void connect() {
-		try {
-			this.socket = new Socket(servIP, port);
-			this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-			this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
     public static void main(String[] args) {
@@ -59,7 +74,6 @@ public class Client extends JFrame {
             return;
         }
     	Client client = new Client(IP, port);
-    	client.connect();
     	Applet applet = new Applet(client.socket, client.writer, client.reader);
     	applet.init();
     	applet.start();

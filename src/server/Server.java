@@ -10,6 +10,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.TreeMap;
 
 import javax.swing.*;
 
@@ -18,6 +20,8 @@ public class Server extends JFrame {
 
     private int connectionCount;
     private ArrayList<ConnectionThread> connections = new ArrayList<>();
+    private HashMap<ConnectionThread, String> threadToUsername = new HashMap<ConnectionThread, String>();
+    private TreeMap<String, String> usernameToIntent = new TreeMap<String, String>();
     private ServerSocket serverSocket;
     private Date date = new Date();
     private JTextArea textArea = new JTextArea();
@@ -40,6 +44,7 @@ public class Server extends JFrame {
             textArea.append(date.toString() + "\n" + "Server starts listening on port " + port + ".\n");
         } catch (Exception e) {
             e.printStackTrace();
+            System.exit(0);
         }
     }
 
@@ -55,6 +60,7 @@ public class Server extends JFrame {
                 builder = new StringBuilder("Player ");
                 builder.append(connectionCount + 1).append("'s IP address: ").append(connSock.getInetAddress().getHostAddress()).append("\n");
                 textArea.append(builder.toString());
+                connectionCount++;
                 // Create a new thread and add it to list.
                 ConnectionThread connectionThread = new ConnectionThread(connSock);
                 connectionThread.start();
@@ -95,13 +101,14 @@ public class Server extends JFrame {
         public void run() {
             while (true) {
                 try {
-                    String data = reader.readLine();
-                    if (data == null) {
-                        break;
-                    }
-                    textArea.append(data);
-                } catch (IOException e) {
+                    String name = reader.readLine();
+                    String intent = reader.readLine();
+                    textArea.append(name + " wants to " + intent + ".\n");
+                    usernameToIntent.put(name, intent);
+                    threadToUsername.put(this, name);
+                } catch (Exception e) {
                     e.printStackTrace();
+                    break;
                 }
             }
         }
