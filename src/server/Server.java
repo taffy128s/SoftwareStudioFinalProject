@@ -24,7 +24,6 @@ public class Server extends JFrame {
 
     Server(int port) {
     	this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setSize(400, 300);
         this.setVisible(true);
         this.setResizable(false);
         this.setLocation(300, 300);
@@ -34,6 +33,7 @@ public class Server extends JFrame {
         this.setPreferredSize(new Dimension(400, 300));
         JScrollPane scrollPane = new JScrollPane(this.textArea);
         this.add(scrollPane);
+        this.pack();
 
         try {
             serverSocket = new ServerSocket(port);
