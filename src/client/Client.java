@@ -55,5 +55,6 @@ public class Client extends JFrame {
         }
     	Client client = new Client(IP, port);
     	client.connect();
+    	Applet applet = new Applet(client.socket, client.writer, client.reader);
     }
 }
