@@ -29,7 +29,7 @@ public class Server extends JFrame {
     private JButton startBtn = new JButton();
 
     Server(int port) {
-    	this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
         this.setResizable(false);
         this.setLocation(200, 200);
@@ -44,13 +44,13 @@ public class Server extends JFrame {
         startBtn.setText("Start");
         startBtn.setBounds(0, 300, 400, 30);
         startBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				startBtn.setEnabled(false);
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startBtn.setEnabled(false);
                 broadCast("start");
                 broadCast("Card test");
                 // TODO: ask each of the users to move.
-			}
+            }
         });
         this.add(startBtn);
 
@@ -93,9 +93,9 @@ public class Server extends JFrame {
     }
     
     public void broadCastButOne(String string, ConnectionThread inputThread) {
-    	for (ConnectionThread thread : connections) {
-    		if (thread != inputThread) thread.sendMessage(string);
-    	}
+        for (ConnectionThread thread : connections) {
+            if (thread != inputThread) thread.sendMessage(string);
+        }
     }
 
     class ConnectionThread extends Thread {
