@@ -1,10 +1,10 @@
 package client;
 
 public enum GameStatus {
-	CANNOT_MOVE(0),
-	CAN_MOVE(1);
+    CANNOT_MOVE(0),
+    CAN_MOVE(1);
 
-	private final int value;
+    private final int value;
 
     GameStatus(final int value) {
         this.value = value;

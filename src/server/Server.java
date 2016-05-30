@@ -82,8 +82,8 @@ public class Server extends JFrame {
                 connectionThread.start();
                 connections.add(connectionThread);
             } catch (SocketException e1) {
-            	System.out.println("Server socket closed.");
-            	break;
+                System.out.println("Server socket closed.");
+                break;
             } catch (Exception e2) {
                 e2.printStackTrace();
                 break;
