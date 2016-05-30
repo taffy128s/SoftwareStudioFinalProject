@@ -8,17 +8,17 @@ import processing.core.PApplet;
 
 @SuppressWarnings("serial")
 public class Applet extends PApplet {
-    
+
     private PrintWriter writer;
     private BufferedReader reader;
-    private int gameStatus;
-    
+    private GameStatus gameStatus;
+
     Applet(PrintWriter writer, BufferedReader reader) {
         this.writer = writer;
         this.reader = reader;
         gameStatus = GameStatus.CANNOT_MOVE;
     }
-    
+
     public void setup() {
         // TODO: waiting message.
         try {
@@ -34,7 +34,7 @@ public class Applet extends PApplet {
         }
         // TODO: initialize the objects and their positions.
     }
-    
+
     public void draw() {
         String command;
         if (gameStatus == GameStatus.CANNOT_MOVE) {
@@ -52,4 +52,5 @@ public class Applet extends PApplet {
             // TODO: move the things and send the instruction to the server.
         }
     }
+
 }
