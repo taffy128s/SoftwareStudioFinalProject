@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,8 +46,13 @@ public class Server extends JFrame {
         startBtn.setBounds(0, 300, 400, 30);
         startBtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent event) {
                 startBtn.setEnabled(false);
+                try {
+					serverSocket.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
                 broadCast("start");
                 broadCast("Card test");
                 // TODO: ask each of the users to move.
@@ -80,8 +86,12 @@ public class Server extends JFrame {
                 ConnectionThread connectionThread = new ConnectionThread(connSock);
                 connectionThread.start();
                 connections.add(connectionThread);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SocketException e1) {
+            	System.out.println("Server socket closed.");
+            	break;
+            } catch (Exception e2) {
+                e2.printStackTrace();
+                break;
             }
         }
     }

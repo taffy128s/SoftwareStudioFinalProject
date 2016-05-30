@@ -30,6 +30,7 @@ public class Applet extends PApplet {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            System.exit(0);
         }
         // TODO: initialize the objects and their positions.
     }
