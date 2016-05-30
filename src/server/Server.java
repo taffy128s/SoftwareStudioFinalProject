@@ -1,7 +1,5 @@
 package server;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,8 +21,8 @@ public class Server extends JFrame {
     private int connectionCount;
     private ServerSocket serverSocket;
     private ArrayList<ConnectionThread> connections = new ArrayList<>();
-    private HashMap<ConnectionThread, String> threadToUsername = new HashMap<ConnectionThread, String>();
-    private TreeMap<String, String> usernameToIntent = new TreeMap<String, String>();
+    private HashMap<ConnectionThread, String> threadToUsername = new HashMap<>();
+    private TreeMap<String, String> usernameToIntent = new TreeMap<>();
     private Date date = new Date();
     private JTextArea textArea = new JTextArea();
     private JButton startBtn = new JButton();
@@ -41,22 +39,19 @@ public class Server extends JFrame {
         JScrollPane scrollPane = new JScrollPane(this.textArea);
         this.add(scrollPane);
         scrollPane.setBounds(0, 0, 400, 300);
-        
+
         startBtn.setText("Start");
         startBtn.setBounds(0, 300, 400, 30);
-        startBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                startBtn.setEnabled(false);
-                try {
-					serverSocket.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-                broadCast("start");
-                broadCast("Card test");
-                // TODO: ask each of the users to move.
+        startBtn.addActionListener(event -> {
+            startBtn.setEnabled(false);
+            try {
+                serverSocket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            broadCast("start");
+            broadCast("Card test");
+            // TODO: ask each of the users to move.
         });
         this.add(startBtn);
 
@@ -101,7 +96,7 @@ public class Server extends JFrame {
             thread.sendMessage(string);
         }
     }
-    
+
     public void broadCastButOne(String string, ConnectionThread inputThread) {
         for (ConnectionThread thread : connections) {
             if (thread != inputThread) thread.sendMessage(string);
@@ -158,4 +153,5 @@ public class Server extends JFrame {
         Server server = new Server(port);
         server.startAcceptConnection();
     }
+
 }
