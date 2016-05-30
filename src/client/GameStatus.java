@@ -1,6 +1,17 @@
 package client;
 
-public class GameStatus {
-	public static int CANNOT_MOVE = 0;
-	public static int CAN_MOVE = 1;
+public enum GameStatus {
+	CANNOT_MOVE(0),
+	CAN_MOVE(1);
+
+	private final int value;
+
+    GameStatus(final int value) {
+        this.value = value;
+    }
+
+    public int value() {
+        return this.value;
+    }
+
 }
