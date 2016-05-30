@@ -1,6 +1,7 @@
 package server;
 
-import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,12 +20,13 @@ import javax.swing.*;
 public class Server extends JFrame {
 
     private int connectionCount;
+    private ServerSocket serverSocket;
     private ArrayList<ConnectionThread> connections = new ArrayList<>();
     private HashMap<ConnectionThread, String> threadToUsername = new HashMap<ConnectionThread, String>();
     private TreeMap<String, String> usernameToIntent = new TreeMap<String, String>();
-    private ServerSocket serverSocket;
     private Date date = new Date();
     private JTextArea textArea = new JTextArea();
+    private JButton startBtn = new JButton();
 
     Server(int port) {
     	this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -32,12 +34,25 @@ public class Server extends JFrame {
         this.setResizable(false);
         this.setLocation(200, 200);
 
-        this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
+        this.setLayout(null);
         this.textArea.setEditable(false);
-        this.setPreferredSize(new Dimension(400, 300));
+        this.setBounds(0, 0, 400, 353);
         JScrollPane scrollPane = new JScrollPane(this.textArea);
         this.add(scrollPane);
-        this.pack();
+        scrollPane.setBounds(0, 0, 400, 300);
+        
+        startBtn.setText("Start");
+        startBtn.setBounds(0, 300, 400, 30);
+        startBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				startBtn.setEnabled(false);
+                broadCast("start");
+                broadCast("Card test");
+                // TODO: ask each of the users to move.
+			}
+        });
+        this.add(startBtn);
 
         try {
             serverSocket = new ServerSocket(port);
@@ -76,6 +91,12 @@ public class Server extends JFrame {
             thread.sendMessage(string);
         }
     }
+    
+    public void broadCastButOne(String string, ConnectionThread inputThread) {
+    	for (ConnectionThread thread : connections) {
+    		if (thread != inputThread) thread.sendMessage(string);
+    	}
+    }
 
     class ConnectionThread extends Thread {
 
@@ -106,10 +127,6 @@ public class Server extends JFrame {
                 textArea.append(name + " wants to " + intent + ".\n");
                 usernameToIntent.put(name, intent);
                 threadToUsername.put(this, name);
-                // TODO: replace the sendMessage methods with a start button.
-                sendMessage("start");
-                sendMessage("Card test");
-                // TODO: ask each of the users to move.
             } catch (Exception e) {
                 e.printStackTrace();
             }
