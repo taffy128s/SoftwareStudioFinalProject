@@ -20,14 +20,14 @@ public class Client extends JFrame {
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
-    
+
     Client(String IP, int port) {
-        
+
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setSize(600, 400);
         this.setResizable(false);
         this.setLocation(300, 300);
-        
+
         JTextField nameField = new JTextField(30);
         JTextField intentField = new JTextField(30);
         JPanel panel = new JPanel();
@@ -36,7 +36,7 @@ public class Client extends JFrame {
         panel.add(nameField);
         panel.add(new JLabel("Enter your intent:"));
         panel.add(intentField);
-        
+
         try {
             this.socket = new Socket(IP, port);
             this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -45,20 +45,22 @@ public class Client extends JFrame {
             e.printStackTrace();
             System.exit(0);
         }
-        
+
         int result = JOptionPane.showConfirmDialog(null, panel, "Please fill the both blanks.", JOptionPane.OK_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             sendMessage(nameField.getText());
             sendMessage(intentField.getText());
             this.setVisible(true);
-        } else System.exit(0);
+        } else {
+            System.exit(0);
+        }
     }
-    
+
     void sendMessage(String string) {
         writer.println(string);
         writer.flush();
     }
-    
+
     public static void main(String[] args) {
         if (args.length != 2) {
             System.out.println("2 parameter missing: <server IP> <port number>");
