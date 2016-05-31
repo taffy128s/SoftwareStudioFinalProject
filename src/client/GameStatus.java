@@ -13,5 +13,4 @@ public enum GameStatus {
     public int value() {
         return this.value;
     }
-
 }

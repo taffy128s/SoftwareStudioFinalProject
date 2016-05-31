@@ -79,5 +79,6 @@ public class Client extends JFrame {
         Applet applet = new Applet(client.writer, client.reader);
         applet.init();
         applet.start();
+        client.setContentPane(applet);
     }
 }

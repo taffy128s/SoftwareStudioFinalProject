@@ -1,7 +1,6 @@
 package client;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 import processing.core.PApplet;
@@ -17,10 +16,14 @@ public class Applet extends PApplet {
         this.writer = writer;
         this.reader = reader;
         gameStatus = GameStatus.CANNOT_MOVE;
+        Thread readThread = new Thread(() -> {
+        	
+        });
     }
 
     public void setup() {
-        // TODO: waiting message.
+    	this.size(600, 400);
+    	this.smooth();
         try {
             String command = reader.readLine();
             if (command.equals("start")) {
@@ -36,7 +39,12 @@ public class Applet extends PApplet {
     }
 
     public void draw() {
-        String command;
+    	background(255);
+    	textSize(32);
+    	fill(0, 102, 153);
+    	text("GG", 100, 300);
+    	
+        /*String command;
         if (gameStatus == GameStatus.CANNOT_MOVE) {
             try {
                 command = reader.readLine();
@@ -50,7 +58,6 @@ public class Applet extends PApplet {
             }
         } else if (gameStatus == GameStatus.CAN_MOVE) {
             // TODO: move the things and send the instruction to the server.
-        }
+        }*/
     }
-
 }
