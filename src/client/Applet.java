@@ -11,11 +11,13 @@ public class Applet extends PApplet {
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
+    private boolean yourTurn;
 
     Applet(PrintWriter writer, BufferedReader reader) {
         this.writer = writer;
         this.reader = reader;
-        gameStatus = GameStatus.READY;
+        gameStatus = GameStatus.WAIT;
+        yourTurn = false;
         ReadThread thread = new ReadThread();
         thread.start();
     }
@@ -30,9 +32,9 @@ public class Applet extends PApplet {
                         // TODO: load all the initial values.
                         String testString = reader.readLine();
                         System.out.println(testString);
-                        gameStatus = GameStatus.CANNOT_MOVE;
+                        gameStatus = GameStatus.READY;
                     } else if (command.equals("your turn")) {
-                        gameStatus = GameStatus.CAN_MOVE;
+                        yourTurn = true;
                     } else {
                         // TODO: parse the command and make objects move.
                     }
@@ -50,14 +52,13 @@ public class Applet extends PApplet {
     }
 
     public void draw() {
-        if (gameStatus == GameStatus.READY) {
+        if (gameStatus == GameStatus.WAIT) {
             background(255);
             textSize(32);
-            fill(0, 102, 153);
-            text("GG", 100, 300);
-        } else if (gameStatus == GameStatus.CANNOT_MOVE) {
-            
-        } else if (gameStatus == GameStatus.CAN_MOVE) {
+            fill(0, 100, 150);
+            text("Please wait until the game starts.", 30, 180);
+        } else if (gameStatus == GameStatus.READY) {
+            background(255);
             
         }
     }
