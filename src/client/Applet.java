@@ -16,6 +16,8 @@ public class Applet extends PApplet {
         this.writer = writer;
         this.reader = reader;
         gameStatus = GameStatus.READY;
+        ReadThread thread = new ReadThread();
+        thread.start();
     }
     
     class ReadThread extends Thread {
