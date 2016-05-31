@@ -1,8 +1,8 @@
 package card;
 
 public class AbstractCard implements InitialCard {
-	protected int suit;
-	protected int color;
+    protected int suit;
+    protected int color;
     protected String name ;
     protected String description ;
     protected String filename ;
@@ -18,52 +18,52 @@ public class AbstractCard implements InitialCard {
     
 	
 
-	public AbstractCard() {}
+    public AbstractCard() {}
 
 
-	public int getColor() {
-		return color ;
+    public int getColor() {
+        return color ;
+    }
+
+    public String getName() {
+        return name;
 	}
 
-	public String getName() {
-		return name;
-	}
+    public String getnumOfCard() {
+        return numOfCard;
+    }
 
-	public String getnumOfCard() {
-		return numOfCard;
-	}
+    public String getFilename() {
+        return filename;
+    }
 
-	public String getFilename() {
-		return filename;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public boolean isRed() {
+        return color == InitialCard.COLOR_RED;
+    }
 
-	public boolean isRed() {
-		return color == InitialCard.COLOR_RED;
-	}
-
-	@Override
-	public String toString() {
-		return "AbstractCard{" +
-				"suit=" + suit +
-				", color=" + color +
-				", numOfCard='" + numOfCard + '\'' +
-				", name='" + name + '\'' +
-				", filename='" + filename + '\'' +
-				'}';
-	}
+	
+    public String toString() {
+         return "AbstractCard{" +
+                "suit=" + suit +
+                ", color=" + color +
+                ", numOfCard='" + numOfCard + '\'' +
+                ", name='" + name + '\'' +
+                ", filename='" + filename + '\'' +
+                '}';
+    }
 
 
-	public int getSuit() {
-		return suit;
-	}
+    public int getSuit() {
+        return suit;
+    }
 
-	@Override
-	public int getCategory() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public int getCategory() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }
