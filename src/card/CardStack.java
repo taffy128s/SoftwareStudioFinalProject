@@ -23,7 +23,9 @@ public class CardStack {
         }
     }
        
-    // 洗亂 drawArea 的牌
+    /**
+     *  洗亂 drawArea 的牌
+     */
     public void shuffle() {
         Random random = new Random();
         for(int i=0, size = drawArea.size(); i<size ; i++) {
@@ -34,7 +36,10 @@ public class CardStack {
         }
     }
     
-    // 把 discardArea 的牌洗亂回收到 drawArea 的底部（0為底部、drawArea.size()-1 為頂部）
+    /**
+     *  把 discardArea 的牌洗亂回收到 drawArea 的底部
+     *  （0為底部、drawArea.size()-1 為頂部）
+     */
     public void recycleToBottom() {
         Random random = new Random();
         for(int i=0, size = discardArea.size(); i<size ; i++) {
@@ -50,11 +55,19 @@ public class CardStack {
         discardArea.clear();
     }
     
-    //
+    /**
+     *  把 drawArea 最上面那張抽出來。
+     *  若 drawArea 已空，則先把被 discardArea 洗亂後放到 draeArea 再抽
+     * @return 抽出來的牌
+     */
     public AbstractCard drawTop() {
          return drawArea.remove(drawArea.size()-1);
     }
     
+    /**
+     * 把某張牌加到 discardArea（廢棄區）
+     * @param card 被廢棄的牌
+     */
     public void putDiscard(AbstractCard card) {
         discardArea.add(card);
     }
