@@ -2,30 +2,34 @@ package card;
 
 import processing.core.PImage;
 
-public abstract class AbstractCard implements InitialCard {
+public abstract class AbstractCard {
 
+    protected CardCategory cardCategory;
     protected String name ;
     protected String description ;
     protected String filename ;
     protected PImage image;
-    
-    public AbstractCard(String name,String description, String strImgFile) {
+
+    public AbstractCard() {
+        // ˊˇˋ
+    }
+
+    public AbstractCard(String name, String description, String strImgFile) {
         super();
 
         this.name = name;
         this.description = description;
         this.filename = strImgFile;
     }
-  
-    public AbstractCard() {
-    	// ˊˇˋ 
-    }
 
-    // 返回牌的名字   
+    /**
+     * Get card name
+     *
+     * @return card name
+     */
     public String getName() {
         return name;
 	}
-
 
     public String getFilename() {
         return filename;
@@ -35,7 +39,6 @@ public abstract class AbstractCard implements InitialCard {
         return description;
     }
 
-	
     public String toString() {
          return "AbstractCard{" +
                 ", name='" + name + '\'' +
@@ -43,11 +46,11 @@ public abstract class AbstractCard implements InitialCard {
                 '}';
     }
 
+    /**
+     * Get card category
+     *
+     * @return card category
+     */
+    abstract public CardCategory getCategory();
 
-
-
-
-    // 得到牌的種類
-    // 返回基本牌，錦囊牌或裝備牌中的一種
-    abstract public int getCategory();
 }
