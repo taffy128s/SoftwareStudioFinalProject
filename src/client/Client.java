@@ -16,7 +16,7 @@ import javax.swing.WindowConstants;
 
 @SuppressWarnings("serial")
 public class Client extends JFrame {
-
+    private final static int windowWidth = 600, windowHeight = 400;
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
@@ -24,7 +24,7 @@ public class Client extends JFrame {
     Client(String IP, int port) {
 
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setSize(600, 400);
+        this.setSize(windowWidth, windowHeight);
         this.setResizable(false);
         this.setLocation(300, 300);
 

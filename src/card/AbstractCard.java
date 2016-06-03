@@ -1,11 +1,13 @@
 package card;
 
-public class AbstractCard implements InitialCard {
+import processing.core.PImage;
+
+public abstract class AbstractCard implements InitialCard {
 
     protected String name ;
     protected String description ;
     protected String filename ;
-
+    protected PImage image;
     
     public AbstractCard(String name,String description, String strImgFile) {
         super();
@@ -19,6 +21,7 @@ public class AbstractCard implements InitialCard {
     	// ˊˇˋ 
     }
 
+    // 返回牌的名字   
     public String getName() {
         return name;
 	}
@@ -43,9 +46,8 @@ public class AbstractCard implements InitialCard {
 
 
 
-    @Override
-    public int getCategory() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+
+    // 得到牌的種類
+    // 返回基本牌，錦囊牌或裝備牌中的一種
+    abstract public int getCategory();
 }

@@ -9,10 +9,4 @@ public interface InitialCard {
 	// 裝備牌 wea_xxxx
 	int CATEGORY_EQUIPMENT = 300;
 
-	
-	// 得到牌的種類
-	// 返回基本牌，錦囊牌或裝備牌中的一種
-	public int getCategory();
-	// 返回牌的名字	 
-	public String getName();
 }

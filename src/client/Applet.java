@@ -7,7 +7,7 @@ import processing.core.PApplet;
 
 @SuppressWarnings("serial")
 public class Applet extends PApplet {
-
+    private final static int windowWidth = 600, windowHeight = 400;
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
