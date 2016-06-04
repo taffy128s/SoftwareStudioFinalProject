@@ -4,6 +4,7 @@ package card;
  * Roman Shield
  */
 public class WeaBigShield extends Card {
+
 	/**
      * Default constructor
      */

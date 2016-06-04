@@ -1,9 +1,10 @@
 package card;
 
 /**
- * Continue 
+ * Continue
  */
 public class WeaContinue extends Card {
+
 	/**
      * Default constructor
      */

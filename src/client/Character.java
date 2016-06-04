@@ -50,10 +50,18 @@ public class Character {
         parent.text(name, x - name.length() * 5, y + 6);
     }
 
-    public int getR() {
+    /**
+     * Return character's diameter
+     *
+     * @return diameter
+     */
+    public int getDiameter() {
         return size / 2;
     }
 
+    /**
+     * Show character information
+     */
     public void showCharacterInfo() {
         parent.fill(255);
         parent.strokeWeight(3);

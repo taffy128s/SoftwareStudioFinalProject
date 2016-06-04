@@ -25,9 +25,10 @@ public class Applet extends PApplet {
     private Random random;
 
     /**
-     * Initialize a PApplet
-     * @param writer
-     * @param reader
+     * Initialize a PApplet with writer, printer to server
+     *
+     * @param writer writer to server
+     * @param reader reader to server
      */
     Applet(PrintWriter writer, BufferedReader reader) {
         Ani.init(this);
@@ -42,7 +43,11 @@ public class Applet extends PApplet {
         thread.start();
     }
 
-    class ReadThread extends Thread {
+    /**
+     * This class handle message reading from server and writing to server
+     */
+    private class ReadThread extends Thread {
+
         public void run() {
             String string;
             String[] array;
@@ -66,8 +71,12 @@ public class Applet extends PApplet {
                 }
             }
         }
+
     }
 
+    /**
+     * Put all alive characters to the big circle
+     */
     public void makeACircle() {
         float angle = 0;
         for (Character ch : aliveCharacters) {
@@ -77,11 +86,17 @@ public class Applet extends PApplet {
         }
     }
 
+    /**
+     * Setup
+     */
     public void setup() {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
     }
 
+    /**
+     * Draw
+     */
     public void draw() {
         if (gameStatus == GameStatus.WAIT) {
             background(255);
@@ -93,7 +108,7 @@ public class Applet extends PApplet {
             bigCircle.display();
             for (Character ch : aliveCharacters) {
                 ch.display();
-                if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getR()) {
+                if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getDiameter()) {
                     characterPointed = ch;
                     ch.showCharacterInfo();
                 }

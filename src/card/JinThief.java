@@ -4,6 +4,7 @@ package card;
  * Card Thief
  */
 public class JinThief extends Card {
+
 	/**
      * Default constructor
      */

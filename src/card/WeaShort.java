@@ -4,6 +4,7 @@ package card;
  * Persian knife
  */
 public class WeaShort extends Card {
+
 	/**
      * Default constructor
      */
