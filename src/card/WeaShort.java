@@ -1,7 +1,7 @@
 package card;
 
 /**
- * Persian knife
+ * knife
  */
 public class WeaShort extends Card {
 	/**
@@ -13,5 +13,4 @@ public class WeaShort extends Card {
               "When you use 'Kill', the target's defensive equipment will be negelected" ,
               "wea_short.JPG");
     }
-
 }
