@@ -15,6 +15,7 @@ import client.Player;
 public class Card {
 
     private CardCategory cardCategory;
+    private CardID cardID;
     private String name;
     private String description;
     private String filename;
@@ -48,8 +49,9 @@ public class Card {
      * @param description card description
      * @param filename path to its image file
      */
-    public Card(CardCategory cardCategory, String name, String description, String filename) {
+    public Card(CardCategory cardCategory, CardID cardID, String name, String description, String filename) {
         this.cardCategory = cardCategory;
+        this.cardID = cardID;
         this.name = name;
         this.description = description;
         this.filename = filename;
@@ -88,9 +90,9 @@ public class Card {
      * @param effectiveNow is effectiveNow
      * @param conditional is conditional
      */
-    public Card(CardCategory cardCategory, String name, String description, String filename,
+    public Card(CardCategory cardCategory, CardID cardID,String name, String description, String filename,
             boolean areaEffective, boolean selfExclusive, boolean effectiveNow, boolean conditional) {
-        this(cardCategory, name, description, filename);
+        this(cardCategory, cardID, name, description, filename);
 
         this.areaEffective = areaEffective;
         this.selfExclusive = selfExclusive;
