@@ -48,16 +48,11 @@ jin_douchidown.JPG ：鬥志沉淪（!AreaEffective, !JudgedNow, Conditional）�
 jin_getcard.JPG ： 點石成金（!AreaEffective, JudgedNow, !Conditional）（CardGetable）
 出牌階段，對自己使用，摸兩張牌。
 
-<<<<<<< HEAD
 jin_thief.JPG ： 盜取（!AreaEffective, JudgedNow, !Conditional）（CardGetable, CardRemovable）
 出牌階段，對除自己以外，選擇並獲得該角色的手牌（隨機選擇），裝備區或判定區裡的任意一張牌。
 
 jin_throw.JPG ： 繳械（!AreaEffective, JudgedNow, !Conditional）（CardRemovable）
 出牌階段，對除自己以外任意一名角色使用。棄掉該角色的手牌（隨機選擇）、裝備區或判定區裡的任意一張牌。
-=======
-jin_thief.JPG ： 盜取
-出牌階段，對除自己以外，距離1以內的一名角色使用。選擇並獲得該角色的手牌（隨機選擇），裝備區或判定區裡的任意一張牌。
->>>>>>> 1a83e91bb871690d6b77add618c341b01aaa3397
 
 in_thouarrow.JPG ： 萬箭齊發（AreaEffective, JudgedNow, Conditional）（Harmful）
 出牌階段，對自自己以外的所有角色使用，按行動順序結算，除非目標角色打出一張【閃】，否則該角色受到【萬劍齊發】對其造成的1點傷害。
@@ -98,11 +93,7 @@ wea_tensword.JPG ： 十字劍
     青囊：出牌階段，你可以主動棄掉一張手牌，令任一目標角色回復1點體力。每回合限用一次。
     突襲：摸牌階段，你可以放棄摸牌，然後從至多兩名（至少一名）角色的手牌裡各抽取一張牌。
     強襲：出牌階段，你可以自減1點體力或棄一張武器牌，然後對你攻擊範圍內的一名角色造成1點傷害。每回合限用一次。
-<<<<<<< HEAD
 二、被動技能
-=======
-二、被動技能 
->>>>>>> 1a83e91bb871690d6b77add618c341b01aaa3397
     咆哮：出牌階段，你可以使用任意數量的【殺】。 
     連營：每當你失去最後一張手牌時，可立即摸一張牌。 
     英姿：摸牌階段，你可以額外摸一張牌。
