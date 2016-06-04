@@ -24,7 +24,7 @@ public class CardStack {
             // TODO 把基本牌加入牌組
             drawArea.add(new BasicApple());
             drawArea.add(new BasicDodge());
-            drawArea.add(new BasicSkill());
+            drawArea.add(new BasicKill());
         }
         for (int i = 0; i< JIN_CARD_NUM; i++) {
             // TODO 把錦囊牌加入牌組

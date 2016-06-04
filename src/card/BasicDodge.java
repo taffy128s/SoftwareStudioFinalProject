@@ -1,7 +1,7 @@
 package card;
 
 /**
- * Card Dodge
+ * Card "Dodge"
  */
 public class BasicDodge extends Card {
 
