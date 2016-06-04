@@ -33,13 +33,13 @@ Card's Attribute:
     EffectiveNow: 在這個回合就要進行判定、並產生效果
     EffectiveLater( !EffectiveNow ): 會先將該錦囊放在被指定的角色的判定區，等該角色回合開始才進行判定
     
-    Conditional: 無論如何一定生效
-    Unconditional( !Conditional ): 只在某些條件下生效
+    Conditional: 只在某些條件下生效
+    Unconditional( !Conditional ): 無論如何一定生效
 
 jin_battle.JPG ： 決鬥 （!AreaEffective, JudgedNow, Conditional）（Harmful）
 出牌階段，對自己以外任意一名角色使用，由目標角色先開始，輪流打出一張【殺】。【決鬥】對首先不出【殺】的一方造成1點傷害，而另一方視為此傷害的來源。
 
-in_crazybanquet.JPG ： 狂歡宴會（AreaEffective, JudgedNow, Conditional）（Recoverable）
+in_crazybanquet.JPG ： 狂歡宴會（AreaEffective, JudgedNow, !Conditional）（Recoverable）
 出牌階段，對所有角色使用。按照行動順序結算，所有受傷角色各回復1點體力。
 
 jin_douchidown.JPG ：鬥志沉淪（!AreaEffective, !JudgedNow, Conditional）（RoundSkipping）
@@ -48,16 +48,11 @@ jin_douchidown.JPG ：鬥志沉淪（!AreaEffective, !JudgedNow, Conditional）�
 jin_getcard.JPG ： 點石成金（!AreaEffective, JudgedNow, !Conditional）（CardGetable）
 出牌階段，對自己使用，摸兩張牌。
 
-<<<<<<< HEAD
 jin_thief.JPG ： 盜取（!AreaEffective, JudgedNow, !Conditional）（CardGetable, CardRemovable）
 出牌階段，對除自己以外，選擇並獲得該角色的手牌（隨機選擇），裝備區或判定區裡的任意一張牌。
 
 jin_throw.JPG ： 繳械（!AreaEffective, JudgedNow, !Conditional）（CardRemovable）
 出牌階段，對除自己以外任意一名角色使用。棄掉該角色的手牌（隨機選擇）、裝備區或判定區裡的任意一張牌。
-=======
-jin_thief.JPG ： 盜取
-出牌階段，對除自己以外，距離1以內的一名角色使用。選擇並獲得該角色的手牌（隨機選擇），裝備區或判定區裡的任意一張牌。
->>>>>>> 1a83e91bb871690d6b77add618c341b01aaa3397
 
 in_thouarrow.JPG ： 萬箭齊發（AreaEffective, JudgedNow, Conditional）（Harmful）
 出牌階段，對自自己以外的所有角色使用，按行動順序結算，除非目標角色打出一張【閃】，否則該角色受到【萬劍齊發】對其造成的1點傷害。

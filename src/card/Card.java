@@ -14,7 +14,12 @@ public class Card {
     private String description;
     private String filename;
     private PImage image;
-
+    
+    private boolean areaEffective;
+    private boolean selfExclusive;
+    private boolean effectiveNow;
+    private boolean conditional;
+    
     /**
      * Default constructor
      */
@@ -55,8 +60,23 @@ public class Card {
         else {
             this.image = null;
         }
+        
+        areaEffective = false;
+        selfExclusive = false;
+        effectiveNow = false;
+        conditional = false;
     }
 
+    public Card(CardCategory cardCategory, String name, String description, String filename, 
+            boolean areaEffective, boolean selfExclusive, boolean effectiveNow, boolean conditional) {
+        this(cardCategory, name, description, filename);
+        
+        this.areaEffective = areaEffective;
+        this.selfExclusive = selfExclusive;
+        this.effectiveNow = effectiveNow;
+        this.conditional = conditional;
+    }
+    
     /**
      * Get card name
      *
