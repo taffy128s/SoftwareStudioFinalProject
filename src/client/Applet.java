@@ -5,7 +5,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 
+import card.BasicApple;
 import card.Card;
+import card.CardCategory;
+import card.CardID;
 import de.looksgood.ani.Ani;
 import processing.core.PApplet;
 
@@ -79,6 +82,7 @@ public class Applet extends PApplet {
                             //Card receivedCard = ;
                             //handCards.add(receivedCard);
                             System.out.println("get card id " + array[1]);
+                            handCards.add(new BasicApple());
                         }
 
                     }
@@ -119,7 +123,7 @@ public class Applet extends PApplet {
             background(255);
             textSize(32);
             fill(0, 100, 150);
-            text("Please wait until the game starts.", 30, 180);
+            text("Please wait until the game starts.", 225, 375);
         } else if (gameStatus == GameStatus.READY) {
             background(255);
             bigCircle.display();
