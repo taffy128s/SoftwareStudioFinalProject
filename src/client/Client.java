@@ -94,7 +94,7 @@ public class Client extends JFrame {
             return;
         }
         Client client = new Client(IP, port);
-        Applet applet = new Applet(client.writer, client.reader);
+        Applet applet = new Applet(client.socket, client.writer, client.reader);
         applet.init();
         applet.start();
         client.setContentPane(applet);

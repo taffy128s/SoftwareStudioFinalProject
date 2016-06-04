@@ -12,7 +12,7 @@ import client.Player;
 /**
  * Card
  */
-public class Card {
+public class Card implements java.io.Serializable{
 
     private CardCategory cardCategory;
     private String name;
@@ -24,6 +24,9 @@ public class Card {
     private boolean selfExclusive;
     private boolean effectiveNow;
     private boolean conditional;
+    
+    private Player source;
+    private Player destination;
 
     /**
      * Default constructor
@@ -142,7 +145,19 @@ public class Card {
                 ", filename='" + filename + "'" +
                 "}";
     }
-
+    
+    public void setSource(Player source) {
+        this.source = source;
+    }
+    
+    public void setDestination(Player destination) {
+        this.destination = destination;
+    }
+    
+    public PImage getImage() {
+        return image;
+    }
+    
     /**
      * Card effect string sent to server
      *
@@ -150,8 +165,9 @@ public class Card {
      * @param destination destination character
      * @return effect string to send to server
      */
+    /*
     public String effectString(Player source, @Nullable Player destination) {
         return null;
-    }
+    }*/
 
 }

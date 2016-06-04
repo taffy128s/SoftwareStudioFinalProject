@@ -16,9 +16,5 @@ public class BasicDodge extends Card {
               "basic_dodge.JPG");
     }
     
-    @Override
-    public String effectString(Player source, Player destination) {
-        return "basic_dodge " + source.getUserName();
-    }
 
 }

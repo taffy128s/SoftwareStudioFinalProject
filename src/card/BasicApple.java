@@ -18,8 +18,4 @@ public class BasicApple extends Card {
               "basic_apple.JPG");
     }
     
-    @Override
-    public String effectString(Player source, Player destination) {
-        return "basic_apple " + source.getUserName();
-    }
 }
