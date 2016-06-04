@@ -15,5 +15,9 @@ public class BasicApple extends Card {
               "2. When a player (yourself included) has no HP left, you may use 'Golden Apple' to the player to stop the player from dying. One 'Golden Apple' will let the player recover one point of HP." ,
               "basic_apple.JPG");
     }
-
+    
+    @Override
+    public String effectString(Character source, Character destination) {
+        return "";
+    }
 }

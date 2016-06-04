@@ -124,5 +124,8 @@ public class Card {
                 ", filename='" + filename + "'" +
                 "}";
     }
-
+    
+    public String effectString(Character source, Character destination) {
+        return "";
+    }
 }
