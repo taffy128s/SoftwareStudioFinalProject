@@ -5,6 +5,10 @@ package card;
  */
 public enum CardCategory {
     /**
+     * Undefined cards(should not appear in initialized cards with name, etc.)
+     */
+    UNDEFINED(0),
+    /**
      * Basic cards
      */
     BASIC(100),
