@@ -130,9 +130,10 @@ wea_tensword.JPG ： 十字劍
         1. BASIC(基本牌)：一樣三種牌各自判斷。
         2. SKILL(錦囊牌)：如果該牌為 isNotTargeting()（範圍技、或者自我抽牌），就把 server 傳來的 giver name 讀進來，
                (a) 若該牌為自我抽牌記，則只有 giver 本人可以呼叫 takeEffectString(this) （其實可以提早到出牌後跳過 giveEffectString，直接 takeEffectString）
-               (b) 若該牌為範圍記---- 甲、if isSelfExclusive() == true , 只有 giver 本人可以不用呼叫 takeEffectString
-                                    乙、if isSelfExclusive() == false, 則每個人都要呼叫 takeEffectString
-        
+               (b) 若該牌為範圍記---- 甲、if isSelfExclusive() == true , 只有 giver 本人可以不用呼叫 takeEffectStrin(this)
+                                    乙、if isSelfExclusive() == false, 則每個人都要呼叫 takeEffectString(this)
+                        如果該牌 isNotTargeting() == false，就從 socket 讀入第二個自傳(target name)，若你本身為 target，就要呼叫takeEffectString(this)
+                        
         拿到 takeEffectString 的回傳字串之後，要傳給 server，server 再廣播出去有誰要扣血、加血、少牌、多牌等等。
         （這個字串本身就是說明：哪個角色的哪個數值發生了什麼變化）
         
