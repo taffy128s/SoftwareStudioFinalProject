@@ -1,15 +1,17 @@
 package card;
 
 /**
- * Card Skill
+ * Card Battle
  */
 public class JinBattle extends Card {
-
+	/**
+     * Default constructor
+     */
     public JinBattle() {
         super(CardCategory.SKILL,
-              "決鬥",
-              "出牌階段，在攻擊範圍內對除自己以外的一名角色使用，效果是對該角色造成1點傷害。",
-              "basic_kill.JPG");
+              "Duel",
+              "The target and you need to issue a 'Kill' alternatingly. The one who doesn't issue a 'Kill' first will take one point damage." ,
+              "basic_battle.JPG");
     }
 
 }
