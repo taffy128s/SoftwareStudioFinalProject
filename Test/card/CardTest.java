@@ -15,7 +15,7 @@ public class CardTest {
 
     @Before
     public void setUp() throws Exception {
-        card = new Card(CardCategory.BASIC, "Test", "TestDescription", "Basic_Apple.JPG");
+        card = new Card(CardCategory.BASIC, "Test", "TestDescription", "basic_apple.JPG");
     }
 
     @After
