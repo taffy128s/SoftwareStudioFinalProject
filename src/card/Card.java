@@ -1,6 +1,11 @@
 package card;
 
+import processing.core.PConstants;
 import processing.core.PImage;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class Card {
 
@@ -35,6 +40,21 @@ public class Card {
         this.name = name;
         this.description = description;
         this.filename = filename;
+        BufferedImage bufferedImage = null;
+        try {
+            bufferedImage = ImageIO.read(getClass().getResource("img/" + filename));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (bufferedImage != null) {
+            this.image = new PImage(bufferedImage.getWidth(), bufferedImage.getHeight(), PConstants.ARGB);
+            bufferedImage.getRGB(0, 0, image.width, image.height, image.pixels, 0, image.width);
+            image.updatePixels();
+        }
+        else {
+            this.image = null;
+        }
     }
 
     /**
