@@ -117,7 +117,10 @@ public class Card {
      * Card effect string sent to server
      * @return effect string to send to server
      */
-    public String effectString(Player source, @Nullable Player target) {
+    public String giveEffectString(Player giver, @Nullable Player target) {
+        return null;
+    }
+    public String tageEffectString(Player taker) {
         return null;
     }
 
