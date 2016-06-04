@@ -7,7 +7,6 @@ import processing.core.PApplet;
 
 @SuppressWarnings("serial")
 public class Applet extends PApplet {
-    private final static int windowWidth = 600, windowHeight = 400;
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
@@ -47,7 +46,7 @@ public class Applet extends PApplet {
     }
 
     public void setup() {
-        this.size(600, 400);
+        this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
     }
 

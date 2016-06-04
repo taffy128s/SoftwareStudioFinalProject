@@ -15,23 +15,86 @@ import java.util.TreeMap;
 
 import javax.swing.*;
 
+/**
+ * Server
+ */
 @SuppressWarnings("serial")
 public class Server extends JFrame {
 
     private int connectionCount;
+    private Date date = new Date();
     private ServerSocket serverSocket;
     private ArrayList<ConnectionThread> connections = new ArrayList<>();
     private HashMap<ConnectionThread, String> threadToUsername = new HashMap<>();
     private TreeMap<String, String> usernameToIntent = new TreeMap<>();
-    private Date date = new Date();
     private JTextArea textArea = new JTextArea();
-    private JButton startBtn = new JButton();
+    private JButton startButton = new JButton();
 
+    /**
+     * A class handle socket read/write, used in thread
+     */
+    private class ConnectionThread extends Thread {
+
+        private Socket socket;
+        private BufferedReader reader;
+        private PrintWriter writer;
+
+        /**
+         * Initialize with a specific socket
+         *
+         * @param socket socket to handle input/output
+         */
+        public ConnectionThread(Socket socket) {
+            this.socket = socket;
+            try {
+                this.writer = new PrintWriter(new OutputStreamWriter(this.socket.getOutputStream()));
+                this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        /**
+         * SendMessage to socket
+         *
+         * @param message message to send
+         */
+        public void sendMessage(String message) {
+            writer.println(message);
+            writer.flush();
+        }
+
+        /**
+         * Override interface Runnable
+         */
+        @Override
+        public void run() {
+            try {
+                String name = reader.readLine();
+                String intent = reader.readLine();
+                if (name == null || intent == null) {
+                    return;
+                }
+                textArea.append(name + " wants to " + intent + ".\n");
+                usernameToIntent.put(name, intent);
+                threadToUsername.put(this, name);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    /**
+     * Initialize server with a port to listen
+     *
+     * @param port port to listen
+     */
     Server(int port) {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
         this.setResizable(false);
-        this.setLocation(200, 200);
+        this.setLocationByPlatform(true);
 
         this.setLayout(null);
         this.textArea.setEditable(false);
@@ -40,10 +103,10 @@ public class Server extends JFrame {
         this.add(scrollPane);
         scrollPane.setBounds(0, 0, 400, 300);
 
-        startBtn.setText("Start");
-        startBtn.setBounds(0, 300, 400, 30);
-        startBtn.addActionListener(event -> {
-            startBtn.setEnabled(false);
+        startButton.setText("Start");
+        startButton.setBounds(0, 300, 400, 30);
+        startButton.addActionListener(event -> {
+            startButton.setEnabled(false);
             try {
                 serverSocket.close();
             } catch (Exception e) {
@@ -53,7 +116,7 @@ public class Server extends JFrame {
             broadCast("Card test");
             // TODO: ask each of the users to move.
         });
-        this.add(startBtn);
+        this.add(startButton);
 
         try {
             serverSocket = new ServerSocket(port);
@@ -64,6 +127,9 @@ public class Server extends JFrame {
         }
     }
 
+    /**
+     * Let server start to accept connection on port specified
+     */
     public void startAcceptConnection() {
         while (true) {
             try {
@@ -81,61 +147,39 @@ public class Server extends JFrame {
                 ConnectionThread connectionThread = new ConnectionThread(connSock);
                 connectionThread.start();
                 connections.add(connectionThread);
-            } catch (SocketException e1) {
+            } catch (SocketException e) {
                 System.out.println("Server socket closed.");
                 break;
-            } catch (Exception e2) {
-                e2.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
                 break;
             }
         }
     }
 
-    public void broadCast(String string) {
+    /**
+     * Send message to all socket connected to server
+     *
+     * @param message message to send
+     */
+    public void broadCast(String message) {
         for (ConnectionThread thread : connections) {
-            thread.sendMessage(string);
+            thread.sendMessage(message);
         }
     }
 
-    public void broadCastButOne(String string, ConnectionThread inputThread) {
-        for (ConnectionThread thread : connections) {
-            if (thread != inputThread) thread.sendMessage(string);
-        }
-    }
-
-    class ConnectionThread extends Thread {
-
-        private Socket socket;
-        private BufferedReader reader;
-        private PrintWriter writer;
-
-        public ConnectionThread(Socket socket) {
-            this.socket = socket;
-            try {
-                this.writer = new PrintWriter(new OutputStreamWriter(this.socket.getOutputStream()));
-                this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-            } catch (IOException e) {
-                e.printStackTrace();
+    /**
+     * Send message to all socket connected to server except the one specified in paramter
+     *
+     * @param message message to send
+     * @param except the socket which will be skipped when broadcasting
+     */
+    public void broadCastExcept(String message, ConnectionThread except) {
+        connections.forEach(connectionThread -> {
+            if (connectionThread != except) {
+                connectionThread.sendMessage(message);
             }
-        }
-
-        public void sendMessage(String string) {
-            writer.println(string);
-            writer.flush();
-        }
-
-        public void run() {
-            try {
-                String name = reader.readLine();
-                String intent = reader.readLine();
-                if (name == null || intent == null) return;
-                textArea.append(name + " wants to " + intent + ".\n");
-                usernameToIntent.put(name, intent);
-                threadToUsername.put(this, name);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        });
     }
 
     public static void main(String[] args) {
