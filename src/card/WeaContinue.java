@@ -1,0 +1,17 @@
+package card;
+
+/**
+ * Continue 
+ */
+public class WeaContinue extends Card {
+	/**
+     * Default constructor
+     */
+    public WeaContinue() {
+        super(CardCategory.SKILL,
+              "Arbalest",
+              "In your play phase, you can use any amount of 'Kill'." ,
+              "wea_continue.JPG");
+    }
+
+}

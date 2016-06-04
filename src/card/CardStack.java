@@ -28,6 +28,7 @@ public class CardStack {
         }
         for (int i = 0; i< JIN_CARD_NUM; i++) {
             // TODO 把錦囊牌加入牌組
+        	drawArea.add(new JinBattle());
         }
         for (int i = 0; i< WEAPON_CARD_NUM; i++) {
             // TODO 把武器牌加入牌組

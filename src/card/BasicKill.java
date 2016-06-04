@@ -5,11 +5,14 @@ package card;
  */
 public class BasicKill extends Card {
 
+    /**
+     * Default constructor
+     */
     public BasicKill() {
-        super(CardCategory.SKILL,
-              "殺",
-              "出牌階段，在攻擊範圍內對除自己以外的一名角色使用，效果是對該角色造成1點傷害。",
-              "basic_kill.JPG");
+        super(CardCategory.BASIC,
+              "Kill",
+              "Choose a player other than yourself when your range of attack as a target, and the target player gets 1 point of damage by you. Usually, you can only use 1 'Kill' each turn.",
+              "basic_Kill.JPG");
     }
 
 }
