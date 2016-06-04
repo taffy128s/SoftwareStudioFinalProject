@@ -20,8 +20,8 @@ import javax.swing.WindowConstants;
 @SuppressWarnings("serial")
 public class Client extends JFrame {
 
-    public final static int WINDOW_WIDTH = 600;
-    public final static int WINDOW_HEIGHT = 400;
+    public final static int WINDOW_WIDTH = 800;
+    public final static int WINDOW_HEIGHT = 800;
 
     private Socket socket;
     private PrintWriter writer;
@@ -38,7 +38,6 @@ public class Client extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         this.setResizable(false);
-        this.setLocationByPlatform(true);
 
         JTextField nameField = new JTextField(30);
         JTextField intentField = new JTextField(30);

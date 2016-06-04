@@ -2,6 +2,7 @@ package client;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import processing.core.PApplet;
 
@@ -11,6 +12,7 @@ public class Applet extends PApplet {
     private BufferedReader reader;
     private GameStatus gameStatus;
     private boolean yourTurn;
+    private ArrayList<Character> characters = new ArrayList<Character>();
 
     Applet(PrintWriter writer, BufferedReader reader) {
         this.writer = writer;

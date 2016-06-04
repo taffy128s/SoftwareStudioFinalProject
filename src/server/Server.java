@@ -94,7 +94,6 @@ public class Server extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
         this.setResizable(false);
-        this.setLocationByPlatform(true);
 
         this.setLayout(null);
         this.textArea.setEditable(false);
