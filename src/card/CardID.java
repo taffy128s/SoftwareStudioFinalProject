@@ -18,13 +18,15 @@ public enum CardID {
     WEA_CONTINUE(303),
     WEA_SHORT(304),
     WEA_TENSWORD(305);
-    
+
     private final int value;
+
     CardID(final int value) {
         this.value = value;
     }
-    
-    public int getValue() {
+
+    public int value() {
         return value;
     }
+
 }

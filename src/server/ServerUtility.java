@@ -68,7 +68,12 @@ public class ServerUtility {
          */
         @Override
         public void run() {
-            System.out.println("Not completed thread");
+            for (ConnectionThread connectionThread : connections) {
+                for (int i = 0; i < 3; ++i) {
+                    int index = cardStack.drawTop().getCardID().value();
+                    connectionThread.sendMessage("receiveCard " + index);
+                }
+            }
             // TODO: deal the cards to all players
             /*for (ConnectionThread th : connections) {
                 for(int i=0 ; i<3 ; i++) {
@@ -88,15 +93,16 @@ public class ServerUtility {
      * @param server server to call appendMessage() to show message on TextField
      */
     public ServerUtility(ArrayList<Socket> sockets, Server server) {
+        this.cardStack.shuffle();
         this.server = server;
         sockets.forEach(socket -> connections.add(new ConnectionThread(socket)));
-        connections.forEach(Thread::start);
         for (ConnectionThread connectionThread : connections) {
             String string = "initialplayer " + threadToUsername.get(connectionThread) + " " +
                             usernameToIntent.get(threadToUsername.get(connectionThread));
             broadCast(string);
         }
         broadCast("start");
+        connections.forEach(Thread::start);
     }
 
     /**

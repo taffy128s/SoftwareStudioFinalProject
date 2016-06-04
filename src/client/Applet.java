@@ -5,7 +5,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 
+import card.BasicApple;
 import card.Card;
+import card.CardCategory;
+import card.CardID;
 import de.looksgood.ani.Ani;
 import processing.core.PApplet;
 
@@ -37,9 +40,9 @@ public class Applet extends PApplet {
         this.random = new Random();
         this.writer = writer;
         this.reader = reader;
-        this.aliveCharacters = new ArrayList<Player>();
+        this.aliveCharacters = new ArrayList<>();
         this.bigCircle = new BigCircle(this, Client.WINDOW_WIDTH / 3, Client.WINDOW_HEIGHT / 2 - 80, 500);
-        this.handCards = new ArrayList<Card>();
+        this.handCards = new ArrayList<>();
         gameStatus = GameStatus.WAIT;
         yourTurn = false;
         ReadThread thread = new ReadThread();
@@ -47,7 +50,7 @@ public class Applet extends PApplet {
     }
 
     /**
-     * This class handle message reading from server and writing to server
+     * This class handle message reading from server
      */
     private class ReadThread extends Thread {
 
@@ -78,8 +81,10 @@ public class Applet extends PApplet {
                         if(array[0].equals("receiveCard")) {
                             //Card receivedCard = ;
                             //handCards.add(receivedCard);
+                            System.out.println("get card id " + array[1]);
+                            handCards.add(new BasicApple());
                         }
-                      
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -118,7 +123,7 @@ public class Applet extends PApplet {
             background(255);
             textSize(32);
             fill(0, 100, 150);
-            text("Please wait until the game starts.", 30, 180);
+            text("Please wait until the game starts.", 225, 375);
         } else if (gameStatus == GameStatus.READY) {
             background(255);
             bigCircle.display();
@@ -134,4 +139,5 @@ public class Applet extends PApplet {
             }
         }
     }
+
 }

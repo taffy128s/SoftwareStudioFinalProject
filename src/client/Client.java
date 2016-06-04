@@ -50,21 +50,30 @@ public class Client extends JFrame {
         panel.add(new JLabel("Enter your intent:"));
         panel.add(intentField);
 
-        int result = JOptionPane.showConfirmDialog(null, panel, "New player", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
-            try {
-                this.socket = new Socket(IP, port);
-                this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-                this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            } catch (Exception e) {
-                e.printStackTrace();
+        while (true) {
+            int result = JOptionPane.showConfirmDialog(null, panel, "New player", JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                if (nameField.getText().length() == 0 || intentField.getText().length() == 0) {
+                    JOptionPane.showConfirmDialog(null, new JLabel("All fields cannot be empty!"), "Error", JOptionPane.DEFAULT_OPTION);
+                    continue;
+                }
+                try {
+                    this.socket = new Socket(IP, port);
+                    this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(0);
+                }
+                sendMessage(nameField.getText());
+                sendMessage(intentField.getText());
+                this.setVisible(true);
+                break;
+            }
+            else {
                 System.exit(0);
             }
-            sendMessage(nameField.getText());
-            sendMessage(intentField.getText());
-            this.setVisible(true);
-        } else {
-            System.exit(0);
         }
     }
 

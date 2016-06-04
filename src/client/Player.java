@@ -2,6 +2,7 @@ package client;
 
 import processing.core.PApplet;
 
+import java.awt.*;
 import java.util.Random;
 
 /**
@@ -67,8 +68,13 @@ public class Player {
         parent.strokeWeight(3);
         parent.stroke(0);
         parent.rect(Client.WINDOW_WIDTH / 3 * 2 - 10, 100, 300, 200);
+        Font font = parent.getFont();
+        parent.fill(0);
+        parent.setFont(new Font(font.getName(), Font.PLAIN, 18));
+        parent.text("HELLO", Client.WINDOW_WIDTH / 3 * 2, 150);
+        parent.setFont(font);
     }
-    
+
     public String getUserName() {
         return name;
     }

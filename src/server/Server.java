@@ -49,13 +49,13 @@ public class Server extends JFrame {
         startButton.setBounds(10, WINDOW_HEIGHT - 80, WINDOW_WIDTH - 2 * 10 - 5, 40);
         startButton.addActionListener(event -> {
             if (sockets.isEmpty()) {
-                JPanel jPanel = new JPanel();
-                jPanel.add(new JLabel("No client connected!"));
-                JOptionPane.showConfirmDialog(null, jPanel, "Error", JOptionPane.DEFAULT_OPTION);
+                JOptionPane.showConfirmDialog(null, new JLabel("No client connected!"), "Error", JOptionPane.DEFAULT_OPTION);
                 return;
             }
+            appendMessage("New game started, number of players: " + connectionCount + "\n");
             games.add(new ServerUtility(sockets, this));
             sockets.clear();
+            connectionCount = 0;
         });
         this.add(startButton);
 

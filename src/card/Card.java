@@ -64,7 +64,14 @@ public class Card {
         }
     }
 
-    
+    /**
+     * Get card ID
+     *
+     * @return card ID
+     */
+    public CardID getCardID() {
+        return cardID;
+    }
 
     /**
      * Get card name
@@ -102,28 +109,28 @@ public class Card {
         return filename;
     }
 
-    /**
-     * Get string representation of this card
-     *
-     * @return a string representation of this card
-     */
-    public String toString() {
-         return "Card{" +
-                ", name='" + name + "'" +
-                ", filename='" + filename + "'" +
-                "}";
-    }
-
     public PImage getImage() {
         return image;
     }
-    
+
     /**
      * Card effect string sent to server
      * @return effect string to send to server
      */
     public String effectString(Player source, @Nullable Player target) {
         return null;
+    }
+
+    /**
+     * Get string representation of this card
+     *
+     * @return a string representation of this card
+     */
+    public String toString() {
+        return "Card{" +
+               ", name='" + name + "'" +
+               ", filename='" + filename + "'" +
+               "}";
     }
 
 }
