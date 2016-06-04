@@ -111,8 +111,11 @@ public class Server extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            for (ConnectionThread th : connections) {
+                String string = "initialplayer " + threadToUsername.get(th) + " " + usernameToIntent.get(threadToUsername.get(th));
+                broadCast(string);
+            }
             broadCast("start");
-            broadCast("Card test");
             // TODO: ask each of the users to move.
         });
         this.add(startButton);
