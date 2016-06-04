@@ -79,7 +79,7 @@ public class Applet extends PApplet {
                             //Card receivedCard = ;
                             //handCards.add(receivedCard);
                         }
-                      
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -134,4 +134,5 @@ public class Applet extends PApplet {
             }
         }
     }
+
 }

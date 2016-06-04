@@ -1,19 +1,23 @@
 package card;
 
 public class WeaCard extends Card {
-    private boolean sheild;
+
+    private boolean shield;
     private int distance;
+
     public WeaCard(CardCategory cardCategory, CardID cardID, String name, String description, String filename,
-                    boolean sheild, int distance) {
+                   boolean shield, int distance) {
         super(cardCategory, cardID, name, description, filename);
-        this.sheild = sheild;
+        this.shield = shield;
         this.distance = distance;
     }
-    
-    public boolean isSheild() {
-        return sheild;
+
+    public boolean isShield() {
+        return shield;
     }
+
     public int getDistance() {
         return distance;
     }
+
 }

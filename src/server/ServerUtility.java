@@ -90,13 +90,13 @@ public class ServerUtility {
     public ServerUtility(ArrayList<Socket> sockets, Server server) {
         this.server = server;
         sockets.forEach(socket -> connections.add(new ConnectionThread(socket)));
-        connections.forEach(Thread::start);
         for (ConnectionThread connectionThread : connections) {
             String string = "initialplayer " + threadToUsername.get(connectionThread) + " " +
                             usernameToIntent.get(threadToUsername.get(connectionThread));
             broadCast(string);
         }
         broadCast("start");
+        connections.forEach(Thread::start);
     }
 
     /**

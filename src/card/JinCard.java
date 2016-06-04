@@ -1,11 +1,12 @@
 package card;
 
 public class JinCard extends Card {
+
     private boolean notTargeting;
     private boolean selfExclusive;
     private boolean effectiveNow;
     private boolean conditional;
-    
+
     /**
      * Initialize a card with its name, description, card category,
      * path to its image file, and all other properties of the card
@@ -28,17 +29,21 @@ public class JinCard extends Card {
         this.effectiveNow = effectiveNow;
         this.conditional = conditional;
     }
-    
+
     public boolean isAreaEffective() {
         return notTargeting;
     }
+
     public boolean isSelfExclusive() {
         return selfExclusive;
     }
+
     public boolean isEffectiveNow() {
         return effectiveNow;
     }
+
     public boolean isConditional() {
         return conditional;
     }
+
 }
