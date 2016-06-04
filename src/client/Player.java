@@ -55,7 +55,7 @@ public class Player {
      *
      * @return diameter
      */
-    public int getDiameter() {
+    public int getRadius() {
         return size / 2;
     }
 
