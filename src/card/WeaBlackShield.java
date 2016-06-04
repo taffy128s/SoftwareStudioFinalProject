@@ -4,6 +4,7 @@ package card;
  * SwallowTail Shield
  */
 public class WeaBlackShield extends Card {
+
 	/**
      * Default constructor
      */

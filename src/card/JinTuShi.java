@@ -4,6 +4,7 @@ package card;
  * Cavalry Invasion 鐵騎突襲
  */
 public class JinTuShi extends Card {
+
 	/**
      * Default constructor
      */

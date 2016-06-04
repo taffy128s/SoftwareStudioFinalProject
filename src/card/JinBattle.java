@@ -4,6 +4,7 @@ package card;
  * Card Battle
  */
 public class JinBattle extends Card {
+
 	/**
      * Default constructor
      */

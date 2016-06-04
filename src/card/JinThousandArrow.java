@@ -4,6 +4,7 @@ package card;
  * Myriads of Arrows
  */
 public class JinThousandArrow extends Card {
+
 	/**
      * Default constructor
      */

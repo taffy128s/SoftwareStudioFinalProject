@@ -1,33 +1,65 @@
 package client;
 
+/**
+ * Big circle
+ */
 public class BigCircle {
-    
-    public float x, y, r;
+
+    private float x;
+    private float y;
+    private float diameter;
     private Applet parent;
-    
-    BigCircle(Applet parent, float x, float y, float r) {
+
+    /**
+     * Initialize a big circle with its position and radius
+     *
+     * @param parent PApplet parent
+     * @param x position x-axis
+     * @param y position y-axis
+     * @param diameter diameter
+     */
+    BigCircle(Applet parent, float x, float y, float diameter) {
         this.parent = parent;
         this.x = x;
         this.y = y;
-        this.r = r;
+        this.diameter = diameter;
     }
-    
+
+    /**
+     * Draw this circle
+     */
     public void display() {
         parent.fill(255);
         parent.stroke(38, 58, 109);
         parent.strokeWeight(5);
-        parent.ellipse(x, y, r, r);
+        parent.ellipse(x, y, diameter, diameter);
     }
-    
-    public float getCircleX() {
+
+    /**
+     * Get x position
+     *
+     * @return x-axis
+     */
+    public float getX() {
         return x;
     }
-    
-    public float getCircleY() {
+
+    /**
+     * Get y position
+     *
+     * @return y-axis
+     */
+    public float getY() {
         return y;
     }
-    
-    public float getCircleR() {
-        return r / 2;
+
+    /**
+     * Get circle radius
+     *
+     * @return radius
+     */
+    public float getRadius() {
+        return diameter / 2;
     }
+
 }

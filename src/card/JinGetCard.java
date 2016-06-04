@@ -4,6 +4,7 @@ package card;
  * Card Get Card
  */
 public class JinGetCard extends Card {
+
 	/**
      * Default constructor
      */

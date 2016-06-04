@@ -4,6 +4,7 @@ package card;
  * Cross swords
  */
 public class WeaTenSword extends Card {
+
 	/**
      * Default constructor
      */

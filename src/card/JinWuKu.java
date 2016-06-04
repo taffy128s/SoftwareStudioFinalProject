@@ -4,6 +4,7 @@ package card;
  * Bumper Harvest 五穀豐登
  */
 public class JinWuKu extends Card {
+
 	/**
      * Default constructor
      */

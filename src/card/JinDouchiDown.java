@@ -4,6 +4,7 @@ package card;
  * Card Carnival banquet
  */
 public class JinDouchiDown extends Card {
+
 	/**
      * Default constructor
      */

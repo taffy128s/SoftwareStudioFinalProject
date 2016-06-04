@@ -8,9 +8,12 @@ import java.util.Random;
 import de.looksgood.ani.Ani;
 import processing.core.PApplet;
 
+/**
+ * PApplet
+ */
 @SuppressWarnings("serial")
 public class Applet extends PApplet {
-    @SuppressWarnings("unused")
+
     private Ani ani;
     private boolean yourTurn;
     private PrintWriter writer;
@@ -18,11 +21,18 @@ public class Applet extends PApplet {
     private GameStatus gameStatus;
     private ArrayList<Character> aliveCharacters;
     private BigCircle bigCircle;
-    private Random random = new Random();
     private Character characterPointed;
+    private Random random;
 
+    /**
+     * Initialize a PApplet with writer, printer to server
+     *
+     * @param writer writer to server
+     * @param reader reader to server
+     */
     Applet(PrintWriter writer, BufferedReader reader) {
         Ani.init(this);
+        this.random = new Random();
         this.writer = writer;
         this.reader = reader;
         this.aliveCharacters = new ArrayList<Character>();
@@ -33,7 +43,11 @@ public class Applet extends PApplet {
         thread.start();
     }
 
-    class ReadThread extends Thread {
+    /**
+     * This class handle message reading from server and writing to server
+     */
+    private class ReadThread extends Thread {
+
         public void run() {
             String string;
             String[] array;
@@ -57,22 +71,32 @@ public class Applet extends PApplet {
                 }
             }
         }
+
     }
 
+    /**
+     * Put all alive characters to the big circle
+     */
     public void makeACircle() {
         float angle = 0;
         for (Character ch : aliveCharacters) {
-            ani = Ani.to(ch, (float) 2, "x", bigCircle.getCircleX() + bigCircle.getCircleR() * cos(angle));
-            ani = Ani.to(ch, (float) 2, "y", bigCircle.getCircleY() - bigCircle.getCircleR() * sin(angle));
+            ani = Ani.to(ch, (float) 2, "x", bigCircle.getX() + bigCircle.getRadius() * cos(angle));
+            ani = Ani.to(ch, (float) 2, "y", bigCircle.getY() - bigCircle.getRadius() * sin(angle));
             angle += (TWO_PI / (float) aliveCharacters.size());
         }
     }
 
+    /**
+     * Setup
+     */
     public void setup() {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
     }
 
+    /**
+     * Draw
+     */
     public void draw() {
         if (gameStatus == GameStatus.WAIT) {
             background(255);
@@ -84,7 +108,7 @@ public class Applet extends PApplet {
             bigCircle.display();
             for (Character ch : aliveCharacters) {
                 ch.display();
-                if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getR()) {
+                if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getDiameter()) {
                     characterPointed = ch;
                     ch.showCharacterInfo();
                 }

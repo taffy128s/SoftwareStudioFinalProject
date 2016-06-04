@@ -4,6 +4,7 @@ package card;
  * Disarm 繳械
  */
 public class JinThrow extends Card {
+
 	/**
      * Default constructor
      */
