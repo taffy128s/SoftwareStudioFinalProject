@@ -67,9 +67,11 @@ public class Player {
         parent.fill(255);
         parent.strokeWeight(3);
         parent.stroke(0);
-        parent.rect(Client.WINDOW_WIDTH / 3 * 2 - 10, 100, 300, 200);
+        parent.rect(Client.WINDOW_WIDTH / 3 * 2 - 10, 100, 300, 200, 20);
         parent.fill(0);
-        parent.text("HELLO", Client.WINDOW_WIDTH / 3 * 2, 150);
+        parent.textSize(24);
+        parent.text("Name: " + this.name, Client.WINDOW_WIDTH / 3 * 2 + 20, 150);
+        parent.text("Intent: " + this.intent, Client.WINDOW_WIDTH / 3 * 2 + 20, 150 + 40);
     }
 
     public String getUserName() {

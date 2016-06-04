@@ -114,7 +114,6 @@ public class Applet extends PApplet {
     public void setup() {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
-        this.setFont(new Font(this.getFont().getName(), Font.PLAIN, 18));
     }
 
     /**
