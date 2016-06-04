@@ -30,7 +30,7 @@ public class Applet extends PApplet {
         ReadThread thread = new ReadThread();
         thread.start();
     }
-    
+
     class ReadThread extends Thread {
         public void run() {
             String string;
@@ -55,7 +55,7 @@ public class Applet extends PApplet {
             }
         }
     }
-    
+
     public void makeACircle() {
         float angle = 0;
         for (Character ch : aliveCharacters) {
