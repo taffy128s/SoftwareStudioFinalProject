@@ -10,6 +10,8 @@ import processing.core.PApplet;
 
 @SuppressWarnings("serial")
 public class Applet extends PApplet {
+    @SuppressWarnings("unused")
+    private Ani ani;
     private boolean yourTurn;
     private PrintWriter writer;
     private BufferedReader reader;
@@ -17,7 +19,7 @@ public class Applet extends PApplet {
     private ArrayList<Character> aliveCharacters;
     private BigCircle bigCircle;
     private Random random = new Random();
-    private Ani ani;
+    private Character characterPointed;
 
     Applet(PrintWriter writer, BufferedReader reader) {
         Ani.init(this);
@@ -43,6 +45,7 @@ public class Applet extends PApplet {
                         aliveCharacters.add(new Character(Applet.this, array[1], array[2], random.nextFloat() * 800, random.nextFloat() * 800));
                     } else if (array[0].equals("start")) {
                         gameStatus = GameStatus.READY;
+                        makeACircle();
                     } else if (array[0].equals("yourturn")) {
                         yourTurn = true;
                     } else {
@@ -81,8 +84,8 @@ public class Applet extends PApplet {
             bigCircle.display();
             for (Character ch : aliveCharacters) {
                 ch.display();
+                
             }
-            makeACircle();
         }
     }
 }
