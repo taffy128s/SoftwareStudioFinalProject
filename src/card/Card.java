@@ -4,21 +4,21 @@ import processing.core.PImage;
 
 public class Card {
 
-    protected CardCategory cardCategory;
-    protected String name ;
-    protected String description ;
-    protected String filename ;
-    protected PImage image;
+    private CardCategory cardCategory;
+    private String name;
+    private String description;
+    private String filename;
+    private PImage image;
 
     /**
      * Default constructor
      */
     public Card() {
-        cardCategory = CardCategory.UNDEFINED;
-        name = "";
-        description = "";
-        filename = "";
-        image = null;
+        this.cardCategory = CardCategory.UNDEFINED;
+        this.name = "";
+        this.description = "";
+        this.filename = "";
+        this.image = null;
     }
 
     /**
