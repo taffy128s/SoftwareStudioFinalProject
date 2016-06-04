@@ -68,6 +68,15 @@ public class Card {
     }
 
     /**
+     * Get card ID
+     *
+     * @return card ID
+     */
+    public CardID getCardID() {
+        return cardID;
+    }
+
+    /**
      * Get card name
      *
      * @return card name
@@ -103,18 +112,6 @@ public class Card {
         return filename;
     }
 
-    /**
-     * Get string representation of this card
-     *
-     * @return a string representation of this card
-     */
-    public String toString() {
-         return "Card{" +
-                ", name='" + name + "'" +
-                ", filename='" + filename + "'" +
-                "}";
-    }
-
     public void setSource(Player source) {
         this.source = source;
     }
@@ -133,6 +130,18 @@ public class Card {
      */
     public String effectString() {
         return null;
+    }
+
+    /**
+     * Get string representation of this card
+     *
+     * @return a string representation of this card
+     */
+    public String toString() {
+        return "Card{" +
+               ", name='" + name + "'" +
+               ", filename='" + filename + "'" +
+               "}";
     }
 
 }

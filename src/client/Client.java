@@ -69,6 +69,7 @@ public class Client extends JFrame {
                 sendMessage(nameField.getText());
                 sendMessage(intentField.getText());
                 this.setVisible(true);
+                break;
             }
             else {
                 System.exit(0);

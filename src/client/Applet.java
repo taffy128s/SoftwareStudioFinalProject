@@ -37,9 +37,9 @@ public class Applet extends PApplet {
         this.random = new Random();
         this.writer = writer;
         this.reader = reader;
-        this.aliveCharacters = new ArrayList<Player>();
+        this.aliveCharacters = new ArrayList<>();
         this.bigCircle = new BigCircle(this, Client.WINDOW_WIDTH / 3, Client.WINDOW_HEIGHT / 2 - 80, 500);
-        this.handCards = new ArrayList<Card>();
+        this.handCards = new ArrayList<>();
         gameStatus = GameStatus.WAIT;
         yourTurn = false;
         ReadThread thread = new ReadThread();
@@ -47,7 +47,7 @@ public class Applet extends PApplet {
     }
 
     /**
-     * This class handle message reading from server and writing to server
+     * This class handle message reading from server
      */
     private class ReadThread extends Thread {
 
@@ -78,6 +78,7 @@ public class Applet extends PApplet {
                         if(array[0].equals("receiveCard")) {
                             //Card receivedCard = ;
                             //handCards.add(receivedCard);
+                            System.out.println("get card id " + array[1]);
                         }
 
                     }

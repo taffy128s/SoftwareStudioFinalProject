@@ -36,6 +36,13 @@ public class CardStack {
     }
 
     /**
+     * Shuffle drawArea
+     */
+    public void shuffle() {
+        Collections.shuffle(drawArea);
+    }
+
+    /**
      * <p>Shuffle all cards in discard area and push it back to the bottom of drawAres
      * <p>Note: index 0: bottom, index size() - 1: top
      */
