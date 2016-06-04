@@ -10,9 +10,9 @@ public class BasicApple extends Card {
      */
     public BasicApple() {
         super(CardCategory.BASIC,
-              "金蘋果",
-              "1.在自己的回合內為自己回復一點體力值。\n" +
-              "2.在自己的回合外當任意一名角色處於頻死階段時對其使用，使其體力回復1",
+              "Golden Apple",
+              "1. In your play phase, if you have been damaged, you cam use one 'Golden Apple' to recover one point of HP. If yout HP is full, you can not use 'Golden Apple'.\n" +
+              "2. When a player (yourself included) has no HP left, you may use 'Golden Apple' to the player to stop the player from dying. One 'Golden Apple' will let the player recover one point of HP." ,
               "basic_apple.JPG");
     }
 
