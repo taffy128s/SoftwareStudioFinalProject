@@ -29,7 +29,7 @@ public class JinCard extends Card {
         this.conditional = conditional;
     }
     
-    public boolean isAreaEffective() {
+    public boolean isNotTargeting() {
         return notTargeting;
     }
     public boolean isSelfExclusive() {

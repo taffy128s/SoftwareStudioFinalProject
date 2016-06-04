@@ -101,3 +101,30 @@ wea_tensword.JPG ： 十字劍
     天妒：在你的判定牌生效時，你可以立即獲得它。
     空城：鎖定技，當你沒有手牌時，你不能成為【殺】或【決鬥】的目標。 
     
+    
+    
+目前認為 Card 的使用方法：
+    client 跟 server 都要先建立一個從 cardID 對應到某個 class 的對照表。我目前想到的實作方法是：一開始就把每張不同種的牌實體化一次，開一個 map 把他們的 cardID 對應到該實體。等到要解讀別人傳來的 cardID 時再利用此實體作為 copy constructor 的 source，來 new 一個自己要用的實體。
+
+    一、發牌：由 server 給牌，利用 cardStack 建好的 method 來控管（cardStack 裡面應改為只放 cardID 即可，不必裝實體） 
+         然後把該卡 cardID 單獨寄送給被發牌的人，被發牌的人再對照表中找到該牌，創一個新的實體再放到 handCards 中。
+    
+    二、從手牌出牌：client 端的手牌端應該要有自己的實體，當牌被『丟出』時，先看該牌的 category：
+        1. BASIC(基本牌)：三張牌個別判定是否可以出、是否需要指定目標（閃不能直接出、桃不能指定目標、殺必須指定目標）
+                         如需指定目標，則 effectString() 就要傳入 target。如不需則傳 NULL
+        2. SKILL(錦囊牌)：
+            會有四個 boolean function 可用：   isNotTargeting();
+                                             isSelfExclusive();
+                                             isEffectiveNow();
+                                             isConditional(); 
+            當牌被丟出時，先檢查其是否 isNotTargeting() ? 如果是（範圍技、或者自我抽牌），就可以直接 effectString(this, NULL);
+            如果不是，就要求 Player 指定一個範圍內的對象，且如果該牌 isSelfExclusive() 就不能指定自己。
+                    
+        3. EQUIPMENT(裝備牌)： 可用 isSheild() 來判別該張牌為防具或武器。
+            若為防具，則把該牌放置到角色的防具區，若防具區已滿，採用 LRU policy 進行替換。武器區同理。
+            ...好啦防具武器區應該都只有一格的空間。
+            
+        若順利把牌丟出，則將 effectString() 回傳字串傳給 ServerUtility 來廣播。 (effectString() 的 source 永遠要傳入出牌者自己)
+    
+    三、產生效果：
+        
