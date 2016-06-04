@@ -3,7 +3,7 @@ package card;
 /**
  * knife
  */
-public class WeaShort extends Card {
+public class WeaShort extends WeaCard {
 
 	/**
      * Default constructor
@@ -13,7 +13,9 @@ public class WeaShort extends Card {
               CardID.WEA_SHORT,
               "Persian knife",
               "When you use 'Kill', the target's defensive equipment will be negelected" ,
-              "wea_short.JPG");
+              "wea_short.JPG",
+              false,
+              2);
     }
 
 }

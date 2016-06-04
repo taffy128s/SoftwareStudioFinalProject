@@ -3,7 +3,7 @@ package card;
 /**
  * Continue
  */
-public class WeaContinue extends Card {
+public class WeaContinue extends WeaCard {
 
 	/**
      * Default constructor
@@ -13,7 +13,9 @@ public class WeaContinue extends Card {
               CardID.WEA_CONTINUE,
               "Arbalest",
               "In your play phase, you can use any amount of 'Kill'." ,
-              "wea_continue.JPG");
+              "wea_continue.JPG",
+              false,
+              1);
     }
 
 }

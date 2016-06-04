@@ -20,11 +20,6 @@ public class Card {
     private String description;
     private String filename;
     private PImage image;
-
-    private boolean areaEffective;
-    private boolean selfExclusive;
-    private boolean effectiveNow;
-    private boolean conditional;
     
     private Player source;
     private Player destination;
@@ -70,35 +65,9 @@ public class Card {
         else {
             this.image = null;
         }
-
-        areaEffective = false;
-        selfExclusive = false;
-        effectiveNow = false;
-        conditional = false;
     }
 
-    /**
-     * Initialize a card with its name, description, card category,
-     * path to its image file, and all other properties of the card
-     *
-     * @param cardCategory category of this card
-     * @param name card name
-     * @param description card description
-     * @param filename path to its image file
-     * @param areaEffective is area effective
-     * @param selfExclusive is self exclusive
-     * @param effectiveNow is effectiveNow
-     * @param conditional is conditional
-     */
-    public Card(CardCategory cardCategory, CardID cardID,String name, String description, String filename,
-            boolean areaEffective, boolean selfExclusive, boolean effectiveNow, boolean conditional) {
-        this(cardCategory, cardID, name, description, filename);
-
-        this.areaEffective = areaEffective;
-        this.selfExclusive = selfExclusive;
-        this.effectiveNow = effectiveNow;
-        this.conditional = conditional;
-    }
+    
 
     /**
      * Get card name
