@@ -6,6 +6,7 @@ import processing.core.PImage;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import client.Player;
 
 /**
  * Card
@@ -128,7 +129,7 @@ public class Card {
                 "}";
     }
     
-    public String effectString(Character source, Character destination) {
+    public String effectString(Player source, Player destination) {
         return "";
     }
 }

@@ -19,9 +19,9 @@ public class Applet extends PApplet {
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
-    private ArrayList<Character> aliveCharacters;
+    private ArrayList<Player> aliveCharacters;
     private BigCircle bigCircle;
-    private Character characterPointed;
+    private Player characterPointed;
     private Random random;
 
     /**
@@ -35,7 +35,7 @@ public class Applet extends PApplet {
         this.random = new Random();
         this.writer = writer;
         this.reader = reader;
-        this.aliveCharacters = new ArrayList<Character>();
+        this.aliveCharacters = new ArrayList<Player>();
         this.bigCircle = new BigCircle(this, Client.WINDOW_WIDTH / 3, Client.WINDOW_HEIGHT / 2 - 80, 500);
         gameStatus = GameStatus.WAIT;
         yourTurn = false;
@@ -56,7 +56,7 @@ public class Applet extends PApplet {
                     string = reader.readLine();
                     array = string.split(" ");
                     if (array[0].equals("initialplayer")) {
-                        aliveCharacters.add(new Character(Applet.this, array[1], array[2], random.nextFloat() * 800, random.nextFloat() * 800));
+                        aliveCharacters.add(new Player(Applet.this, array[1], array[2], random.nextFloat() * 800, random.nextFloat() * 800));
                     } else if (array[0].equals("start")) {
                         gameStatus = GameStatus.READY;
                         makeACircle();
@@ -79,7 +79,7 @@ public class Applet extends PApplet {
      */
     public void makeACircle() {
         float angle = 0;
-        for (Character ch : aliveCharacters) {
+        for (Player ch : aliveCharacters) {
             ani = Ani.to(ch, (float) 2, "x", bigCircle.getX() + bigCircle.getRadius() * cos(angle));
             ani = Ani.to(ch, (float) 2, "y", bigCircle.getY() - bigCircle.getRadius() * sin(angle));
             angle += (TWO_PI / (float) aliveCharacters.size());
@@ -106,7 +106,7 @@ public class Applet extends PApplet {
         } else if (gameStatus == GameStatus.READY) {
             background(255);
             bigCircle.display();
-            for (Character ch : aliveCharacters) {
+            for (Player ch : aliveCharacters) {
                 ch.display();
                 if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getDiameter()) {
                     characterPointed = ch;

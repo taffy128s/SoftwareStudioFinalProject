@@ -3,6 +3,8 @@ package card;
 /**
  * Card "Golden Apple"
  */
+import client.*;
+
 public class BasicApple extends Card {
 
     /**
@@ -17,7 +19,7 @@ public class BasicApple extends Card {
     }
     
     @Override
-    public String effectString(Character source, Character destination) {
-        return "";
+    public String effectString(Player source, Player destination) {
+        return "basic_apple " + source.getUserName() + " " + destination.getUserName();
     }
 }

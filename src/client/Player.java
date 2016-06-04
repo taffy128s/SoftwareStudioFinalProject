@@ -7,7 +7,7 @@ import java.util.Random;
 /**
  * Character in game, a user a character
  */
-public class Character {
+public class Player {
 
     public float x, y;
     private PApplet parent;
@@ -25,7 +25,7 @@ public class Character {
      * @param x character's position x-axis
      * @param y character's position y-axis
      */
-    public Character(Applet parent, String name, String intent, float x, float y) {
+    public Player(Applet parent, String name, String intent, float x, float y) {
         this.parent = parent;
         this.random = new Random();
         this.name = name;
@@ -68,5 +68,8 @@ public class Character {
         parent.stroke(0);
         parent.rect(Client.WINDOW_WIDTH / 3 * 2 - 10, 100, 300, 200);
     }
-
+    
+    public String getUserName() {
+        return name;
+    }
 }
