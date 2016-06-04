@@ -96,7 +96,6 @@ public class Server extends JFrame {
      */
     Server(int port) {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setVisible(true);
         this.setResizable(false);
         this.setLayout(null);
 
