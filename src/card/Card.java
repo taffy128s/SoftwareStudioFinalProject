@@ -20,10 +20,7 @@ public class Card {
     private String description;
     private String filename;
     private PImage image;
-
-    private Player source;
-    private Player destination;
-
+    
     /**
      * Default constructor
      */
@@ -112,14 +109,6 @@ public class Card {
         return filename;
     }
 
-    public void setSource(Player source) {
-        this.source = source;
-    }
-
-    public void setDestination(Player destination) {
-        this.destination = destination;
-    }
-
     public PImage getImage() {
         return image;
     }
@@ -128,7 +117,7 @@ public class Card {
      * Card effect string sent to server
      * @return effect string to send to server
      */
-    public String effectString() {
+    public String effectString(Player source, @Nullable Player target) {
         return null;
     }
 

@@ -29,8 +29,8 @@ public class JinCard extends Card {
         this.effectiveNow = effectiveNow;
         this.conditional = conditional;
     }
-
-    public boolean isAreaEffective() {
+    
+    public boolean isNotTargeting() {
         return notTargeting;
     }
 
