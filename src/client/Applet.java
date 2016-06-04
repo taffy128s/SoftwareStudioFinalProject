@@ -8,9 +8,12 @@ import java.util.Random;
 import de.looksgood.ani.Ani;
 import processing.core.PApplet;
 
+/**
+ * PApplet
+ */
 @SuppressWarnings("serial")
 public class Applet extends PApplet {
-    @SuppressWarnings("unused")
+
     private Ani ani;
     private boolean yourTurn;
     private PrintWriter writer;
@@ -18,11 +21,17 @@ public class Applet extends PApplet {
     private GameStatus gameStatus;
     private ArrayList<Character> aliveCharacters;
     private BigCircle bigCircle;
-    private Random random = new Random();
     private Character characterPointed;
+    private Random random;
 
+    /**
+     * Initialize a PApplet
+     * @param writer
+     * @param reader
+     */
     Applet(PrintWriter writer, BufferedReader reader) {
         Ani.init(this);
+        this.random = new Random();
         this.writer = writer;
         this.reader = reader;
         this.aliveCharacters = new ArrayList<Character>();
@@ -62,8 +71,8 @@ public class Applet extends PApplet {
     public void makeACircle() {
         float angle = 0;
         for (Character ch : aliveCharacters) {
-            ani = Ani.to(ch, (float) 2, "x", bigCircle.getCircleX() + bigCircle.getCircleR() * cos(angle));
-            ani = Ani.to(ch, (float) 2, "y", bigCircle.getCircleY() - bigCircle.getCircleR() * sin(angle));
+            ani = Ani.to(ch, (float) 2, "x", bigCircle.getX() + bigCircle.getRadius() * cos(angle));
+            ani = Ani.to(ch, (float) 2, "y", bigCircle.getY() - bigCircle.getRadius() * sin(angle));
             angle += (TWO_PI / (float) aliveCharacters.size());
         }
     }
