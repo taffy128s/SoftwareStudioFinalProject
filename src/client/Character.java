@@ -43,6 +43,9 @@ public class Character {
     }
     
     public void showCharacterInfo() {
-        
+        parent.fill(255);
+        parent.strokeWeight(3);
+        parent.stroke(0);
+        parent.rect(Client.WINDOW_WIDTH / 3 * 2 - 10, 100, 300, 200);
     }
 }

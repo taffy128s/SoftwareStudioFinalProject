@@ -84,7 +84,10 @@ public class Applet extends PApplet {
             bigCircle.display();
             for (Character ch : aliveCharacters) {
                 ch.display();
-                
+                if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getR()) {
+                    characterPointed = ch;
+                    ch.showCharacterInfo();
+                }
             }
         }
     }
