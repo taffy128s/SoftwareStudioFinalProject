@@ -1,5 +1,6 @@
 package card;
 
+import com.sun.istack.internal.Nullable;
 import processing.core.PConstants;
 import processing.core.PImage;
 
@@ -149,7 +150,8 @@ public class Card {
      * @param destination destination character
      * @return effect string to send to server
      */
-    public String effectString(Player source, Player destination) {
+    public String effectString(Player source, @Nullable Player destination) {
         return null;
     }
+
 }
