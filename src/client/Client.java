@@ -14,19 +14,31 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+/**
+ * Client
+ */
 @SuppressWarnings("serial")
 public class Client extends JFrame {
-    private final static int windowWidth = 600, windowHeight = 400;
+
+    private final static int WINDOW_WIDTH = 600;
+    private final static int WINDOW_HEIGHT = 400;
+
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
 
+    /**
+     * Initialize client with server IP address and port number
+     *
+     * @param IP server ip address
+     * @param port server port
+     */
     Client(String IP, int port) {
 
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setSize(windowWidth, windowHeight);
+        this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         this.setResizable(false);
-        this.setLocation(300, 300);
+        this.setLocationByPlatform(true);
 
         JTextField nameField = new JTextField(30);
         JTextField intentField = new JTextField(30);
@@ -46,7 +58,7 @@ public class Client extends JFrame {
             System.exit(0);
         }
 
-        int result = JOptionPane.showConfirmDialog(null, panel, "Please fill the both blanks.", JOptionPane.OK_OPTION);
+        int result = JOptionPane.showConfirmDialog(null, panel, "Please fill the both blanks.", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             sendMessage(nameField.getText());
             sendMessage(intentField.getText());
@@ -56,8 +68,13 @@ public class Client extends JFrame {
         }
     }
 
-    void sendMessage(String string) {
-        writer.println(string);
+    /**
+     * Send message to server
+     *
+     * @param message message to send
+     */
+    void sendMessage(String message) {
+        writer.println(message);
         writer.flush();
     }
 
@@ -81,4 +98,5 @@ public class Client extends JFrame {
         applet.start();
         client.setContentPane(applet);
     }
+
 }
