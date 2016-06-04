@@ -1,7 +1,7 @@
 package card;
 
 /**
- * Persian knife
+ * knife
  */
 public class WeaShort extends Card {
 
