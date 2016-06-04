@@ -1,5 +1,6 @@
 package server;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,6 +21,9 @@ import javax.swing.*;
  */
 @SuppressWarnings("serial")
 public class Server extends JFrame {
+
+    private static final int WINDOW_WIDTH = 600;
+    private static final int WINDOW_HEIGHT = 720;
 
     private int connectionCount;
     private Date date = new Date();
@@ -94,16 +98,19 @@ public class Server extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
         this.setResizable(false);
-
         this.setLayout(null);
+
+        this.setTitle("Server");
+        this.textArea.setFont(new Font(this.textArea.getFont().getName(), Font.PLAIN, 18));
         this.textArea.setEditable(false);
-        this.setBounds(0, 0, 400, 353);
+        this.setSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         JScrollPane scrollPane = new JScrollPane(this.textArea);
         this.add(scrollPane);
-        scrollPane.setBounds(0, 0, 400, 300);
+        scrollPane.setBounds(10, 10, WINDOW_WIDTH - 2 * 10 - 5, WINDOW_HEIGHT - 2 * 10 - 80);
 
+        startButton.setFont(new Font(startButton.getFont().getName(), Font.PLAIN, 18));
         startButton.setText("Start");
-        startButton.setBounds(0, 300, 400, 30);
+        startButton.setBounds(10, WINDOW_HEIGHT - 80, WINDOW_WIDTH - 2 * 10 - 5, 40);
         startButton.addActionListener(event -> {
             startButton.setEnabled(false);
             try {
@@ -127,13 +134,15 @@ public class Server extends JFrame {
             e.printStackTrace();
             System.exit(0);
         }
+
+        this.setVisible(true);
     }
 
     /**
      * Let server start to accept connection on port specified
      */
     public void startAcceptConnection() {
-        while (true) {
+        while (!serverSocket.isClosed()) {
             try {
                 Socket connSock = serverSocket.accept();
                 // Show message on server.
@@ -171,7 +180,7 @@ public class Server extends JFrame {
     }
 
     /**
-     * Send message to all socket connected to server except the one specified in paramter
+     * Send message to all socket connected to server except the one specified in parameter
      *
      * @param message message to send
      * @param except the socket which will be skipped when broadcasting

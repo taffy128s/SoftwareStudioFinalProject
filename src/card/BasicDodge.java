@@ -10,8 +10,8 @@ public class BasicDodge extends Card {
      */
     public BasicDodge() {
         super(CardCategory.BASIC,
-              "閃",
-              "當受到【殺】的攻擊時，可以使用一張【閃】來抵消【殺】的效果。",
+              "Evade",
+              "When you targeted by 'Kill', you can issue an'Evade' to nullify the damage caused by the 'Kill'.",
               "basic_dodge.JPG");
     }
 
