@@ -24,7 +24,7 @@ public class Applet extends PApplet {
         this.writer = writer;
         this.reader = reader;
         this.aliveCharacters = new ArrayList<Character>();
-        this.bigCircle = new BigCircle(this, Client.WINDOW_WIDTH / 2, Client.WINDOW_HEIGHT / 2 - 75, 500);
+        this.bigCircle = new BigCircle(this, Client.WINDOW_WIDTH / 3, Client.WINDOW_HEIGHT / 2 - 80, 500);
         gameStatus = GameStatus.WAIT;
         yourTurn = false;
         ReadThread thread = new ReadThread();
