@@ -1,5 +1,5 @@
 package card;
-
+//s
 /**
  * Card "Golden Apple"
  */
