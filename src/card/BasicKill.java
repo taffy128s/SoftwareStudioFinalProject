@@ -3,6 +3,8 @@ package card;
 /**
  * Card "Kill"
  */
+
+import client.*;
 public class BasicKill extends Card {
 
     /**
@@ -13,6 +15,10 @@ public class BasicKill extends Card {
               "Kill",
               "Choose a player other than yourself when your range of attack as a target, and the target player gets 1 point of damage by you. Usually, you can only use 1 'Kill' each turn.",
               "basic_Kill.JPG");
+    }
+    
+    public String effectString(Player source, Player destination) {
+        return "basic_kill " + source.getUserName() + destination.getUserName() ;
     }
 
 }
