@@ -20,6 +20,6 @@ public class BasicApple extends Card {
     
     @Override
     public String effectString(Player source, Player destination) {
-        return "basic_apple " + source.getUserName() + " " + destination.getUserName();
+        return "basic_apple " + source.getUserName();
     }
 }
