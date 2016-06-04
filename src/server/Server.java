@@ -4,8 +4,6 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -20,6 +18,7 @@ import javax.swing.*;
 
 
 import card.Card;
+import card.CardID;
 import card.CardStack;
 
 /**
@@ -50,8 +49,6 @@ public class Server extends JFrame {
         private Socket socket;
         private BufferedReader reader;
         private PrintWriter writer;
-        private ObjectOutputStream objectWriter;
-        private ObjectInputStream objectReader;
 
         /**
          * Initialize with a specific socket
@@ -62,9 +59,7 @@ public class Server extends JFrame {
             this.socket = socket;
             try {
                 this.writer = new PrintWriter(new OutputStreamWriter(this.socket.getOutputStream()));
-                this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-                //this.objectWriter = new ObjectOutputStream(this.socket.getOutputStream());
-                //this.objectReader = new ObjectInputStream(this.socket.getInputStream());
+                this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));      
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -78,20 +73,6 @@ public class Server extends JFrame {
         public void sendMessage(String message) {
             writer.println(message);
             writer.flush();
-        }
-    
-        /**
-         * Send one card object to client
-         * @param toSend the card to send
-         */
-        public void sendCard(Card toSend) {
-            try{
-                objectWriter.writeObject(toSend);
-                objectWriter.flush();
-            }
-            catch(IOException e) {
-                e.printStackTrace();
-            }
         }
 
         /**
@@ -148,12 +129,10 @@ public class Server extends JFrame {
                 broadCast(string);
             }
             broadCast("start");
-            // deal the cards to all players
+            // TODO: deal the cards to all players
             /*for (ConnectionThread th : connections) {
                 for(int i=0 ; i<3 ; i++) {
-                    th.sendMessage("receiveCard");
-                    Card dealedCard = cardStack.drawTop();
-                    th.sendCard(dealedCard);
+                
                 }
             }*/
             

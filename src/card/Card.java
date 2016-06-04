@@ -12,7 +12,7 @@ import client.Player;
 /**
  * Card
  */
-public class Card implements java.io.Serializable{
+public class Card {
 
     private CardCategory cardCategory;
     private String name;
@@ -160,14 +160,10 @@ public class Card implements java.io.Serializable{
     
     /**
      * Card effect string sent to server
-     *
-     * @param source source character
-     * @param destination destination character
      * @return effect string to send to server
      */
-    /*
-    public String effectString(Player source, @Nullable Player destination) {
+    public String effectString() {
         return null;
-    }*/
+    }
 
 }

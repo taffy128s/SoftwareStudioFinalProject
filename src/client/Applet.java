@@ -2,7 +2,6 @@ package client;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -18,7 +17,6 @@ public class Applet extends PApplet {
 
     private Ani ani;
     private boolean yourTurn;
-    private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
@@ -34,10 +32,9 @@ public class Applet extends PApplet {
      * @param writer writer to server
      * @param reader reader to server
      */
-    Applet(Socket socket, PrintWriter writer, BufferedReader reader) {
+    Applet(PrintWriter writer, BufferedReader reader) {
         Ani.init(this);
         this.random = new Random();
-        this.socket = socket;
         this.writer = writer;
         this.reader = reader;
         this.aliveCharacters = new ArrayList<Player>();
@@ -57,11 +54,9 @@ public class Applet extends PApplet {
         public void run() {
             String string;
             String[] array;
-            //java.io.ObjectInputStream in;
             while (true) {
                 try {
-                    //if(gameStatus == GameStatus.WAIT) {
-                    if(true) {
+                    if(gameStatus == GameStatus.WAIT) {
                         string = reader.readLine();
                         array = string.split(" ");
                         System.out.println("WAIT " + string);
@@ -76,19 +71,16 @@ public class Applet extends PApplet {
                             // TODO: parse the command and make objects move.
                         }
                     }
-                    /*else if(gameStatus == GameStatus.READY) {
+                    else if(gameStatus == GameStatus.READY) {
                         string = reader.readLine();
                         array = string.split(" ");
                         System.out.println("READY " + string);
                         if(array[0].equals("receiveCard")) {
-                            System.out.println("receive card start");
-                            in = new java.io.ObjectInputStream(socket.getInputStream());
-                            Card receivedCard = (Card)in.readObject();
-                            System.out.println("receive a card");
-                            handCards.add(receivedCard);
+                            //Card receivedCard = ;
+                            //handCards.add(receivedCard);
                         }
-                        
-                    }*/
+                      
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.exit(0);
@@ -137,9 +129,9 @@ public class Applet extends PApplet {
                     ch.showCharacterInfo();
                 }
             }
-            /*for(int i=0, size = handCards.size(); i<size ; i++) {
+            for(int i=0, size = handCards.size(); i<size ; i++) {
                 image(handCards.get(i).getImage(), 400+i*50, 400);
-            }*/
+            }
         }
     }
 }
