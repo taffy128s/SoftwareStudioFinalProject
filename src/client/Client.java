@@ -50,17 +50,16 @@ public class Client extends JFrame {
         panel.add(new JLabel("Enter your intent:"));
         panel.add(intentField);
 
-        try {
-            this.socket = new Socket(IP, port);
-            this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-            this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
-
-        int result = JOptionPane.showConfirmDialog(null, panel, "Please fill the both blanks.", JOptionPane.OK_CANCEL_OPTION);
+        int result = JOptionPane.showConfirmDialog(null, panel, "New player", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
+            try {
+                this.socket = new Socket(IP, port);
+                this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+                this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
             sendMessage(nameField.getText());
             sendMessage(intentField.getText());
             this.setVisible(true);
