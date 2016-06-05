@@ -61,6 +61,18 @@ public class ServerUtility {
             writer.println(message);
             writer.flush();
         }
+        
+        public String readMessage() {
+        	String retString = "";
+        	try {
+				retString = reader.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("A client just logged out unexpectedly.");
+				System.exit(0);
+			}
+        	return retString;
+        }
 
     }
 
@@ -86,6 +98,11 @@ public class ServerUtility {
                 int index = cardStack.drawTop().getCardID().value();
                 c.sendMessage(GameMessage.RECEIVE_CARD + " " + index);
             }
+        }
+        for (Connection c : connections) {
+        	c.sendMessage(GameMessage.YOUR_TURN);
+        	String messageFromClient = c.readMessage();
+        	
         }
     }
 

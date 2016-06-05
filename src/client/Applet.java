@@ -86,9 +86,6 @@ public class Applet extends PApplet {
                                 gameStatus = GameStatus.READY;
                                 makeACircle();
                                 break;
-                            case GameMessage.YOUR_TURN:
-                                yourTurn = true;
-                                break;
                             default:
                                 // TODO: parse the command and make objects move.
                                 break;
@@ -98,9 +95,17 @@ public class Applet extends PApplet {
                         string = reader.readLine();
                         param = string.split(" ");
                         System.out.println("READY " + string);
-                        if(param[0].equals(GameMessage.RECEIVE_CARD)) {
-                            System.out.println("get card id " + param[1]);
-                            handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
+                        switch (param[0]) {
+                        	case GameMessage.YOUR_TURN:
+                                yourTurn = true;
+                                break;
+                        	case GameMessage.RECEIVE_CARD:
+                        		System.out.println("get card id " + param[1]);
+                                handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
+                                break;
+                            default:
+                            	
+                            	break;
                         }
                     }
                 } catch (Exception e) {
@@ -166,6 +171,7 @@ public class Applet extends PApplet {
 
     @Override
     public void mousePressed(MouseEvent event) {
+    	if (!yourTurn) return;
         // click right button will cancel the selection of card
         if (mouseButton == RIGHT) {
             if (cardPointed != null) {
@@ -226,6 +232,11 @@ public class Applet extends PApplet {
     @Override
     public void mouseReleased(MouseEvent event) {
 
+    }
+    
+    private void sendMessage(String message) {
+        writer.println(message);
+        writer.flush();
     }
 
     /**

@@ -82,7 +82,7 @@ public class Client extends JFrame {
      *
      * @param message message to send
      */
-    void sendMessage(String message) {
+    private void sendMessage(String message) {
         writer.println(message);
         writer.flush();
     }
