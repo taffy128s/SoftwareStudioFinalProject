@@ -1,10 +1,14 @@
 package client;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.Vector;
+
+import javax.imageio.ImageIO;
 
 import card.*;
 import controlP5.ControlFont;
@@ -12,7 +16,9 @@ import controlP5.ControlP5;
 import de.looksgood.ani.Ani;
 import game.message.GameMessage;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PFont;
+import processing.core.PImage;
 import processing.event.MouseEvent;
 
 /**
@@ -21,7 +27,7 @@ import processing.event.MouseEvent;
 @SuppressWarnings("serial")
 public class Applet extends PApplet {
 
-	private boolean yourTurn, onlyUseKill, onlyUseDodge, showDontKillSelf;
+	private boolean yourTurn, onlyUseKill, haveUsedKill, onlyUseDodge, showDontKillSelf;
     @SuppressWarnings("unused")
 	private Ani ani;
     private ControlP5 cp5;
@@ -42,6 +48,8 @@ public class Applet extends PApplet {
     private boolean usingACard;
     private int clickedOffsetX;
     private int clickedOffsetY;
+    private BufferedImage bg;
+    private PImage image;
     
     /**
      * Initialize a PApplet with writer, printer to server
@@ -50,10 +58,19 @@ public class Applet extends PApplet {
      * @param reader reader to server
      */
     Applet(PrintWriter writer, BufferedReader reader, String name) {
+    	try {
+			bg = ImageIO.read(getClass().getResource("bg.jpg"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	this.image = new PImage(bg.getWidth(), bg.getHeight(), PConstants.ARGB);
+        bg.getRGB(0, 0, image.width, image.height, image.pixels, 0, image.width);
+        image.updatePixels();
         Ani.init(this);
         this.onlyUseKill = false;
         this.onlyUseDodge = false;
         this.showDontKillSelf = false;
+        this.haveUsedKill = false;
         this.username = name;
         this.random = new Random();
         this.writer = writer;
@@ -224,8 +241,7 @@ public class Applet extends PApplet {
             			}
             			String commandToSend = "Kill " + username + " " + characterPointed.getUserName();
             			sendMessage(commandToSend);
-            			
-            		}
+            		} else return; 
             	}
                 usingACard = true;
                 cardUsed = cardPointed;
@@ -315,6 +331,7 @@ public class Applet extends PApplet {
             text("Please wait until the game starts.", 225, 375);
         } else if (gameStatus == GameStatus.READY) {
             background(245, 222, 179);
+            image(image, 0, 0);
             if (yourTurn) {
             	fill(255, 0, 0);
             	strokeWeight(0);
