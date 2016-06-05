@@ -1,6 +1,7 @@
 package server;
 
 import card.CardStack;
+import game.message.GameMessage;
 
 import java.io.*;
 import java.net.Socket;
@@ -71,7 +72,7 @@ public class ServerUtility {
             for (ConnectionThread connectionThread : connections) {
                 for (int i = 0; i < 3; ++i) {
                     int index = cardStack.drawTop().getCardID().value();
-                    connectionThread.sendMessage("receiveCard " + index);
+                    connectionThread.sendMessage(GameMessage.RECEIVE_CARD + " " + index);
                 }
             }
             // TODO: deal the cards to all players
@@ -97,11 +98,12 @@ public class ServerUtility {
         this.server = server;
         sockets.forEach(socket -> connections.add(new ConnectionThread(socket)));
         for (ConnectionThread connectionThread : connections) {
-            String string = "initialplayer " + threadToUsername.get(connectionThread) + " " +
+            String string = GameMessage.INITIAL_PLAYER + " " +
+                            threadToUsername.get(connectionThread) + " " +
                             usernameToIntent.get(threadToUsername.get(connectionThread));
             broadCast(string);
         }
-        broadCast("start");
+        broadCast(GameMessage.START);
         connections.forEach(Thread::start);
     }
 
