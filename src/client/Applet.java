@@ -18,14 +18,15 @@ import processing.event.MouseEvent;
 @SuppressWarnings("serial")
 public class Applet extends PApplet {
 
-    private Ani ani;
+    @SuppressWarnings("unused")
+	private Ani ani;
+    private Player characterPointed;
     private boolean yourTurn;
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
     private Vector<Player> aliveCharacters;
     private BigCircle bigCircle;
-    private Player characterPointed;
     private Random random;
 
     private TreeMap<Integer, Card> cardMap;
