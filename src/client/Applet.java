@@ -21,29 +21,28 @@ import processing.event.MouseEvent;
 @SuppressWarnings("serial")
 public class Applet extends PApplet {
 
+	private boolean yourTurn, onlyUseKill, onlyUseDodge, showDontKillSelf;
     @SuppressWarnings("unused")
 	private Ani ani;
-    private Player characterPointed;
-    private boolean yourTurn, onlyUseKill, onlyUseDodge, showDontKillSelf;
+    private ControlP5 cp5;
+    
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
+    private String username;
+    private Player characterPointed;
     private Vector<Player> aliveCharacters;
     private BigCircle bigCircle;
     private Random random;
 
     private TreeMap<Integer, Card> cardMap;
     private HandCard handCards;
-
     private Card cardPointed;
     private Card cardUsed;
     private boolean usingACard;
     private int clickedOffsetX;
     private int clickedOffsetY;
     
-    private String name;
-    private ControlP5 cp5;
-
     /**
      * Initialize a PApplet with writer, printer to server
      *
@@ -55,7 +54,7 @@ public class Applet extends PApplet {
         this.onlyUseKill = false;
         this.onlyUseDodge = false;
         this.showDontKillSelf = false;
-        this.name = name;
+        this.username = name;
         this.random = new Random();
         this.writer = writer;
         this.reader = reader;
@@ -214,7 +213,7 @@ public class Applet extends PApplet {
             if (cardPointed != null) {
             	if (cardPointed.getCardID() == CardID.BASIC_KILL) {
             		if (characterPointed != null) {
-            			if (characterPointed.getUserName().equals(name)) {
+            			if (characterPointed.getUserName().equals(username)) {
             				Thread thread = new Thread(() -> {
             					showDontKillSelf = true;
             					delay(3000);
@@ -223,7 +222,7 @@ public class Applet extends PApplet {
             				thread.start();
             				return;
             			}
-            			String commandToSend = "Kill " + name + " " + characterPointed.getUserName();
+            			String commandToSend = "Kill " + username + " " + characterPointed.getUserName();
             			sendMessage(commandToSend);
             			
             		}
