@@ -29,7 +29,7 @@ public class BigCircle {
      * Draw this circle
      */
     public void display() {
-        parent.fill(255);
+        parent.fill(248, 248, 255);
         parent.stroke(38, 58, 109);
         parent.strokeWeight(5);
         parent.ellipse(x, y, diameter, diameter);

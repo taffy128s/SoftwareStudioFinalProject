@@ -249,12 +249,12 @@ public class Applet extends PApplet {
     @Override
     public void draw() {
         if (gameStatus == GameStatus.WAIT) {
-            background(255);
+            background(245, 222, 179);
             textSize(32);
             fill(0, 100, 150);
             text("Please wait until the game starts.", 225, 375);
         } else if (gameStatus == GameStatus.READY) {
-            background(255);
+            background(245, 222, 179);
             bigCircle.display();
             for (Player ch : aliveCharacters) {
                 ch.display();

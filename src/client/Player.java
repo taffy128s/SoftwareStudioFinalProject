@@ -63,7 +63,7 @@ public class Player {
      * Show character information
      */
     public void showCharacterInfo() {
-        parent.fill(255);
+        parent.fill(220, 220, 220);
         parent.strokeWeight(3);
         parent.stroke(0);
         parent.rect(Client.WINDOW_WIDTH / 3 * 2 - 10, 100, 300, 200, 20);

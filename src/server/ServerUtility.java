@@ -15,8 +15,8 @@ import java.util.TreeMap;
  */
 public class ServerUtility {
 
-    private ArrayList<ConnectionThread> connections = new ArrayList<>();
-    private HashMap<ConnectionThread, String> threadToUsername = new HashMap<>();
+    private ArrayList<Connection> connections = new ArrayList<>();
+    private HashMap<Connection, String> threadToUsername = new HashMap<>();
     private TreeMap<String, String> usernameToIntent = new TreeMap<>();
     private Server server;
 
@@ -25,12 +25,12 @@ public class ServerUtility {
     /**
      * This class handle input/output to a single socket
      */
-    private class ConnectionThread extends Thread {
+    private class Connection {
 
         private BufferedReader reader;
         private PrintWriter writer;
 
-        ConnectionThread(Socket socket) {
+        Connection(Socket socket) {
             try {
                 this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -62,18 +62,6 @@ public class ServerUtility {
             writer.flush();
         }
 
-        /**
-         * Override interface Runnable
-         */
-        @Override
-        public void run() {
-            for (int i = 0; i < 3; ++i) {
-                int index = cardStack.drawTop().getCardID().value();
-                sendMessage(GameMessage.RECEIVE_CARD + " " + index);
-            }
-            // TODO: ask each of the users to move.
-        }
-
     }
 
     /**
@@ -85,15 +73,20 @@ public class ServerUtility {
     public ServerUtility(ArrayList<Socket> sockets, Server server) {
         this.cardStack.shuffle();
         this.server = server;
-        sockets.forEach(socket -> connections.add(new ConnectionThread(socket)));
-        for (ConnectionThread connectionThread : connections) {
+        sockets.forEach(socket -> connections.add(new Connection(socket)));
+        for (Connection connectionThread : connections) {
             String string = GameMessage.INITIAL_PLAYER + " " +
                             threadToUsername.get(connectionThread) + " " +
                             usernameToIntent.get(threadToUsername.get(connectionThread));
             broadCast(string);
         }
         broadCast(GameMessage.START);
-        connections.forEach(Thread::start);
+        for (Connection c : connections) {
+        	for (int i = 0; i < 3; ++i) {
+                int index = cardStack.drawTop().getCardID().value();
+                c.sendMessage(GameMessage.RECEIVE_CARD + " " + index);
+            }
+        }
     }
 
     /**
@@ -102,7 +95,7 @@ public class ServerUtility {
      * @param message message to send
      */
     public void broadCast(String message) {
-        for (ConnectionThread thread : connections) {
+        for (Connection thread : connections) {
             thread.sendMessage(message);
         }
     }
@@ -113,7 +106,7 @@ public class ServerUtility {
      * @param message message to send
      * @param except the socket which will be skipped when broadcasting
      */
-    public void broadCastExcept(String message, ConnectionThread except) {
+    public void broadCastExcept(String message, Connection except) {
         connections.forEach(connectionThread -> {
             if (connectionThread != except) {
                 connectionThread.sendMessage(message);
