@@ -1,4 +1,8 @@
-package card;
+package card.justcard;
+
+import card.CardCategory;
+import card.CardID;
+import card.WeaCard;
 
 /**
  * knife

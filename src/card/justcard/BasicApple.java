@@ -1,4 +1,7 @@
-package card;
+package card.justcard;
+import card.Card;
+import card.CardCategory;
+import card.CardID;
 //s
 /**
  * Card "Golden Apple"

@@ -1,7 +1,11 @@
-package card;
+package card.justcard;
+
+import card.CardCategory;
+import card.CardID;
+import card.JinCard;
 
 /**
- * Bumper Harvest 五穀豐登
+ * Bumper Harvest
  */
 public class JinWuKu extends JinCard {
 

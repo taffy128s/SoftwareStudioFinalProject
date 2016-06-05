@@ -1,7 +1,11 @@
-package card;
+package card.justcard;
+
+import card.CardCategory;
+import card.CardID;
+import card.JinCard;
 
 /**
- * Cavalry Invasion 鐵騎突襲
+ * Cavalry Invasion
  */
 public class JinTuShi extends JinCard {
 

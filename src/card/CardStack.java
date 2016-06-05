@@ -3,6 +3,22 @@ package card;
 import java.util.Collections;
 import java.util.Vector;
 
+import card.justcard.BasicApple;
+import card.justcard.BasicDodge;
+import card.justcard.BasicKill;
+import card.justcard.JinBattle;
+import card.justcard.JinCrazyBanquet;
+import card.justcard.JinThief;
+import card.justcard.JinThousandArrow;
+import card.justcard.JinThrow;
+import card.justcard.JinTuShi;
+import card.justcard.JinWuKu;
+import card.justcard.WeaBigShield;
+import card.justcard.WeaBlackShield;
+import card.justcard.WeaContinue;
+import card.justcard.WeaShort;
+import card.justcard.WeaTenSword;
+
 /**
  * Card stack, recording the status of cards to draw, or that discarded
  */

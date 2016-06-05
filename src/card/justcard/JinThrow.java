@@ -1,7 +1,11 @@
-package card;
+package card.justcard;
+
+import card.CardCategory;
+import card.CardID;
+import card.JinCard;
 
 /**
- * Disarm 繳械
+ * Disarm
  */
 public class JinThrow extends JinCard {
 

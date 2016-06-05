@@ -1,5 +1,23 @@
 package card;
 
+import card.justcard.BasicApple;
+import card.justcard.BasicDodge;
+import card.justcard.BasicKill;
+import card.justcard.JinBattle;
+import card.justcard.JinCrazyBanquet;
+import card.justcard.JinDouchiDown;
+import card.justcard.JinGetCard;
+import card.justcard.JinThief;
+import card.justcard.JinThousandArrow;
+import card.justcard.JinThrow;
+import card.justcard.JinTuShi;
+import card.justcard.JinWuKu;
+import card.justcard.WeaBigShield;
+import card.justcard.WeaBlackShield;
+import card.justcard.WeaContinue;
+import card.justcard.WeaShort;
+import card.justcard.WeaTenSword;
+
 /**
  * This class provides several functions related to Card
  */
