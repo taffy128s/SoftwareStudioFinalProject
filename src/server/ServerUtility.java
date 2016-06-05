@@ -99,11 +99,19 @@ public class ServerUtility {
                 c.sendMessage(GameMessage.RECEIVE_CARD + " " + index);
             }
         }
-        for (Connection c : connections) {
-        	c.sendMessage(GameMessage.YOUR_TURN);
-        	String messageFromClient = c.readMessage();
-        	
-        }
+        Thread thread = new Thread(() -> {
+        	for (int i = 0; i < connections.size(); i++) {
+        		if (i != connections.size() - 1) {
+        			connections.get(i).sendMessage(GameMessage.YOUR_TURN);
+        			String mesg = connections.get(i).readMessage();
+        		} else {
+        			connections.get(i).sendMessage(GameMessage.YOUR_TURN);
+        			String mesg = connections.get(i).readMessage();
+        			i = -1;
+        		}
+        	}
+        });
+        thread.start();
     }
 
     /**
