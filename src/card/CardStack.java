@@ -29,9 +29,20 @@ public class CardStack {
         for (int i = 0; i< JIN_CARD_NUM; i++) {
             // TODO 把錦囊牌加入牌組
         	drawArea.add(new JinBattle());
+        	drawArea.add(new JinThief());
+        	drawArea.add(new JinCrazyBanquet());
+        	drawArea.add(new JinThousandArrow());
+        	drawArea.add(new JinThrow());
+        	drawArea.add(new JinTuShi());
+        	drawArea.add(new JinWuKu());
         }
         for (int i = 0; i< WEAPON_CARD_NUM; i++) {
             // TODO 把武器牌加入牌組
+        	drawArea.add(new WeaBigShield());
+        	drawArea.add(new WeaBlackShield());
+        	drawArea.add(new WeaContinue());
+        	drawArea.add(new WeaShort());
+        	drawArea.add(new WeaTenSword());
         }
     }
 
