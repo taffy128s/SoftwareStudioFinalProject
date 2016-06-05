@@ -15,6 +15,7 @@ public class GameMessage {
     public static final String KILL = "kill";
     public static final String DODGE = "dodge";
     public static final String DECREASE_CARD = "decreasecard";
+    
     public static final String GoldenApple = "golden apple" ;
     public static final String Battle = "battle" ;
     public static final String CrazyBanquet = "carnival banquet" ;
