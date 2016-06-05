@@ -2,7 +2,6 @@ package client;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -30,7 +29,7 @@ public class Applet extends PApplet {
     private Random random;
 
     private TreeMap<Integer, Card> cardMap;
-    private Vector<Card> handCards;
+    private HandCard handCards;
 
     private Card cardPointed;
     private Card cardUsed;
@@ -51,7 +50,7 @@ public class Applet extends PApplet {
         this.reader = reader;
         this.bigCircle = new BigCircle(this, Client.WINDOW_WIDTH / 3, Client.WINDOW_HEIGHT / 2 - 80, 500);
         this.aliveCharacters = new Vector<>();
-        this.handCards = new Vector<>();
+        this.handCards = new HandCard();
         this.gameStatus = GameStatus.WAIT;
         this.yourTurn = false;
         initCardMap();
@@ -74,15 +73,22 @@ public class Applet extends PApplet {
                         string = reader.readLine();
                         param = string.split(" ");
                         System.out.println("WAIT " + string);
-                        if (param[0].equals(GameMessage.INITIAL_PLAYER)) {
-                            aliveCharacters.add(new Player(Applet.this, param[1], param[2], random.nextFloat() * 800, random.nextFloat() * 800));
-                        } else if (param[0].equals(GameMessage.START)) {
-                            gameStatus = GameStatus.READY;
-                            makeACircle();
-                        } else if (param[0].equals(GameMessage.YOUR_TURN)) {
-                            yourTurn = true;
-                        } else {
-                            // TODO: parse the command and make objects move.
+                        switch (param[0]) {
+                            case GameMessage.INITIAL_PLAYER:
+                                aliveCharacters.add(
+                                        new Player(Applet.this, param[1], param[2], random.nextFloat() * 800, random.nextFloat() * 800)
+                                );
+                                break;
+                            case GameMessage.START:
+                                gameStatus = GameStatus.READY;
+                                makeACircle();
+                                break;
+                            case GameMessage.YOUR_TURN:
+                                yourTurn = true;
+                                break;
+                            default:
+                                // TODO: parse the command and make objects move.
+                                break;
                         }
                     }
                     else if(gameStatus == GameStatus.READY) {
@@ -92,12 +98,6 @@ public class Applet extends PApplet {
                         if(param[0].equals(GameMessage.RECEIVE_CARD)) {
                             System.out.println("get card id " + param[1]);
                             handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
-                            for (int i = 0; i < handCards.size(); ++i) {
-                                handCards.get(i).setInitialX(400 + i * 90);
-                                handCards.get(i).setInitialY(Client.WINDOW_HEIGHT - 180);
-                                handCards.get(i).x = handCards.get(i).getInitialX();
-                                handCards.get(i).y = handCards.get(i).getInitialY();
-                            }
                         }
                     }
                 } catch (Exception e) {
@@ -229,7 +229,7 @@ public class Applet extends PApplet {
      * use this card
      * @param card card to use
      */
-    public void useCard(Card card) {
+    private void useCard(Card card) {
         System.out.println("card " + card.getName() + " used!");
         usingACard = false;
     }
@@ -263,7 +263,9 @@ public class Applet extends PApplet {
                     ch.showCharacterInfo();
                 }
             }
-            handCards.forEach(card -> image(card.getImage(), card.x, card.y));
+            for (int i = 0; i < handCards.size(); ++i) {
+                image(handCards.get(i).getImage(), handCards.get(i).x, handCards.get(i).y);
+            }
             if (usingACard) {
                 textSize(32);
                 fill(0, 100, 150);
