@@ -135,6 +135,9 @@ public class Applet extends PApplet {
                         		System.out.println("get card id " + param[1]);
                                 handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
                                 break;
+                        	case GameMessage.KILL:
+                        		System.out.println("GOT KILLED!!!!!");
+                        		break;
                             default:
                             	break;
                         }
@@ -239,7 +242,7 @@ public class Applet extends PApplet {
             				thread.start();
             				return;
             			}
-            			String commandToSend = "Kill " + username + " " + characterPointed.getUserName();
+            			String commandToSend = GameMessage.KILL + " " + username + " " + characterPointed.getUserName();
             			sendMessage(commandToSend);
             		} else return; 
             	}

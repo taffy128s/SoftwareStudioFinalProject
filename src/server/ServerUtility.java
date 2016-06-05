@@ -16,7 +16,8 @@ import java.util.TreeMap;
 public class ServerUtility {
 
     private ArrayList<Connection> connections = new ArrayList<>();
-    private HashMap<Connection, String> threadToUsername = new HashMap<>();
+    private HashMap<Connection, String> connectionToUsername = new HashMap<>();
+    private HashMap<String, Connection> usernameToConnection = new HashMap<>();
     private TreeMap<String, String> usernameToIntent = new TreeMap<>();
     private Server server;
 
@@ -46,7 +47,8 @@ public class ServerUtility {
                 }
                 server.appendMessage(name + " wants to " + intent + ".\n");
                 usernameToIntent.put(name, intent);
-                threadToUsername.put(this, name);
+                connectionToUsername.put(this, name);
+                usernameToConnection.put(name, this);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -75,6 +77,20 @@ public class ServerUtility {
         }
 
     }
+    
+    private void makeUserMove(int i) {
+    	while (true) {
+			connections.get(i).sendMessage(GameMessage.YOUR_TURN);
+			String mesg = connections.get(i).readMessage();
+			System.out.println(mesg);
+			String[] arg = mesg.split(" "); 
+			if (arg[0].equals(GameMessage.DONE)) {
+				break;
+			} else if (arg[0].equals(GameMessage.KILL)) {
+				usernameToConnection.get(arg[2]).sendMessage(mesg);
+			}
+		}
+    }
 
     /**
      * Initialize with a list of sockets
@@ -88,8 +104,8 @@ public class ServerUtility {
         sockets.forEach(socket -> connections.add(new Connection(socket)));
         for (Connection connectionThread : connections) {
             String string = GameMessage.INITIAL_PLAYER + " " +
-                            threadToUsername.get(connectionThread) + " " +
-                            usernameToIntent.get(threadToUsername.get(connectionThread));
+                            connectionToUsername.get(connectionThread) + " " +
+                            usernameToIntent.get(connectionToUsername.get(connectionThread));
             broadCast(string);
         }
         broadCast(GameMessage.START);
@@ -102,25 +118,9 @@ public class ServerUtility {
         Thread thread = new Thread(() -> {
         	for (int i = 0; i < connections.size(); i++) {
         		if (i != connections.size() - 1) {
-        			while (true) {
-        				connections.get(i).sendMessage(GameMessage.YOUR_TURN);
-            			String mesg = connections.get(i).readMessage();
-            			System.out.println(mesg);
-            			String[] arg = mesg.split(" "); 
-            			if (arg[0].equals(GameMessage.DONE)) {
-            				break;
-            			}
-        			}
+        			makeUserMove(i);
         		} else {
-        			while (true) {
-        				connections.get(i).sendMessage(GameMessage.YOUR_TURN);
-            			String mesg = connections.get(i).readMessage();
-            			System.out.println(mesg);
-            			String[] arg = mesg.split(" ");
-            			if (arg[0].equals(GameMessage.DONE)) {
-            				break;
-            			}
-        			}
+        			makeUserMove(i);
         			i = -1;
         		}
         	}
