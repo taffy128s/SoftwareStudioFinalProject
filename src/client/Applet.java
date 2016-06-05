@@ -21,7 +21,7 @@ public class Applet extends PApplet {
     @SuppressWarnings("unused")
 	private Ani ani;
     private Player characterPointed;
-    private boolean yourTurn, onlyUseKill, onlyUseDodge, choosing, showDontKillSelf;
+    private boolean yourTurn, onlyUseKill, onlyUseDodge, showDontKillSelf;
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
@@ -50,7 +50,6 @@ public class Applet extends PApplet {
         Ani.init(this);
         this.onlyUseKill = false;
         this.onlyUseDodge = false;
-        this.choosing = false;
         this.showDontKillSelf = false;
         this.name = name;
         this.random = new Random();
