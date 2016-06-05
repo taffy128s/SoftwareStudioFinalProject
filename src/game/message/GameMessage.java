@@ -11,5 +11,6 @@ public class GameMessage {
     public static final String INITIAL_PLAYER = "initialplayer";
     public static final String RECEIVE_CARD = "receivecard";
     public static final String YOUR_TURN = "yourturn";
+    public static final String DONE = "done";
 
 }

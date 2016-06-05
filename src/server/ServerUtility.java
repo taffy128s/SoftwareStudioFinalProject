@@ -102,13 +102,25 @@ public class ServerUtility {
         Thread thread = new Thread(() -> {
         	for (int i = 0; i < connections.size(); i++) {
         		if (i != connections.size() - 1) {
-        			connections.get(i).sendMessage(GameMessage.YOUR_TURN);
-        			String mesg = connections.get(i).readMessage();
-        			System.out.println(mesg);
+        			while (true) {
+        				connections.get(i).sendMessage(GameMessage.YOUR_TURN);
+            			String mesg = connections.get(i).readMessage();
+            			System.out.println(mesg);
+            			String[] arg = mesg.split(" "); 
+            			if (arg[0].equals(GameMessage.DONE)) {
+            				break;
+            			}
+        			}
         		} else {
-        			connections.get(i).sendMessage(GameMessage.YOUR_TURN);
-        			String mesg = connections.get(i).readMessage();
-        			System.out.println(mesg); 
+        			while (true) {
+        				connections.get(i).sendMessage(GameMessage.YOUR_TURN);
+            			String mesg = connections.get(i).readMessage();
+            			System.out.println(mesg);
+            			String[] arg = mesg.split(" ");
+            			if (arg[0].equals(GameMessage.DONE)) {
+            				break;
+            			}
+        			}
         			i = -1;
         		}
         	}
