@@ -1,17 +1,17 @@
 package client;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Vector;
 
 import card.BasicApple;
 import card.Card;
-import card.CardCategory;
-import card.CardID;
 import de.looksgood.ani.Ani;
+import game.message.GameMessage;
 import processing.core.PApplet;
+import processing.event.MouseEvent;
 
 /**
  * PApplet
@@ -24,12 +24,16 @@ public class Applet extends PApplet {
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
-    private ArrayList<Player> aliveCharacters;
+    private Vector<Player> aliveCharacters;
     private BigCircle bigCircle;
     private Player characterPointed;
     private Random random;
 
     private ArrayList<Card> handCards;
+    private Card cardPointed;
+    private int clickedOffsetX;
+    private int clickedOffsetY;
+
     /**
      * Initialize a PApplet with writer, printer to server
      *
@@ -41,7 +45,7 @@ public class Applet extends PApplet {
         this.random = new Random();
         this.writer = writer;
         this.reader = reader;
-        this.aliveCharacters = new ArrayList<>();
+        this.aliveCharacters = new Vector<>();
         this.bigCircle = new BigCircle(this, Client.WINDOW_WIDTH / 3, Client.WINDOW_HEIGHT / 2 - 80, 500);
         this.handCards = new ArrayList<>();
         gameStatus = GameStatus.WAIT;
@@ -55,21 +59,22 @@ public class Applet extends PApplet {
      */
     private class ReadThread extends Thread {
 
+        @Override
         public void run() {
             String string;
-            String[] array;
+            String[] param;
             while (true) {
                 try {
                     if(gameStatus == GameStatus.WAIT) {
                         string = reader.readLine();
-                        array = string.split(" ");
+                        param = string.split(" ");
                         System.out.println("WAIT " + string);
-                        if (array[0].equals("initialplayer")) {
-                            aliveCharacters.add(new Player(Applet.this, array[1], array[2], random.nextFloat() * 800, random.nextFloat() * 800));
-                        } else if (array[0].equals("start")) {
+                        if (param[0].equals(GameMessage.INITIAL_PLAYER)) {
+                            aliveCharacters.add(new Player(Applet.this, param[1], param[2], random.nextFloat() * 800, random.nextFloat() * 800));
+                        } else if (param[0].equals(GameMessage.START)) {
                             gameStatus = GameStatus.READY;
                             makeACircle();
-                        } else if (array[0].equals("yourturn")) {
+                        } else if (param[0].equals(GameMessage.YOUR_TURN)) {
                             yourTurn = true;
                         } else {
                             // TODO: parse the command and make objects move.
@@ -77,15 +82,20 @@ public class Applet extends PApplet {
                     }
                     else if(gameStatus == GameStatus.READY) {
                         string = reader.readLine();
-                        array = string.split(" ");
+                        param = string.split(" ");
                         System.out.println("READY " + string);
-                        if(array[0].equals("receiveCard")) {
+                        if(param[0].equals(GameMessage.RECEIVE_CARD)) {
                             //Card receivedCard = ;
                             //handCards.add(receivedCard);
-                            System.out.println("get card id " + array[1]);
+                            System.out.println("get card id " + param[1]);
                             handCards.add(new BasicApple());
+                            for (int i = 0; i < handCards.size(); ++i) {
+                                handCards.get(i).setInitialX(400 + i * 90);
+                                handCards.get(i).setInitialY(Client.WINDOW_HEIGHT - 180);
+                                handCards.get(i).x = handCards.get(i).getInitialX();
+                                handCards.get(i).y = handCards.get(i).getInitialY();
+                            }
                         }
-
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -108,9 +118,102 @@ public class Applet extends PApplet {
         }
     }
 
+    @Override
+    public void mouseMoved(MouseEvent event) {
+        if (cardPointed != null) {
+            cardPointed.x = event.getX() - clickedOffsetX;
+            cardPointed.y = event.getY() - clickedOffsetY;
+        }
+        else {
+            for (int i = 0; i < handCards.size(); ++i) {
+                if (event.getY() >= handCards.get(i).y) {
+                    if (event.getX() >= handCards.get(i).x &&
+                        i + 1 < handCards.size() && event.getX() < handCards.get(i + 1).x) {
+                        handCards.get(i).y = Client.WINDOW_HEIGHT - 220;
+                    }
+                    else if (i == handCards.size() - 1 &&
+                             event.getX() >= handCards.get(i).x &&
+                             event.getX() <= handCards.get(i).x + 148) {
+                        handCards.get(i).y = Client.WINDOW_HEIGHT - 220;
+                    }
+                    else {
+                        handCards.get(i).y = handCards.get(i).getInitialY();
+                    }
+                }
+                else {
+                    handCards.get(i).x = handCards.get(i).getInitialX();
+                    handCards.get(i).y = handCards.get(i).getInitialY();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent event) {
+        // click right button will cancel the selection of card
+        if (mouseButton == RIGHT) {
+            if (cardPointed != null) {
+                ani = Ani.to(cardPointed, 1f, "x", cardPointed.getInitialX());
+                ani = Ani.to(cardPointed, 1f, "y", cardPointed.getInitialY());
+                cardPointed = null;
+            }
+        }
+        // click left button to
+        // 1. if no card selected, select one point to
+        // 2. if a card selected, used it
+        if (mouseButton == LEFT) {
+            if (cardPointed != null) {
+                // TODO use this card
+            }
+            else {
+                for (int i = 0; i < handCards.size(); ++i) if (event.getY() >= handCards.get(i).y) {
+                    if (event.getX() >= handCards.get(i).x &&
+                        i + 1 < handCards.size() && event.getX() < handCards.get(i + 1).x) {
+                        cardPointed = handCards.get(i);
+                        clickedOffsetX = event.getX() - handCards.get(i).x;
+                        clickedOffsetY = event.getY() - handCards.get(i).y;
+                        break;
+                    }
+                    else if (i == handCards.size() - 1 &&
+                             event.getX() >= handCards.get(i).x &&
+                             event.getX() <= handCards.get(i).x + 148) {
+                        cardPointed = handCards.get(i);
+                        clickedOffsetX = event.getX() - handCards.get(i).x;
+                        clickedOffsetY = event.getY() - handCards.get(i).y;
+                        break;
+                    }
+                    else {
+                        cardPointed = null;
+                    }
+                }
+                else {
+                    cardPointed = null;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent event) {
+//        if (cardPointed != null) {
+//            cardPointed.x = event.getX() - clickedOffsetX;
+//            cardPointed.y = event.getY() - clickedOffsetY;
+//        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent event) {
+//        if (cardPointed != null) {
+//            ani = Ani.to(cardPointed, 1f, "x", cardPointed.getInitialX());
+//            ani = Ani.to(cardPointed, 1f, "y", cardPointed.getInitialY());
+//        }
+//        cardPointed = null;
+    }
+
     /**
      * Setup
      */
+    @Override
     public void setup() {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
@@ -119,6 +222,7 @@ public class Applet extends PApplet {
     /**
      * Draw
      */
+    @Override
     public void draw() {
         if (gameStatus == GameStatus.WAIT) {
             background(255);
@@ -135,9 +239,7 @@ public class Applet extends PApplet {
                     ch.showCharacterInfo();
                 }
             }
-            for(int i=0, size = handCards.size(); i<size ; i++) {
-                image(handCards.get(i).getImage(), 400+i*50, 400);
-            }
+            handCards.forEach(card -> image(card.getImage(), card.x, card.y));
         }
     }
 
