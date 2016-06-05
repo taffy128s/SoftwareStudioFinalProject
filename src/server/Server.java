@@ -35,7 +35,7 @@ public class Server extends JFrame {
         this.setResizable(false);
         this.setLayout(null);
 
-        this.setTitle("Server");
+        this.setTitle("CS Kill server");
         this.textArea.setFont(new Font(this.textArea.getFont().getName(), Font.PLAIN, 18));
         this.textArea.setEditable(false);
         this.setSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));

@@ -41,6 +41,7 @@ public class Client extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         this.setResizable(false);
+        this.setTitle("CS Kill client");
 
         JTextField nameField = new JTextField(30);
         JTextField intentField = new JTextField(30);
