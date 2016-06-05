@@ -28,6 +28,7 @@ public class Client extends JFrame {
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
+    private String name;
 
     /**
      * Initialize client with server IP address and port number
@@ -66,7 +67,8 @@ public class Client extends JFrame {
                     e.printStackTrace();
                     System.exit(0);
                 }
-                sendMessage(nameField.getText());
+                name = nameField.getText();
+                sendMessage(name);
                 sendMessage(intentField.getText());
                 this.setVisible(true);
                 break;
@@ -102,7 +104,7 @@ public class Client extends JFrame {
             return;
         }
         Client client = new Client(IP, port);
-        Applet applet = new Applet(client.writer, client.reader);
+        Applet applet = new Applet(client.writer, client.reader, client.name);
         applet.init();
         applet.start();
         client.setContentPane(applet);
