@@ -25,8 +25,8 @@ import card.justcard.WeaTenSword;
 public class CardStack {
 
     private final static int BASIC_CARD_NUM = 5;
-    private final static int JIN_CARD_NUM = 2;
-    private final static int WEAPON_CARD_NUM = 2;
+    private final static int JIN_CARD_NUM = 0; // 2
+    private final static int WEAPON_CARD_NUM = 0; // 2
 
     private Vector<Card> drawArea = new Vector<>();
     private Vector<Card> discardArea = new Vector<>();

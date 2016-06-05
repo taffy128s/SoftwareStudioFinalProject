@@ -37,6 +37,8 @@ public class Applet extends PApplet {
     private boolean usingACard;
     private int clickedOffsetX;
     private int clickedOffsetY;
+    
+    private String name;
 
     /**
      * Initialize a PApplet with writer, printer to server
@@ -44,11 +46,12 @@ public class Applet extends PApplet {
      * @param writer writer to server
      * @param reader reader to server
      */
-    Applet(PrintWriter writer, BufferedReader reader) {
+    Applet(PrintWriter writer, BufferedReader reader, String name) {
         Ani.init(this);
         this.onlyUseKill = false;
         this.onlyUseDodge = false;
         this.choosing = false;
+        this.name = name;
         this.random = new Random();
         this.writer = writer;
         this.reader = reader;
@@ -140,8 +143,19 @@ public class Applet extends PApplet {
         }
     }
 
+    private void checkMouseOverCharacter() {
+    	for (Player ch : aliveCharacters) {
+            if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
+            	characterPointed = ch;
+            	return;
+            }
+        }
+    	characterPointed = null;
+    }
+    
     @Override
     public void mouseMoved(MouseEvent event) {
+    	checkMouseOverCharacter();
         if (cardPointed != null) {
             cardPointed.x = event.getX() - clickedOffsetX;
             cardPointed.y = event.getY() - clickedOffsetY;
@@ -187,6 +201,19 @@ public class Applet extends PApplet {
         // 2. if a card selected, used it
         if (mouseButton == LEFT) {
             if (cardPointed != null) {
+            	if (cardPointed.getCardID() == CardID.BASIC_KILL) {
+            		if (characterPointed != null) {
+            			if (characterPointed.getUserName().equals(name)) {
+            				Thread thread = new Thread(() -> {
+            					
+            				});
+            				thread.start();
+            				return;
+            			}
+            			String commandToSend = "Kill " + name + " " + characterPointed.getUserName();
+            			sendMessage(commandToSend);
+            		}
+            	}
                 usingACard = true;
                 cardUsed = cardPointed;
                 handCards.remove(cardUsed);
@@ -272,13 +299,13 @@ public class Applet extends PApplet {
             background(245, 222, 179);
             if (yourTurn) {
             	fill(255, 0, 0);
+            	strokeWeight(0);
             	ellipse(15, 15, 20, 20);
             }
             bigCircle.display();
             for (Player ch : aliveCharacters) {
                 ch.display();
                 if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
-                    characterPointed = ch;
                     ch.showCharacterInfo();
                 }
             }
@@ -286,9 +313,9 @@ public class Applet extends PApplet {
                 image(handCards.get(i).getImage(), handCards.get(i).x, handCards.get(i).y);
             }
             if (usingACard) {
-                textSize(32);
-                fill(0, 100, 150);
-                text("Card using not completed! HaHa your card disappeared.", 100, 375);
+                textSize(26);
+                fill(0, 50, 30);
+                text("Press the left mouse button to use it.", 100, 340);
             }
         }
     }

@@ -104,9 +104,11 @@ public class ServerUtility {
         		if (i != connections.size() - 1) {
         			connections.get(i).sendMessage(GameMessage.YOUR_TURN);
         			String mesg = connections.get(i).readMessage();
+        			System.out.println(mesg);
         		} else {
         			connections.get(i).sendMessage(GameMessage.YOUR_TURN);
         			String mesg = connections.get(i).readMessage();
+        			System.out.println(mesg); 
         			i = -1;
         		}
         	}
