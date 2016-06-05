@@ -2,7 +2,6 @@ package client;
 
 import processing.core.PApplet;
 
-import java.awt.*;
 import java.util.Random;
 
 /**
@@ -10,12 +9,19 @@ import java.util.Random;
  */
 public class Player {
 
-    public float x, y;
+    public float x;
+    public float y;
+
     private PApplet parent;
-    private int size, color1, color2, color3;
+    private int size;
+    private int colorR;
+    private int colorG;
+    private int colorB;
     private String name;
     private String intent;
-    private Random random;
+
+    private int lifePoint;
+    private int numberOfHandCard;
 
     /**
      * Initialize a character with name, intent, position(x, y)
@@ -28,36 +34,29 @@ public class Player {
      */
     public Player(Applet parent, String name, String intent, float x, float y) {
         this.parent = parent;
-        this.random = new Random();
         this.name = name;
         this.intent = intent;
         this.size = 80;
         this.x = x;
         this.y = y;
-        this.color1 = random.nextInt(255);
-        this.color2 = random.nextInt(255);
-        this.color3 = random.nextInt(255);
+        Random random = new Random();
+        this.colorR = random.nextInt(255);
+        this.colorG = random.nextInt(255);
+        this.colorB = random.nextInt(255);
+        lifePoint = 3; // TODO check whether if life point is ok
+        numberOfHandCard = 3; // TODO check whether size of handcard is ok (if initialize == life point)
     }
 
     /**
      * Draw this character
      */
     public void display() {
-        parent.fill(color1, color2, color3);
+        parent.fill(colorR, colorG, colorB);
         parent.strokeWeight(0);
         parent.ellipse(x, y, size, size);
-        parent.fill(255 - color1, 255 - color2, 255 - color3);
-        parent.textSize(16);
+        parent.fill(255 - colorR, 255 - colorG, 255 - colorB);
+        parent.textSize(20);
         parent.text(name, x - name.length() * 5, y + 6);
-    }
-
-    /**
-     * Return character's diameter
-     *
-     * @return diameter
-     */
-    public int getRadius() {
-        return size / 2;
     }
 
     /**
@@ -72,9 +71,62 @@ public class Player {
         parent.textSize(24);
         parent.text("Name: " + this.name, Client.WINDOW_WIDTH / 3 * 2 + 20, 150);
         parent.text("Intent: " + this.intent, Client.WINDOW_WIDTH / 3 * 2 + 20, 150 + 40);
+        parent.text("Life: " + this.lifePoint, Client.WINDOW_WIDTH / 3 * 2 + 20, 150 + 80);
+        parent.text("Hand: " + this.numberOfHandCard + " cards", Client.WINDOW_WIDTH / 3 * 2 + 20, 150 + 120);
     }
 
+    /**
+     * Get player's name
+     *
+     * @return name
+     */
     public String getUserName() {
         return name;
     }
+
+    /**
+     * Return character's radius
+     *
+     * @return radius
+     */
+    public int getRadius() {
+        return size / 2;
+    }
+
+    /**
+     * Get number of hand card of this character
+     *
+     * @return number of hand card
+     */
+    public int getNumberOfHandCard() {
+        return numberOfHandCard;
+    }
+
+    /**
+     * Set number of handcard of this character
+     *
+     * @param numberOfHandCard number to set
+     */
+    public void setNumberOfHandCard(int numberOfHandCard) {
+        this.numberOfHandCard = numberOfHandCard;
+    }
+
+    /**
+     * Get life point of this character
+     *
+     * @return life point
+     */
+    public int getLifePoint() {
+        return lifePoint;
+    }
+
+    /**
+     * Set life point of this character
+     *
+     * @param lifePoint life point to set
+     */
+    public void setLifePoint(int lifePoint) {
+        this.lifePoint = lifePoint;
+    }
+
 }
