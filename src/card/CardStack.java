@@ -1,7 +1,7 @@
 package card;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Vector;
 
 /**
  * Card stack, recording the status of cards to draw, or that discarded
@@ -12,8 +12,8 @@ public class CardStack {
     private final static int JIN_CARD_NUM = 2;
     private final static int WEAPON_CARD_NUM = 2;
 
-    private ArrayList<Card> drawArea = new ArrayList<>();
-    private ArrayList<Card> discardArea = new ArrayList<>();
+    private Vector<Card> drawArea = new Vector<>();
+    private Vector<Card> discardArea = new Vector<>();
 
     /**
      * Default constructor, add all basic cards, skill cards to the area
@@ -49,7 +49,7 @@ public class CardStack {
     /**
      * Shuffle drawArea
      */
-    public void shuffle() {
+    public synchronized void shuffle() {
         Collections.shuffle(drawArea);
     }
 
@@ -57,7 +57,7 @@ public class CardStack {
      * <p>Shuffle all cards in discard area and push it back to the bottom of drawAres
      * <p>Note: index 0: bottom, index size() - 1: top
      */
-    public void recycleDiscardedCards() {
+    public synchronized void recycleDiscardedCards() {
         Collections.shuffle(discardArea);
         for(Card card : discardArea) {
             drawArea.add(0, card);
@@ -70,7 +70,7 @@ public class CardStack {
      *
      * @return the card drawn
      */
-    public Card drawTop() {
+    public synchronized Card drawTop() {
         return drawArea.remove(drawArea.size()-1);
     }
 
@@ -79,7 +79,7 @@ public class CardStack {
      *
      * @param card the card to be discarded
      */
-    public void discardCard(Card card) {
+    public synchronized void discardCard(Card card) {
         discardArea.add(card);
     }
 

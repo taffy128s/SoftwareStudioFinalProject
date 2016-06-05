@@ -24,7 +24,6 @@ public class Server extends JFrame {
     private ArrayList<ServerUtility> games = new ArrayList<>();
 
     private JTextArea textArea = new JTextArea();
-    private JButton startButton = new JButton();
 
     /**
      * Initialize server with a port to listen
@@ -44,6 +43,7 @@ public class Server extends JFrame {
         this.add(scrollPane);
         scrollPane.setBounds(10, 10, WINDOW_WIDTH - 2 * 10 - 5, WINDOW_HEIGHT - 2 * 10 - 80);
 
+        JButton startButton = new JButton();
         startButton.setFont(new Font(startButton.getFont().getName(), Font.PLAIN, 18));
         startButton.setText("Start");
         startButton.setBounds(10, WINDOW_HEIGHT - 80, WINDOW_WIDTH - 2 * 10 - 5, 40);
