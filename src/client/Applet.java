@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.Vector;
 
-import card.BasicApple;
-import card.Card;
+import card.*;
 import de.looksgood.ani.Ani;
 import game.message.GameMessage;
 import processing.core.PApplet;
@@ -29,8 +29,12 @@ public class Applet extends PApplet {
     private Player characterPointed;
     private Random random;
 
-    private ArrayList<Card> handCards;
+    private TreeMap<Integer, Card> cardMap;
+    private Vector<Card> handCards;
+
     private Card cardPointed;
+    private Card cardUsed;
+    private boolean usingACard;
     private int clickedOffsetX;
     private int clickedOffsetY;
 
@@ -45,11 +49,12 @@ public class Applet extends PApplet {
         this.random = new Random();
         this.writer = writer;
         this.reader = reader;
-        this.aliveCharacters = new Vector<>();
         this.bigCircle = new BigCircle(this, Client.WINDOW_WIDTH / 3, Client.WINDOW_HEIGHT / 2 - 80, 500);
-        this.handCards = new ArrayList<>();
-        gameStatus = GameStatus.WAIT;
-        yourTurn = false;
+        this.aliveCharacters = new Vector<>();
+        this.handCards = new Vector<>();
+        this.gameStatus = GameStatus.WAIT;
+        this.yourTurn = false;
+        initCardMap();
         ReadThread thread = new ReadThread();
         thread.start();
     }
@@ -88,7 +93,7 @@ public class Applet extends PApplet {
                             //Card receivedCard = ;
                             //handCards.add(receivedCard);
                             System.out.println("get card id " + param[1]);
-                            handCards.add(new BasicApple());
+                            handCards.add(cardMap.get(Integer.parseInt(param[1])));
                             for (int i = 0; i < handCards.size(); ++i) {
                                 handCards.get(i).setInitialX(400 + i * 90);
                                 handCards.get(i).setInitialY(Client.WINDOW_HEIGHT - 180);
@@ -107,9 +112,33 @@ public class Applet extends PApplet {
     }
 
     /**
+     * Initialize card map with all cards and its ID
+     */
+    private void initCardMap() {
+        this.cardMap = new TreeMap<>();
+        cardMap.put(CardID.BASIC_APPLE.value(), new BasicApple());
+        cardMap.put(CardID.BASIC_DODGE.value(), new BasicDodge());
+        cardMap.put(CardID.BASIC_KILL.value(), new BasicKill());
+        cardMap.put(CardID.JIN_BATTLE.value(), new JinBattle());
+        cardMap.put(CardID.JIN_CARZYBANQUET.value(), new JinCrazyBanquet());
+        cardMap.put(CardID.JIN_DOUCHIDOWN.value(), new JinDouchiDown());
+        cardMap.put(CardID.JIN_GETCARD.value(), new JinGetCard());
+        cardMap.put(CardID.JIN_THIEF.value(), new JinThief());
+        cardMap.put(CardID.JIN_THOUSANDARROW.value(), new JinThousandArrow());
+        cardMap.put(CardID.JIN_THROW.value(), new JinThrow());
+        cardMap.put(CardID.JIN_TUSHI.value(), new JinTuShi());
+        cardMap.put(CardID.JIN_WUKU.value(), new JinWuKu());
+        cardMap.put(CardID.WEA_BIGSHIELD.value(), new WeaBigShield());
+        cardMap.put(CardID.WEA_BLACKSHIELD.value(), new WeaBlackShield());
+        cardMap.put(CardID.WEA_CONTINUE.value(), new WeaContinue());
+        cardMap.put(CardID.WEA_SHORT.value(), new WeaShort());
+        cardMap.put(CardID.WEA_TENSWORD.value(), new WeaTenSword());
+    }
+
+    /**
      * Put all alive characters to the big circle
      */
-    public void makeACircle() {
+    private void makeACircle() {
         float angle = 0;
         for (Player ch : aliveCharacters) {
             ani = Ani.to(ch, (float) 2, "x", bigCircle.getX() + bigCircle.getRadius() * cos(angle));
@@ -153,17 +182,21 @@ public class Applet extends PApplet {
         // click right button will cancel the selection of card
         if (mouseButton == RIGHT) {
             if (cardPointed != null) {
-                ani = Ani.to(cardPointed, 1f, "x", cardPointed.getInitialX());
-                ani = Ani.to(cardPointed, 1f, "y", cardPointed.getInitialY());
+                ani = Ani.to(cardPointed, 0.75f, "x", cardPointed.getInitialX());
+                ani = Ani.to(cardPointed, 0.75f, "y", cardPointed.getInitialY());
                 cardPointed = null;
             }
+            usingACard = false;
         }
         // click left button to
         // 1. if no card selected, select one point to
         // 2. if a card selected, used it
         if (mouseButton == LEFT) {
             if (cardPointed != null) {
-                // TODO use this card
+                usingACard = true;
+                cardUsed = cardPointed;
+                handCards.remove(cardUsed);
+                cardPointed = null;
             }
             else {
                 for (int i = 0; i < handCards.size(); ++i) if (event.getY() >= handCards.get(i).y) {
@@ -172,6 +205,7 @@ public class Applet extends PApplet {
                         cardPointed = handCards.get(i);
                         clickedOffsetX = event.getX() - handCards.get(i).x;
                         clickedOffsetY = event.getY() - handCards.get(i).y;
+                        usingACard = true;
                         break;
                     }
                     else if (i == handCards.size() - 1 &&
@@ -180,6 +214,7 @@ public class Applet extends PApplet {
                         cardPointed = handCards.get(i);
                         clickedOffsetX = event.getX() - handCards.get(i).x;
                         clickedOffsetY = event.getY() - handCards.get(i).y;
+                        usingACard = true;
                         break;
                     }
                     else {
@@ -195,19 +230,20 @@ public class Applet extends PApplet {
 
     @Override
     public void mouseDragged(MouseEvent event) {
-//        if (cardPointed != null) {
-//            cardPointed.x = event.getX() - clickedOffsetX;
-//            cardPointed.y = event.getY() - clickedOffsetY;
-//        }
+
     }
 
     @Override
     public void mouseReleased(MouseEvent event) {
-//        if (cardPointed != null) {
-//            ani = Ani.to(cardPointed, 1f, "x", cardPointed.getInitialX());
-//            ani = Ani.to(cardPointed, 1f, "y", cardPointed.getInitialY());
-//        }
-//        cardPointed = null;
+
+    }
+
+    /**
+     * use this card
+     * @param card card to use
+     */
+    public void useCard(Card card) {
+
     }
 
     /**
@@ -240,6 +276,11 @@ public class Applet extends PApplet {
                 }
             }
             handCards.forEach(card -> image(card.getImage(), card.x, card.y));
+            if (usingACard) {
+                textSize(32);
+                fill(0, 100, 150);
+                text("Card using not completed! HaHa your card disappeared.", 225, 375);
+            }
         }
     }
 
