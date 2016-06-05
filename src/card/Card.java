@@ -20,7 +20,12 @@ public class Card {
     private String description;
     private String filename;
     private PImage image;
-    
+
+    private int initialX;
+    private int initialY;
+    public int x;
+    public int y;
+
     /**
      * Default constructor
      */
@@ -109,17 +114,68 @@ public class Card {
         return filename;
     }
 
+    /**
+     * Get image of this card
+     *
+     * @return PImage of this card
+     */
     public PImage getImage() {
         return image;
     }
 
     /**
-     * Card effect string sent to server
+     * Get initial position x-axis of this card
+     *
+     * @return x-axis
+     */
+    public int getInitialX() {
+        return initialX;
+    }
+
+    /**
+     * Set initial position x-axis of this card
+     *
+     * @param initialX x-axis to set
+     */
+    public void setInitialX(int initialX) {
+        this.initialX = initialX;
+    }
+
+    /**
+     * Get initial position y-axis of this card
+     *
+     * @return y-axis
+     */
+    public int getInitialY() {
+        return initialY;
+    }
+
+    /**
+     * Set initial position y-axis of this card
+     *
+     * @param initialY y-axis to set
+     */
+    public void setInitialY(int initialY) {
+        this.initialY = initialY;
+    }
+
+    /**
+     * Card effect string send to server
+     *
+     * @param giver player who use this card
+     * @param target player target by this card
      * @return effect string to send to server
      */
     public String giveEffectString(Player giver, @Nullable Player target) {
         return null;
     }
+
+    /**
+     * Card effect string to send to server
+     *
+     * @param taker player who use this card
+     * @return effect string to send to server
+     */
     public String tageEffectString(Player taker) {
         return null;
     }
