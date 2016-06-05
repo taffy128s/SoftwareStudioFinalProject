@@ -171,7 +171,7 @@ public class Card {
     }
 
     /**
-     * Card effect string to send to server
+     * Card effect string send to server
      *
      * @param taker player who use this card
      * @return effect string to send to server
