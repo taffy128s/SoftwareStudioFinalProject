@@ -21,7 +21,7 @@ public class Applet extends PApplet {
     @SuppressWarnings("unused")
 	private Ani ani;
     private Player characterPointed;
-    private boolean yourTurn;
+    private boolean yourTurn, onlyUseKill, onlyUseDodge;
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
@@ -46,6 +46,8 @@ public class Applet extends PApplet {
      */
     Applet(PrintWriter writer, BufferedReader reader) {
         Ani.init(this);
+        this.onlyUseKill = false;
+        this.onlyUseDodge = false;
         this.random = new Random();
         this.writer = writer;
         this.reader = reader;
