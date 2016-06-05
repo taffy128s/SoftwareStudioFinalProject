@@ -54,7 +54,7 @@ public class Card {
         this.filename = filename;
         BufferedImage bufferedImage = null;
         try {
-            bufferedImage = ImageIO.read(getClass().getResource("img/" + filename));
+            bufferedImage = ImageIO.read(getClass().getResource("../img/" + filename));
         }
         catch (IOException e) {
             e.printStackTrace();
