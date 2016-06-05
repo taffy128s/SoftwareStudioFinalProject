@@ -90,10 +90,8 @@ public class Applet extends PApplet {
                         param = string.split(" ");
                         System.out.println("READY " + string);
                         if(param[0].equals(GameMessage.RECEIVE_CARD)) {
-                            //Card receivedCard = ;
-                            //handCards.add(receivedCard);
                             System.out.println("get card id " + param[1]);
-                            handCards.add(cardMap.get(Integer.parseInt(param[1])));
+                            handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
                             for (int i = 0; i < handCards.size(); ++i) {
                                 handCards.get(i).setInitialX(400 + i * 90);
                                 handCards.get(i).setInitialY(Client.WINDOW_HEIGHT - 180);
@@ -116,23 +114,9 @@ public class Applet extends PApplet {
      */
     private void initCardMap() {
         this.cardMap = new TreeMap<>();
-        cardMap.put(CardID.BASIC_APPLE.value(), new BasicApple());
-        cardMap.put(CardID.BASIC_DODGE.value(), new BasicDodge());
-        cardMap.put(CardID.BASIC_KILL.value(), new BasicKill());
-        cardMap.put(CardID.JIN_BATTLE.value(), new JinBattle());
-        cardMap.put(CardID.JIN_CARZYBANQUET.value(), new JinCrazyBanquet());
-        cardMap.put(CardID.JIN_DOUCHIDOWN.value(), new JinDouchiDown());
-        cardMap.put(CardID.JIN_GETCARD.value(), new JinGetCard());
-        cardMap.put(CardID.JIN_THIEF.value(), new JinThief());
-        cardMap.put(CardID.JIN_THOUSANDARROW.value(), new JinThousandArrow());
-        cardMap.put(CardID.JIN_THROW.value(), new JinThrow());
-        cardMap.put(CardID.JIN_TUSHI.value(), new JinTuShi());
-        cardMap.put(CardID.JIN_WUKU.value(), new JinWuKu());
-        cardMap.put(CardID.WEA_BIGSHIELD.value(), new WeaBigShield());
-        cardMap.put(CardID.WEA_BLACKSHIELD.value(), new WeaBlackShield());
-        cardMap.put(CardID.WEA_CONTINUE.value(), new WeaContinue());
-        cardMap.put(CardID.WEA_SHORT.value(), new WeaShort());
-        cardMap.put(CardID.WEA_TENSWORD.value(), new WeaTenSword());
+        for (CardID id : CardID.values()) {
+            cardMap.put(id.value(), CardUtility.newCard(id));
+        }
     }
 
     /**
@@ -197,6 +181,9 @@ public class Applet extends PApplet {
                 cardUsed = cardPointed;
                 handCards.remove(cardUsed);
                 cardPointed = null;
+                new Thread(() -> {
+                    useCard(cardUsed);
+                }).start();
             }
             else {
                 for (int i = 0; i < handCards.size(); ++i) if (event.getY() >= handCards.get(i).y) {
@@ -243,7 +230,8 @@ public class Applet extends PApplet {
      * @param card card to use
      */
     public void useCard(Card card) {
-
+        System.out.println("card " + card.getName() + " used!");
+        usingACard = false;
     }
 
     /**
@@ -279,7 +267,7 @@ public class Applet extends PApplet {
             if (usingACard) {
                 textSize(32);
                 fill(0, 100, 150);
-                text("Card using not completed! HaHa your card disappeared.", 225, 375);
+                text("Card using not completed! HaHa your card disappeared.", 100, 375);
             }
         }
     }
