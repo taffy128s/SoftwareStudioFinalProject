@@ -87,8 +87,8 @@ public class Applet extends PApplet {
     
     public void done() {
     	yourTurn = false;
-    	sendMessage(GameMessage.DONE);
     	cp5.getController("done").setLock(true);
+    	sendMessage(GameMessage.DONE);
     }
 
     /**
@@ -128,8 +128,10 @@ public class Applet extends PApplet {
                         System.out.println("READY " + string);
                         switch (param[0]) {
                         	case GameMessage.YOUR_TURN:
-                        		cp5.getController("done").setLock(false);
+                        		onlyUseKill = false;
+                                onlyUseDodge = false;
                                 yourTurn = true;
+                                cp5.getController("done").setLock(false);
                                 break;
                         	case GameMessage.RECEIVE_CARD:
                         		System.out.println("get card id " + param[1]);
@@ -137,6 +139,11 @@ public class Applet extends PApplet {
                                 break;
                         	case GameMessage.KILL:
                         		System.out.println("GOT KILLED!!!!!");
+                        		yourTurn = true;
+                        		onlyUseDodge = true;
+                        		cp5.getController("done").setLock(false);
+                        		break;
+                        	case GameMessage.DECREASE_CARD:
                         		break;
                             default:
                             	break;
@@ -231,6 +238,13 @@ public class Applet extends PApplet {
         // 2. if a card selected, used it
         if (mouseButton == LEFT) {
             if (cardPointed != null) {
+            	if (onlyUseDodge && cardPointed.getCardID() != CardID.BASIC_DODGE) {
+            		Thread thread = new Thread(() -> {
+    					// TODO: show only dodge
+    				});
+    				thread.start();
+            		return;
+            	}
             	if (cardPointed.getCardID() == CardID.BASIC_KILL) {
             		if (characterPointed != null) {
             			if (characterPointed.getUserName().equals(username)) {
@@ -244,7 +258,13 @@ public class Applet extends PApplet {
             			}
             			String commandToSend = GameMessage.KILL + " " + username + " " + characterPointed.getUserName();
             			sendMessage(commandToSend);
+            			yourTurn = false;
+            			cp5.getController("done").setLock(true);
             		} else return; 
+            	} else if (cardPointed.getCardID() == CardID.BASIC_DODGE) {
+            		sendMessage(GameMessage.DODGE);
+            		yourTurn = false;
+            		cp5.getController("done").setLock(true);
             	}
                 usingACard = true;
                 cardUsed = cardPointed;

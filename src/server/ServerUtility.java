@@ -87,7 +87,14 @@ public class ServerUtility {
 			if (arg[0].equals(GameMessage.DONE)) {
 				break;
 			} else if (arg[0].equals(GameMessage.KILL)) {
+				// TODO: decrease the user's number of cards.
 				usernameToConnection.get(arg[2]).sendMessage(mesg);
+				String reply = usernameToConnection.get(arg[2]).readMessage();
+				if (reply.equals(GameMessage.DONE)) {
+					System.out.println("SOMEBODY got killed.");
+				} else if (reply.equals(GameMessage.DODGE)) {
+					System.out.println("DODGE detected.");
+				}
 			}
 		}
     }
