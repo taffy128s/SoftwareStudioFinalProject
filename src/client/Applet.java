@@ -21,7 +21,7 @@ public class Applet extends PApplet {
     @SuppressWarnings("unused")
 	private Ani ani;
     private Player characterPointed;
-    private boolean yourTurn, onlyUseKill, onlyUseDodge, choosing;
+    private boolean yourTurn, onlyUseKill, onlyUseDodge, showDontKillSelf;
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
@@ -50,7 +50,7 @@ public class Applet extends PApplet {
         Ani.init(this);
         this.onlyUseKill = false;
         this.onlyUseDodge = false;
-        this.choosing = false;
+        this.showDontKillSelf = false;
         this.name = name;
         this.random = new Random();
         this.writer = writer;
@@ -91,7 +91,6 @@ public class Applet extends PApplet {
                                 makeACircle();
                                 break;
                             default:
-                                // TODO: parse the command and make objects move.
                                 break;
                         }
                     }
@@ -108,7 +107,6 @@ public class Applet extends PApplet {
                                 handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
                                 break;
                             default:
-                            	
                             	break;
                         }
                     }
@@ -205,13 +203,16 @@ public class Applet extends PApplet {
             		if (characterPointed != null) {
             			if (characterPointed.getUserName().equals(name)) {
             				Thread thread = new Thread(() -> {
-            					
+            					showDontKillSelf = true;
+            					delay(3000);
+            					showDontKillSelf = false;
             				});
             				thread.start();
             				return;
             			}
             			String commandToSend = "Kill " + name + " " + characterPointed.getUserName();
             			sendMessage(commandToSend);
+            			
             		}
             	}
                 usingACard = true;
@@ -301,6 +302,11 @@ public class Applet extends PApplet {
             	fill(255, 0, 0);
             	strokeWeight(0);
             	ellipse(15, 15, 20, 20);
+            }
+            if (showDontKillSelf) {
+            	textSize(28);
+                fill(0);
+                text("[System] Don't kill yourself!", 50, 50);
             }
             bigCircle.display();
             for (Player ch : aliveCharacters) {

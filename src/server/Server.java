@@ -23,7 +23,7 @@ public class Server extends JFrame {
     private ArrayList<Socket> sockets = new ArrayList<>();
     private ArrayList<ServerUtility> games = new ArrayList<>();
 
-    private JTextArea textArea = new JTextArea();
+    private JTextArea textArea = new JTextArea(); 
 
     /**
      * Initialize server with a port to listen
