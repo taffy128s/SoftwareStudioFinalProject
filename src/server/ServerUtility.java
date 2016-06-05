@@ -27,12 +27,10 @@ public class ServerUtility {
      */
     private class ConnectionThread extends Thread {
 
-        private Socket socket;
         private BufferedReader reader;
         private PrintWriter writer;
 
         ConnectionThread(Socket socket) {
-            this.socket = socket;
             try {
                 this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -69,19 +67,10 @@ public class ServerUtility {
          */
         @Override
         public void run() {
-            for (ConnectionThread connectionThread : connections) {
-                for (int i = 0; i < 3; ++i) {
-                    int index = cardStack.drawTop().getCardID().value();
-                    connectionThread.sendMessage(GameMessage.RECEIVE_CARD + " " + index);
-                }
+            for (int i = 0; i < 3; ++i) {
+                int index = cardStack.drawTop().getCardID().value();
+                sendMessage(GameMessage.RECEIVE_CARD + " " + index);
             }
-            // TODO: deal the cards to all players
-            /*for (ConnectionThread th : connections) {
-                for(int i=0 ; i<3 ; i++) {
-
-                }
-            }*/
-
             // TODO: ask each of the users to move.
         }
 
