@@ -21,7 +21,7 @@ public class Applet extends PApplet {
     @SuppressWarnings("unused")
 	private Ani ani;
     private Player characterPointed;
-    private boolean yourTurn, onlyUseKill, onlyUseDodge;
+    private boolean yourTurn, onlyUseKill, onlyUseDodge, choosing;
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
@@ -48,6 +48,7 @@ public class Applet extends PApplet {
         Ani.init(this);
         this.onlyUseKill = false;
         this.onlyUseDodge = false;
+        this.choosing = false;
         this.random = new Random();
         this.writer = writer;
         this.reader = reader;
@@ -269,6 +270,10 @@ public class Applet extends PApplet {
             text("Please wait until the game starts.", 225, 375);
         } else if (gameStatus == GameStatus.READY) {
             background(245, 222, 179);
+            if (yourTurn) {
+            	fill(255, 0, 0);
+            	ellipse(15, 15, 20, 20);
+            }
             bigCircle.display();
             for (Player ch : aliveCharacters) {
                 ch.display();
