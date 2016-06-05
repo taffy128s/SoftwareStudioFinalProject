@@ -91,7 +91,6 @@ public class Applet extends PApplet {
                                 makeACircle();
                                 break;
                             default:
-                                // TODO: parse the command and make objects move.
                                 break;
                         }
                     }
@@ -108,7 +107,6 @@ public class Applet extends PApplet {
                                 handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
                                 break;
                             default:
-                            	
                             	break;
                         }
                     }
@@ -214,6 +212,7 @@ public class Applet extends PApplet {
             			}
             			String commandToSend = "Kill " + name + " " + characterPointed.getUserName();
             			sendMessage(commandToSend);
+            			
             		}
             	}
                 usingACard = true;
