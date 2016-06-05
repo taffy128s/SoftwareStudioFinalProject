@@ -7,9 +7,12 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import card.*;
+import controlP5.ControlFont;
+import controlP5.ControlP5;
 import de.looksgood.ani.Ani;
 import game.message.GameMessage;
 import processing.core.PApplet;
+import processing.core.PFont;
 import processing.event.MouseEvent;
 
 /**
@@ -39,6 +42,7 @@ public class Applet extends PApplet {
     private int clickedOffsetY;
     
     private String name;
+    private ControlP5 cp5;
 
     /**
      * Initialize a PApplet with writer, printer to server
@@ -63,6 +67,12 @@ public class Applet extends PApplet {
         initCardMap();
         ReadThread thread = new ReadThread();
         thread.start();
+    }
+    
+    public void done() {
+    	yourTurn = false;
+    	sendMessage(GameMessage.DONE);
+    	cp5.getController("done").setLock(true);
     }
 
     /**
@@ -89,6 +99,8 @@ public class Applet extends PApplet {
                             case GameMessage.START:
                                 gameStatus = GameStatus.READY;
                                 makeACircle();
+                                cp5.getController("done").setLock(true);
+                                cp5.getController("done").setVisible(true);
                                 break;
                             default:
                                 break;
@@ -100,6 +112,7 @@ public class Applet extends PApplet {
                         System.out.println("READY " + string);
                         switch (param[0]) {
                         	case GameMessage.YOUR_TURN:
+                        		cp5.getController("done").setLock(false);
                                 yourTurn = true;
                                 break;
                         	case GameMessage.RECEIVE_CARD:
@@ -284,6 +297,11 @@ public class Applet extends PApplet {
     public void setup() {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
+        cp5 = new ControlP5(this);
+        cp5.addButton("done").setLabel("DONE").setPosition(525, 530).setSize(200, 50).setVisible(false);
+        PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
+        ControlFont font = new ControlFont(pfont, 241);
+        cp5.getController("done").getCaptionLabel().setFont(font).toUpperCase(false).setSize(24);
     }
 
     /**
