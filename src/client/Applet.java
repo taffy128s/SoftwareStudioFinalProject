@@ -34,6 +34,8 @@ public class Applet extends PApplet {
 
 	private boolean yourTurn;
 
+    private String winner;
+
     private boolean showCardDescription;
     private Card cardDescription;
 
@@ -109,7 +111,6 @@ public class Applet extends PApplet {
         this.gameStatus = GameStatus.WAIT;
         this.playerStatus = PlayerStatus.INIT;
         this.yourTurn = false;
-        initCardMap();
         this.pause = false;
         this.showThrownCard = new boolean[2];
         this.showThrownCard[0] = false;
@@ -117,6 +118,7 @@ public class Applet extends PApplet {
         this.thrownCard = new Card[2];
         this.thrownCard[0] = null;
         this.thrownCard[1] = null;
+        initCardMap();
     }
 
     public void done() {
@@ -140,6 +142,9 @@ public class Applet extends PApplet {
                     }
                     else if(gameStatus == GameStatus.READY) {
                         readReady();
+                    }
+                    else {
+                        break;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -190,6 +195,10 @@ public class Applet extends PApplet {
             param = string.split(" ");
             System.out.println("READY " + string);
             switch (param[0]) {
+                case GameMessage.GAME_OVER:
+                    winner = param[1];
+                    gameStatus = GameStatus.END;
+                    break;
                 case GameMessage.YOUR_TURN:
                     for (Player player : alivePlayers) {
                         if (player.getUserName().equals(username)) {
@@ -609,7 +618,7 @@ public class Applet extends PApplet {
         switch (gameStatus) {
             case WAIT:
             	background(245, 222, 179);
-                image(imageInitial,0,0) ;
+                image(imageInitial, 0, 0);
                 textSize(32);
                 fill(255, 255, 255);
                 text("Please wait until the game starts.", 350, 375);
@@ -671,6 +680,25 @@ public class Applet extends PApplet {
                         image(thrownCard[i].getImage(), thrownCard[i].x, thrownCard[i].y);
                     }
                 }
+                break;
+            case END:
+                background(245, 222, 179);
+                image(image, 0, 0);
+                strokeWeight(1);
+                stroke(0);
+                line(textarea.getPosition()[0], textarea.getPosition()[1] - 1, textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] - 1);
+                line(textarea.getPosition()[0] - 1, textarea.getPosition()[1] - 1, textarea.getPosition()[0] - 1, textarea.getPosition()[1] + textarea.getHeight());
+                line(textarea.getPosition()[0], textarea.getPosition()[1] + textarea.getHeight(), textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] + textarea.getHeight());
+                line(textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] - 1, textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] + textarea.getHeight());
+                bigCircle.display();
+                alivePlayers.forEach(Player::display);
+                for (int i = 0; i < handCards.size(); ++i) {
+                    image(handCards.get(i).getImage(), handCards.get(i).x, handCards.get(i).y);
+                }
+                textSize(56);
+                fill(0, 0, 0);
+                System.out.println("HERE");
+                text("Player " + winner + " Wins!!!", 200, 50);
                 break;
             default:
                 break;

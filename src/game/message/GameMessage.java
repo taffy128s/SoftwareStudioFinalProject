@@ -114,4 +114,10 @@ public class GameMessage {
      */
     public static final String THROW_FAIL = "THROWFAIL";
 
+    /**
+     * Tell clients that game is over.
+     * <p><Code>Format: GAME_OVER winner_username</Code></p>
+     */
+    public static final String GAME_OVER = "GAMEOVER";
+
 }

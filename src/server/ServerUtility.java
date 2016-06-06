@@ -147,6 +147,16 @@ public class ServerUtility {
                     if (!result) {
                         break;
                     }
+                    if (aliveNum == 1) {
+                        String winner = GameMessage.DONT_CARE_USER;
+                        for (Connection connection : connections) {
+                            if (connection.isAlive) {
+                                winner = connectionToUsername.get(connection);
+                            }
+                        }
+                        broadCast(GameMessage.GAME_OVER + " " + winner);
+                        break;
+                    }
                 }
             }
         });
