@@ -397,17 +397,21 @@ public class Applet extends PApplet {
             case READY:
                 background(245, 222, 179);
                 image(image, 0, 0);
+                bigCircle.display();
                 if (yourTurn) {
                     fill(255, 0, 0);
                     strokeWeight(0);
                     ellipse(15, 15, 20, 20);
+                } else {
+                	textSize(32);
+                	fill(0, 100, 150);
+                    text("Not your turn!", 225, 375);
                 }
                 if (showDontKillSelf) {
                     textSize(28);
                     fill(0);
                     text("[System] Don't kill yourself!", 50, 50);
                 }
-                bigCircle.display();
                 for (Player ch : alivePlayers) {
                     ch.display();
                     if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
@@ -435,11 +439,6 @@ public class Applet extends PApplet {
                 break;
             default:
                 break;
-        }
-        if (!yourTurn) {
-            textSize(32);
-            fill(0, 100, 150);
-            text("Not your turn!", 225, 375);
         }
     }
 
