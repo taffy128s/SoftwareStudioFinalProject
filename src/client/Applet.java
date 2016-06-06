@@ -95,10 +95,12 @@ public class Applet extends PApplet {
     }
 
     public void done() {
-        System.out.println("done() was called");
-        yourTurn = false;
-    	cp5.getController("done").setLock(true);
-    	sendMessage(GameMessage.DONE);
+        if (yourTurn) {
+            System.out.println("done() was called");
+            yourTurn = false;
+            cp5.getController("done").setLock(true);
+            sendMessage(GameMessage.DONE);
+        }
     }
 
     /**

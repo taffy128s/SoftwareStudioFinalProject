@@ -69,7 +69,7 @@ public class ServerUtility {
 				return reader.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
-				server.appendMessage("A client just logged out unexpectedly.");
+				server.appendMessage("A client just logged out unexpectedly.\n");
                 return null;
 			}
         }
@@ -77,9 +77,11 @@ public class ServerUtility {
     }
 
     private boolean makeUserMove(int userIndex) {
-    	while (true) {
-			connections.get(userIndex).sendMessage(GameMessage.YOUR_TURN);
-			String message = connections.get(userIndex).readMessage();
+        int newCardIndex = cardStack.drawTop().getCardID().value();
+        connections.get(userIndex).sendMessage(GameMessage.YOUR_TURN);
+        connections.get(userIndex).sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
+        while (true) {
+            String message = connections.get(userIndex).readMessage();
             if (message == null) {
                 return false;
             }
@@ -87,9 +89,9 @@ public class ServerUtility {
 			String[] args = message.split(" ");
 			if (args[0].equals(GameMessage.DONE)) {
 				break;
-			} else if (args.length == 1) {
+			} else if (args.length == 2) {
 
-            } else if (args.length == 2){
+            } else if (args.length == 3){
 				// TODO: decrease the user's number of cards.
 				usernameToConnection.get(args[2]).sendMessage(message);
 //				String reply = usernameToConnection.get(args[2]).readMessage();
@@ -99,7 +101,6 @@ public class ServerUtility {
 //					System.out.println("DODGE detected.");
 //				}
 			}
-            return true;
 		}
         return true;
     }
@@ -121,10 +122,10 @@ public class ServerUtility {
             broadCast(string);
         }
         broadCast(GameMessage.START);
-        for (Connection c : connections) {
+        for (Connection connection : connections) {
         	for (int i = 0; i < 3; ++i) {
                 int index = cardStack.drawTop().getCardID().value();
-                c.sendMessage(GameMessage.RECEIVE_CARD + " " + index);
+                connection.sendMessage(GameMessage.RECEIVE_CARD + " " + index);
             }
         }
         Thread thread = new Thread(() -> {
