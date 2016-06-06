@@ -203,13 +203,6 @@ public class ServerUtility {
         else {
             if(card.isSelfOnly()) {
                 broadCast(card.effectString(target));
-                Connection targetConnection = usernameToConnection.get(target);
-                if(card.getCardID() == CardID.JIN_GETCARD) {
-                    for(int i=0 ; i<2 ; i++) {
-                        int newCardIndex = cardStack.drawTop().getCardID().value();
-                        targetConnection.sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
-                    }
-                }
             }
             else if(card.isNotTargeting()) {
                 if(card.isSelfExclusive()) {
@@ -230,6 +223,21 @@ public class ServerUtility {
             }
             else {
                 
+            }
+
+            if(card.getCardID() == CardID.JIN_GETCARD) {
+                Connection targetConnection = usernameToConnection.get(target);
+                for(int i=0 ; i<2 ; i++) {
+                    int newCardIndex = cardStack.drawTop().getCardID().value();
+                    targetConnection.sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
+                }
+            }
+            else if(card.getCardID() == CardID.JIN_WUKU) {
+                for(Connection connection : connections) {
+                    if(connection.isAlive == false) continue;
+                    int newCardIndex = cardStack.drawTop().getCardID().value();
+                    connection.sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
+                }
             }
         }
     }
