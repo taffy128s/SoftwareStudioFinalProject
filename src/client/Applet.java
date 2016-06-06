@@ -695,10 +695,9 @@ public class Applet extends PApplet {
                 for (int i = 0; i < handCards.size(); ++i) {
                     image(handCards.get(i).getImage(), handCards.get(i).x, handCards.get(i).y);
                 }
-                textSize(56);
+                textSize(76);
                 fill(0, 0, 0);
-                System.out.println("HERE");
-                text("Player " + winner + " Wins!!!", 200, 50);
+                text("Player " + winner + " Wins!!!", 325, 400);
                 break;
             default:
                 break;
