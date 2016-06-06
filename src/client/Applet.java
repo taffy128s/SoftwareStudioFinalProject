@@ -15,6 +15,7 @@ import controlP5.ControlFont;
 import controlP5.ControlP5;
 import de.looksgood.ani.Ani;
 import game.message.GameMessage;
+import javafx.geometry.Point2D;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PFont;
@@ -27,11 +28,16 @@ import processing.event.MouseEvent;
 @SuppressWarnings("serial")
 public class Applet extends PApplet {
 
-	private boolean yourTurn, onlyUseKill, haveUsedKill, onlyUseDodge, showDontKillSelf;
     @SuppressWarnings("unused")
-	private Ani ani;
+    private Ani ani;
     private ControlP5 cp5;
-    
+
+	private boolean yourTurn;
+    private boolean onlyUseKill;
+    private boolean haveUsedKill;
+    private boolean onlyUseDodge;
+    private boolean showDontKillSelf;
+
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
@@ -50,7 +56,7 @@ public class Applet extends PApplet {
     private int clickedOffsetY;
     private BufferedImage bg;
     private PImage image;
-    
+
     /**
      * Initialize a PApplet with writer, printer to server
      *
@@ -84,7 +90,7 @@ public class Applet extends PApplet {
         ReadThread thread = new ReadThread();
         thread.start();
     }
-    
+
     public void done() {
     	yourTurn = false;
     	cp5.getController("done").setLock(true);
@@ -180,6 +186,9 @@ public class Applet extends PApplet {
         }
     }
 
+    /**
+     * Check character pointed by mouse, stored in <code>characterPointed</code>
+     */
     private void checkMouseOverCharacter() {
     	for (Player ch : aliveCharacters) {
             if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
@@ -189,7 +198,51 @@ public class Applet extends PApplet {
         }
     	characterPointed = null;
     }
-    
+
+    /**
+     * Use the card <code>cardPointed</code>.
+     * Do nothing if <code>cardPointed</code> is <code>null</code>.
+     */
+    private void useCard() {
+        if (cardPointed == null) {
+            return;
+        }
+        if (onlyUseDodge && cardPointed.getCardID() != CardID.BASIC_DODGE) {
+            Thread thread = new Thread(() -> {
+                // TODO: show only dodge
+            });
+            thread.start();
+            return;
+        }
+        if (cardPointed.getCardID() == CardID.BASIC_KILL) {
+            if (characterPointed != null) {
+                if (characterPointed.getUserName().equals(username)) {
+                    Thread thread = new Thread(() -> {
+                        showDontKillSelf = true;
+                        delay(3000);
+                        showDontKillSelf = false;
+                    });
+                    thread.start();
+                    return;
+                }
+                String commandToSend = GameMessage.KILL + " " + username + " " + characterPointed.getUserName();
+                sendMessage(commandToSend);
+                yourTurn = false;
+                cp5.getController("done").setLock(true);
+            } else return;
+        } else if (cardPointed.getCardID() == CardID.BASIC_DODGE) {
+            sendMessage(GameMessage.DODGE);
+            yourTurn = false;
+            cp5.getController("done").setLock(true);
+        }
+        usingACard = true;
+        cardUsed = cardPointed;
+        handCards.remove(cardUsed);
+        cardPointed = null;
+        System.out.println("card " + cardPointed.getName() + " used!");
+        usingACard = false;
+    }
+
     @Override
     public void mouseMoved(MouseEvent event) {
     	checkMouseOverCharacter();
@@ -198,32 +251,15 @@ public class Applet extends PApplet {
             cardPointed.y = event.getY() - clickedOffsetY;
         }
         else {
-            for (int i = 0; i < handCards.size(); ++i) {
-                if (event.getY() >= handCards.get(i).y) {
-                    if (event.getX() >= handCards.get(i).x &&
-                        i + 1 < handCards.size() && event.getX() < handCards.get(i + 1).x) {
-                        handCards.get(i).y = Client.WINDOW_HEIGHT - 220;
-                    }
-                    else if (i == handCards.size() - 1 &&
-                             event.getX() >= handCards.get(i).x &&
-                             event.getX() <= handCards.get(i).x + 148) {
-                        handCards.get(i).y = Client.WINDOW_HEIGHT - 220;
-                    }
-                    else {
-                        handCards.get(i).y = handCards.get(i).getInitialY();
-                    }
-                }
-                else {
-                    handCards.get(i).x = handCards.get(i).getInitialX();
-                    handCards.get(i).y = handCards.get(i).getInitialY();
-                }
-            }
+            handCards.setPositions(new Point2D(event.getX(), event.getY()));
         }
     }
 
     @Override
     public void mousePressed(MouseEvent event) {
-    	if (!yourTurn) return;
+    	if (!yourTurn) {
+            return;
+        }
         // click right button will cancel the selection of card
         if (mouseButton == RIGHT) {
             if (cardPointed != null) {
@@ -238,67 +274,14 @@ public class Applet extends PApplet {
         // 2. if a card selected, used it
         if (mouseButton == LEFT) {
             if (cardPointed != null) {
-            	if (onlyUseDodge && cardPointed.getCardID() != CardID.BASIC_DODGE) {
-            		Thread thread = new Thread(() -> {
-    					// TODO: show only dodge
-    				});
-    				thread.start();
-            		return;
-            	}
-            	if (cardPointed.getCardID() == CardID.BASIC_KILL) {
-            		if (characterPointed != null) {
-            			if (characterPointed.getUserName().equals(username)) {
-            				Thread thread = new Thread(() -> {
-            					showDontKillSelf = true;
-            					delay(3000);
-            					showDontKillSelf = false;
-            				});
-            				thread.start();
-            				return;
-            			}
-            			String commandToSend = GameMessage.KILL + " " + username + " " + characterPointed.getUserName();
-            			sendMessage(commandToSend);
-            			yourTurn = false;
-            			cp5.getController("done").setLock(true);
-            		} else return; 
-            	} else if (cardPointed.getCardID() == CardID.BASIC_DODGE) {
-            		sendMessage(GameMessage.DODGE);
-            		yourTurn = false;
-            		cp5.getController("done").setLock(true);
-            	}
-                usingACard = true;
-                cardUsed = cardPointed;
-                handCards.remove(cardUsed);
-                cardPointed = null;
-                new Thread(() -> {
-                    useCard(cardUsed);
-                }).start();
+                useCard();
             }
             else {
-                for (int i = 0; i < handCards.size(); ++i) if (event.getY() >= handCards.get(i).y) {
-                    if (event.getX() >= handCards.get(i).x &&
-                        i + 1 < handCards.size() && event.getX() < handCards.get(i + 1).x) {
-                        cardPointed = handCards.get(i);
-                        clickedOffsetX = event.getX() - handCards.get(i).x;
-                        clickedOffsetY = event.getY() - handCards.get(i).y;
-                        usingACard = true;
-                        break;
-                    }
-                    else if (i == handCards.size() - 1 &&
-                             event.getX() >= handCards.get(i).x &&
-                             event.getX() <= handCards.get(i).x + 148) {
-                        cardPointed = handCards.get(i);
-                        clickedOffsetX = event.getX() - handCards.get(i).x;
-                        clickedOffsetY = event.getY() - handCards.get(i).y;
-                        usingACard = true;
-                        break;
-                    }
-                    else {
-                        cardPointed = null;
-                    }
-                }
-                else {
-                    cardPointed = null;
+                cardPointed = handCards.setPositions(new Point2D(event.getX(), event.getY()));
+                if (cardPointed != null) {
+                    clickedOffsetX = event.getX() - cardPointed.x;
+                    clickedOffsetY = event.getY() - cardPointed.y;
+                    usingACard = true;
                 }
             }
         }
@@ -313,19 +296,10 @@ public class Applet extends PApplet {
     public void mouseReleased(MouseEvent event) {
 
     }
-    
+
     private void sendMessage(String message) {
         writer.println(message);
         writer.flush();
-    }
-
-    /**
-     * use this card
-     * @param card card to use
-     */
-    private void useCard(Card card) {
-        System.out.println("card " + card.getName() + " used!");
-        usingACard = false;
     }
 
     /**

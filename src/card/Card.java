@@ -133,6 +133,14 @@ public class Card {
     }
 
     /**
+     * Reset the position of this card to its initial X and Y
+     */
+    public void resetPosition() {
+        x = initialX;
+        y = initialY;
+    }
+
+    /**
      * Set initial position x-axis of this card
      *
      * @param initialX x-axis to set
