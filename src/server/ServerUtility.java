@@ -87,19 +87,15 @@ public class ServerUtility {
             }
 			System.out.println(message);
 			String[] args = message.split(" ");
-			if (args[0].equals(GameMessage.DONE)) {
-				break;
+            if (args.length == 1) {
+                if (args[0].equals(GameMessage.DONE)) {
+                    break;
+                }
 			} else if (args.length == 2) {
 
             } else if (args.length == 3){
 				// TODO: decrease the user's number of cards.
 				usernameToConnection.get(args[2]).sendMessage(message);
-//				String reply = usernameToConnection.get(args[2]).readMessage();
-//				if (reply.equals(GameMessage.DONE)) {
-//					System.out.println("SOMEBODY got killed.");
-//				} else if (reply.equals(GameMessage.DODGE)) {
-//					System.out.println("DODGE detected.");
-//				}
 			}
 		}
         return true;

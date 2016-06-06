@@ -12,10 +12,10 @@ public class GameMessage {
     public static final String RECEIVE_CARD = "receivecard";
     public static final String YOUR_TURN = "yourturn";
     public static final String DONE = "done";
-    public static final String KILL = "kill";
-    public static final String DODGE = "dodge";
     public static final String DECREASE_CARD = "decreasecard";
 
+    public static final String KILL = "kill";
+    public static final String DODGE = "dodge";
     public static final String GOLDEN_APPLE = "goldenapple" ;
     public static final String BATTLE = "battle" ;
     public static final String CRAZY_BANQUET = "carnivalbanquet";

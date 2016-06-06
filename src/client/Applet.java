@@ -199,7 +199,6 @@ public class Applet extends PApplet {
     private Player checkMouseOverPlayer() {
     	for (Player ch : aliveCharacters) {
             if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
-            	playerPointed = ch;
                 return ch;
             }
         }
@@ -210,30 +209,40 @@ public class Applet extends PApplet {
      * Use the card <code>cardPointed</code>.
      */
     private void useCard() {
+        boolean usedSuccessfully = false;
         if (cardPointed.getCategory() == CardCategory.BASIC) {
             switch (cardPointed.getCardID()) {
                 case BASIC_APPLE:
+                    usedSuccessfully = true;
                     sendMessage(cardPointed.getCardID().value() + " " + username);
                     break;
                 case BASIC_DODGE:
+                    usedSuccessfully = true;
                     sendMessage(cardPointed.getCardID().value() + " " + username);
                     break;
                 case BASIC_KILL:
                     if (playerPointed.getUserName().equals(username)) {
+                        Ani.to(cardPointed, 0.75f, "x", cardPointed.getInitialX());
+                        Ani.to(cardPointed, 0.75f, "y", cardPointed.getInitialY());
                         Thread thread = new Thread(() -> {
                             showDontKillSelf = true;
                             delay(3000);
                             showDontKillSelf = false;
                         });
                         thread.start();
+                        usedSuccessfully = false;
                         break;
                     }
+                    usedSuccessfully = true;
                     sendMessage(cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
                     break;
             }
         }
-        System.out.println("card " + cardPointed.getName() + " used!");
-        cardPointed = null;
+        if (usedSuccessfully) {
+            System.out.println("card " + cardPointed.getName() + " used!");
+            handCards.remove(cardPointed);
+            cardPointed = null;
+        }
     }
 
     @Override
@@ -290,7 +299,7 @@ public class Applet extends PApplet {
                 break;
             case TARGETING:
                 if (mouseButton == LEFT) {
-                    checkMouseOverPlayer();
+                    playerPointed = checkMouseOverPlayer();
                     if (playerPointed != null) {
                         new Thread(this::useCard).start();
                         playerStatus = PlayerStatus.INIT;
@@ -313,10 +322,8 @@ public class Applet extends PApplet {
             // FINDING SOME BETTER WRITE METHOD by LittleBird
             switch (cardPointed.getCardID()) {
                 case BASIC_APPLE:
-                    handCards.remove(cardPointed);
                     return PlayerStatus.INIT;
                 case BASIC_DODGE:
-                    handCards.remove(cardPointed);
                     return PlayerStatus.INIT;
                 case BASIC_KILL:
                     return PlayerStatus.TARGETING;
