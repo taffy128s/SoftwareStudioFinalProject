@@ -66,7 +66,7 @@ public class Applet extends PApplet {
     private BufferedImage initialPage ;
     private PImage image;
     private PImage imageInitial ;
-    
+
     private boolean pause;
 
     /**
@@ -387,6 +387,8 @@ public class Applet extends PApplet {
                 }
                 break;
             case SELECTING:
+                showCardDescription = false;
+                cardDescription = null;
                 if (cardPointed != null) {
                     cardPointed.x = event.getX() - clickedOffsetX;
                     cardPointed.y = event.getY() - clickedOffsetY;
@@ -611,7 +613,7 @@ public class Applet extends PApplet {
                         break;
                 }
                 if (showCardDescription) {
-                    image(cardDescription.getdImage(), cardDescription.x, cardDescription.y - 130);
+                    image(cardDescription.getdImage(), cardDescription.x, cardDescription.y - 150);
                 }
                 if (showOtherCard) {
                     image(otherCard.getImage(), otherCard.x, otherCard.y);
