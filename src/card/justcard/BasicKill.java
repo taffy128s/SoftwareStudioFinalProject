@@ -32,5 +32,13 @@ public class BasicKill extends Card {
         return GameMessage.MODIFY_PLAYER + " " + targetUsername + " " +
                        GameMessage.LIFE_POINT + " -1";
     }
-
+    
+    @Override
+    public String askCardString() {
+        return GameMessage.ASK_FOR_CARD + " " + getAskedCardID().value() ;
+    }
+    @Override
+    public CardID getAskedCardID() {
+        return CardID.BASIC_DODGE;
+    }
 }

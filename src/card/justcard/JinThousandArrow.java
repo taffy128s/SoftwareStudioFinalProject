@@ -27,4 +27,15 @@ public class JinThousandArrow extends JinCard {
         return GameMessage.MODIFY_PLAYER + " " + targetUsername + 
                 " " + GameMessage.LIFE_POINT + " -1";
     }
+    
+    @Override
+    public String askCardString() {
+        // TODO Auto-generated method stub
+        return GameMessage.ASK_FOR_CARD + " " + getAskedCardID().value() ;
+    }
+    @Override
+    public CardID getAskedCardID() {
+        // TODO Auto-generated method stub
+        return CardID.BASIC_DODGE;
+    }
 }

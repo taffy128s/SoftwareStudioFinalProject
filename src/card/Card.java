@@ -178,6 +178,13 @@ public class Card {
         return "";
     }
 
+    public String askCardString() {
+        return "";
+    }
+    public CardID getAskedCardID() {
+        return CardID.BASIC_DODGE;
+    }
+    
     /**
      * Get string representation of this card
      *
