@@ -43,6 +43,9 @@ public class Applet extends PApplet {
     private boolean showDiscardCard;
     private Card discardedCard;
 
+    private boolean[] showThrownCard;
+    private Card[] thrownCard;
+
     private PrintWriter writer;
     private PrintWriter chatWriter;
     private BufferedReader reader;
@@ -108,6 +111,12 @@ public class Applet extends PApplet {
         this.yourTurn = false;
         initCardMap();
         this.pause = false;
+        this.showThrownCard = new boolean[2];
+        this.showThrownCard[0] = false;
+        this.showThrownCard[1] = false;
+        this.thrownCard = new Card[2];
+        this.thrownCard[0] = null;
+        this.thrownCard[1] = null;
     }
 
     public void done() {
@@ -207,6 +216,7 @@ public class Applet extends PApplet {
                         while (otherCard.x != Client.WINDOW_WIDTH - 200 && otherCard.y != 20) {
                             delay(1000);
                         }
+                        delay(1000);
                         showOtherCard = false;
                         otherCard = null;
                     }).start();
@@ -217,12 +227,10 @@ public class Applet extends PApplet {
                     System.out.println("Be asked for card id " + param[1]);
                     int cardIDAsked = Integer.parseInt(param[1]);
                     Card used = null;
-                    discardedCard = CardUtility.newCard(cardIDAsked);
                     for (int i = 0; i < handCards.size(); i++) {
                         if (handCards.get(i).getCardID().value() == cardIDAsked) {
                             used = handCards.get(i);
-                            discardedCard.x = used.x;
-                            discardedCard.y = used.y;
+                            discardedCard = CardUtility.copyCard(handCards.get(i));
                             break;
                         }
                     }
@@ -242,6 +250,7 @@ public class Applet extends PApplet {
                             while (discardedCard.x != Client.WINDOW_WIDTH - 200 && discardedCard.y != 20) {
                                 delay(500);
                             }
+                            delay(1000);
                             showDiscardCard = false;
                             discardedCard = null;
                         }).start();
@@ -272,7 +281,7 @@ public class Applet extends PApplet {
                     pause = false;
                     break;
                 case GameMessage.THROW_CARD:
-                    if(handCards.size() == 0) {
+                    if (handCards.size() == 0) {
                         sendMessage(GameMessage.THROW_FAIL);
                     }
                     else {
@@ -281,6 +290,20 @@ public class Applet extends PApplet {
                         Card cardToThrow = handCards.get(toThrow);
                         handCards.remove(cardToThrow);
                         sendMessage(GameMessage.CARD_LOSS + " " + cardToThrow.getCardID().value());
+                        int targetIndex = (thrownCard[0] == null) ? 0 : 1;
+                        thrownCard[targetIndex] = CardUtility.copyCard(cardToThrow);
+                        new Thread(() -> {
+                            showThrownCard[targetIndex] = true;
+                            while (thrownCard[targetIndex].x != Client.WINDOW_WIDTH - 200 &&
+                                           thrownCard[targetIndex].y != 20) {
+                                delay(500);
+                            }
+                            delay(1000);
+                            showThrownCard[targetIndex] = false;
+                            thrownCard[targetIndex] = null;
+                        }).start();
+                        Ani.to(thrownCard[targetIndex], 0.75f, "x", Client.WINDOW_WIDTH - 200, Ani.SINE_IN_OUT);
+                        Ani.to(thrownCard[targetIndex], 0.75f, "y", 20, Ani.SINE_IN_OUT);
                     }
                     break;
                 default:
@@ -353,7 +376,7 @@ public class Applet extends PApplet {
                     break;
             }
         }
-        else if(cardPointed.getCategory() == CardCategory.JIN) {
+        else if (cardPointed.getCategory() == CardCategory.JIN) {
             JinCard typedCard = (JinCard)cardPointed;
             if(typedCard.isSelfOnly()) {
                 usedSuccessfully = true;
@@ -374,7 +397,7 @@ public class Applet extends PApplet {
                 pause = true;
             }
         }
-        else if(cardPointed.getCategory() == CardCategory.WEA) {
+        else if (cardPointed.getCategory() == CardCategory.WEA) {
 
         }
         if (usedSuccessfully) {
@@ -632,6 +655,11 @@ public class Applet extends PApplet {
                 }
                 if (showDiscardCard) {
                     image(discardedCard.getImage(), discardedCard.x, discardedCard.y);
+                }
+                for (int i = 0; i < 2; ++i) {
+                    if (showThrownCard[i]) {
+                        image(thrownCard[i].getImage(), thrownCard[i].x, thrownCard[i].y);
+                    }
                 }
                 break;
             default:
