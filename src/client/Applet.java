@@ -32,14 +32,17 @@ public class Applet extends PApplet {
     @SuppressWarnings("unused")
     private Ani ani;
     private ControlP5 cp5;
+    private Textarea textarea;
 
 	private boolean yourTurn;
     private boolean onlyUseKill;
     private boolean haveUsedKill;
     private boolean onlyUseDodge;
 
+    private boolean showOtherCard;
+    private Card cardToShow;
+
     private boolean showSystemMessage;
-    private String systemMessage;
 
     private PrintWriter writer;
     private BufferedReader reader;
@@ -147,6 +150,8 @@ public class Applet extends PApplet {
                     makeACircle();
                     cp5.getController("done").setLock(true);
                     cp5.getController("done").setVisible(true);
+                    cp5.getController("textfield").setVisible(true);
+                    textarea.setVisible(true);
                     break;
                 default:
                     break;
@@ -179,37 +184,67 @@ public class Applet extends PApplet {
                     handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
                     break;
                 case GameMessage.SHOW_CARD:
+                    System.out.println("SHOW CARD");
                     int cardIndex = Integer.parseInt(param[1]);
-                    Card cardToDisplay = CardUtility.newCard(cardIndex);
-                    systemMessage = param[2] + " used " + cardToDisplay.getName();
+                    cardToShow = CardUtility.newCard(cardIndex);
+                    if (cardToShow == null) {
+                        break;
+                    }
+                    int targetX = 0;
+                    int targetY = 0;
+                    for (Player player : alivePlayers) {
+                        if (player.getUserName().equals(param[2])) {
+                            cardToShow.x = (int) player.x;
+                            cardToShow.y = (int) player.y;
+                        }
+                        if (player.getUserName().equals(param[3])) {
+                            targetX = (int) player.x;
+                            targetY = (int) player.y;
+                        }
+                    }
                     new Thread(() -> {
-                        showSystemMessage = true;
-                        delay(2000);
-                        showSystemMessage = false;
+                        showOtherCard = true;
+                        while (cardToShow.x != Client.WINDOW_WIDTH - 200 && cardToShow.y != 20) {
+                            delay(1000);
+                        }
+                        showOtherCard = false;
                     }).start();
+                    Ani.to(cardToShow, 0.75f, "x", Client.WINDOW_WIDTH - 200, Ani.EXPO_IN_OUT);
+                    Ani.to(cardToShow, 0.75f, "y", 20, Ani.EXPO_IN_OUT);
                     break;
                 case GameMessage.ASK_FOR_CARD:
-                    System.out.println("be asked for card id " + param[1]);
+                    System.out.println("Be asked for card id " + param[1]);
                     int cardIDAsked = Integer.parseInt(param[1]);
+                    Card used = null;
+                    cardToShow = CardUtility.newCard(cardIDAsked);
+                    for (int i = 0; i < handCards.size(); i++) {
+                        if (handCards.get(i).getCardID().value() == cardIDAsked) {
+                            used = handCards.get(i);
+                            cardToShow.x = used.x;
+                            cardToShow.y = used.y;
+                            break;
+                        }
+                    }
+                    if (used == null) {
+                        sendMessage(GameMessage.RESPONSE_NO);
+                        break;
+                    }
                     int result = JOptionPane.showConfirmDialog(null,
-                                                               new JLabel("Do you want to use " + cardMap.get(cardIDAsked).getName()),
-                                                               "HAHAHAHA",
+                                                               new JLabel("Do you want to use " + cardMap.get(cardIDAsked).getName() + "?"),
+                                                               "Choose",
                                                                JOptionPane.OK_CANCEL_OPTION);
                     if (result == JOptionPane.OK_OPTION) {
-                        boolean hasCard = false;
-                        for(int i=0 ; i<handCards.size() ; i++) {
-                            if(handCards.get(i).getCardID().value() == cardIDAsked) {
-                                hasCard = true;
-                                Card used = handCards.get(i);
-                                sendMessage(GameMessage.RESPONSE_YES);
-                                handCards.remove(used);
-                                break;
+                        sendMessage(GameMessage.RESPONSE_YES);
+                        handCards.remove(used);
+                        new Thread(() -> {
+                            showOtherCard = true;
+                            while (cardToShow.x != Client.WINDOW_WIDTH - 200 && cardToShow.y != 20) {
+                                delay(500);
                             }
-                        }
-                        if(!hasCard) {
-                            // TODO show message to player that you don't have this kind of card
-                            sendMessage(GameMessage.RESPONSE_NO);
-                        }
+                            showOtherCard = false;
+                        }).start();
+                        Ani.to(cardToShow, 0.75f, "x", Client.WINDOW_WIDTH - 200);
+                        Ani.to(cardToShow, 0.75f, "y", 20);
                     } else {
                         sendMessage(GameMessage.RESPONSE_NO);
                     }
@@ -306,16 +341,6 @@ public class Applet extends PApplet {
                 usedSuccessfully = true;
                 sendMessage(GameMessage.CARD_EFFECT + " " +
                             cardPointed.getCardID().value() + " " + username + " " + username);
-            }
-            else if(typedCard.isNotTargeting()) {
-                usedSuccessfully = true;
-                sendMessage(GameMessage.CARD_EFFECT + " " +
-                            cardPointed.getCardID().value() + " " + username + " " + username);
-            }
-            else {
-                usedSuccessfully = true;
-                sendMessage(GameMessage.CARD_EFFECT + " " +
-                            cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
             }
         }
         else if(cardPointed.getCategory() == CardCategory.WEA) {
@@ -416,13 +441,6 @@ public class Applet extends PApplet {
         }
         else if (cardPointed.getCategory() == CardCategory.JIN) {
             JinCard jinCard = (JinCard) cardPointed;
-            if(jinCard.isSelfOnly() == false && jinCard.isNotTargeting() == false) {
-                return PlayerStatus.TARGETING;
-            }
-            else {
-                return PlayerStatus.INIT;
-            }
-                
         }
         else {
             WeaCard weaCard = (WeaCard) cardPointed;
@@ -463,26 +481,26 @@ public class Applet extends PApplet {
            .setFont(createFont("arial", 20))
            .toUpperCase(false)
            .setSize(24);
-        cp5.addTextfield("")
+        cp5.addTextfield("textfield")
            .setColor(color(0))
-           .setColorBackground(color(255))
+           .setColorBackground(color(255, 255, 245))
            .setColorForeground(color(0))
            .setFont(createFont("arial", 20))
            .setSize(350, 30)
-           .setPosition(25, Client.WINDOW_HEIGHT - 70);
-        Textarea textarea;
-        textarea = cp5.addTextarea("txt")
-                      .setPosition(0, 0)
+           .setPosition(25, Client.WINDOW_HEIGHT - 70)
+           .setVisible(false);
+        textarea = cp5.addTextarea("txtarea")
+                      .setPosition(25, cp5.getController("textfield").getPosition()[1] - 72 - 15)
+                      .setSize(350, 72)
                       .setFont(createFont("arial", 18))
                       .setLineHeight(18)
                       .setColor(color(0))
-                      .setColorBackground(color(240))
+                      .setColorBackground(color(245, 245, 220))
                       .setColorForeground(color(0))
                       .setScrollBackground(color(255))
-                      .setScrollForeground(color(0))
+                      .setScrollForeground(color(139, 71, 38))
                       .setBorderColor(color(0))
-                      .append("1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n");
-        textarea.scroll(1);
+                      .setVisible(false);
     }
 
     /**
@@ -500,6 +518,12 @@ public class Applet extends PApplet {
             case READY:
                 background(245, 222, 179);
                 image(image, 0, 0);
+                strokeWeight(1);
+                stroke(0);
+                line(textarea.getPosition()[0], textarea.getPosition()[1] - 1, textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] - 1);
+                line(textarea.getPosition()[0] - 1, textarea.getPosition()[1] - 1, textarea.getPosition()[0] - 1, textarea.getPosition()[1] + textarea.getHeight());
+                line(textarea.getPosition()[0], textarea.getPosition()[1] + textarea.getHeight(), textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] + textarea.getHeight());
+                line(textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] - 1, textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] + textarea.getHeight());
                 bigCircle.display();
                 if (yourTurn) {
                     fill(255, 0, 0);
@@ -510,15 +534,10 @@ public class Applet extends PApplet {
                 	fill(0, 0, 0);
                     text("Not your turn!", 280, 340);
                 }
-                if (showSystemMessage) {
-                    textSize(28);
-                    fill(0);
-                    text("[System] " + systemMessage, 50, 50);
-                }
                 for (Player ch : alivePlayers) {
                     ch.display();
                     if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
-                        ch.showCharacterInfo();
+                        ch.showCharacterInfo(username);
                     }
                 }
                 for (int i = 0; i < handCards.size(); ++i) {
@@ -538,6 +557,9 @@ public class Applet extends PApplet {
                         break;
                     default:
                         break;
+                }
+                if (showOtherCard) {
+                    image(cardToShow.getImage(), cardToShow.x, cardToShow.y);
                 }
                 break;
             default:

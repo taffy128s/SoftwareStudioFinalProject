@@ -62,14 +62,19 @@ public class Player {
     /**
      * Show character information
      */
-    public void showCharacterInfo() {
+    public void showCharacterInfo(String username) {
         parent.fill(220, 220, 220);
         parent.strokeWeight(3);
         parent.stroke(0);
         parent.rect(Client.WINDOW_WIDTH / 3 * 2 - 10, 100, 300, 200, 20);
         parent.fill(0);
         parent.textSize(24);
-        parent.text("Name: " + this.name, Client.WINDOW_WIDTH / 3 * 2 + 20, 150);
+        if (this.name.equals(username)) {
+            parent.text("Name: " + this.name + " *{YOU}*", Client.WINDOW_WIDTH / 3 * 2 + 20, 150);
+        }
+        else {
+            parent.text("Name: " + this.name, Client.WINDOW_WIDTH / 3 * 2 + 20, 150);
+        }
         parent.text("Intent: " + this.intent, Client.WINDOW_WIDTH / 3 * 2 + 20, 150 + 40);
         parent.text("Life: " + this.lifePoint, Client.WINDOW_WIDTH / 3 * 2 + 20, 150 + 80);
         parent.text("Hand: " + this.numberOfHandCard + " cards", Client.WINDOW_WIDTH / 3 * 2 + 20, 150 + 120);
@@ -128,7 +133,7 @@ public class Player {
     public void setLifePoint(int lifePoint) {
         this.lifePoint = lifePoint;
     }
-    
-    
+
+
 
 }
