@@ -87,7 +87,7 @@ public class Applet extends PApplet {
         this.aliveCharacters = new Vector<>();
         this.handCards = new HandCard();
         this.gameStatus = GameStatus.WAIT;
-        this.playerStatus = PlayerStatus.NONE;
+        this.playerStatus = PlayerStatus.INIT;
         this.yourTurn = false;
         initCardMap();
         ReadThread thread = new ReadThread();
@@ -144,7 +144,7 @@ public class Applet extends PApplet {
                                 onlyUseDodge = false;
                                 yourTurn = true;
                                 if (playerStatus == PlayerStatus.KILL_USED) {
-                                    playerStatus = PlayerStatus.NONE;
+                                    playerStatus = PlayerStatus.INIT;
                                 }
                                 cp5.getController("done").setLock(false);
                                 break;
@@ -239,7 +239,7 @@ public class Applet extends PApplet {
     @Override
     public void mouseMoved(MouseEvent event) {
         switch (playerStatus) {
-            case NONE:
+            case INIT:
                 checkMouseOverPlayer();
                 handCards.setPositions(new Point2D(event.getX(), event.getY()));
                 break;
@@ -262,7 +262,7 @@ public class Applet extends PApplet {
             return;
         }
         switch (playerStatus) {
-            case NONE:
+            case INIT:
                 if (mouseButton == LEFT) {
                     cardPointed = handCards.setPositions(new Point2D(event.getX(), event.getY()));
                     if (cardPointed != null) {
@@ -277,7 +277,7 @@ public class Applet extends PApplet {
                     Ani.to(cardPointed, 0.75f, "x", Client.WINDOW_WIDTH - 200);
                     Ani.to(cardPointed, 0.75f, "y", 20);
                     playerStatus = changeState(cardPointed);
-                    if (playerStatus == PlayerStatus.NONE) {
+                    if (playerStatus == PlayerStatus.INIT) {
                         new Thread(this::useCard).start();
                     }
                 }
@@ -285,7 +285,7 @@ public class Applet extends PApplet {
                     Ani.to(cardPointed, 0.75f, "x", cardPointed.getInitialX());
                     Ani.to(cardPointed, 0.75f, "y", cardPointed.getInitialY());
                     cardPointed = null;
-                    playerStatus = PlayerStatus.NONE;
+                    playerStatus = PlayerStatus.INIT;
                 }
                 break;
             case TARGETING:
@@ -293,14 +293,14 @@ public class Applet extends PApplet {
                     checkMouseOverPlayer();
                     if (playerPointed != null) {
                         new Thread(this::useCard).start();
-                        playerStatus = PlayerStatus.NONE;
+                        playerStatus = PlayerStatus.INIT;
                     }
                 }
                 else {
                     Ani.to(cardPointed, 0.75f, "x", cardPointed.getInitialX());
                     Ani.to(cardPointed, 0.75f, "y", cardPointed.getInitialY());
                     cardPointed = null;
-                    playerStatus = PlayerStatus.NONE;
+                    playerStatus = PlayerStatus.INIT;
                 }
                 break;
             default:
@@ -314,15 +314,15 @@ public class Applet extends PApplet {
             switch (cardPointed.getCardID()) {
                 case BASIC_APPLE:
                     handCards.remove(cardPointed);
-                    return PlayerStatus.NONE;
+                    return PlayerStatus.INIT;
                 case BASIC_DODGE:
                     handCards.remove(cardPointed);
-                    return PlayerStatus.NONE;
+                    return PlayerStatus.INIT;
                 case BASIC_KILL:
                     return PlayerStatus.TARGETING;
             }
         }
-        return PlayerStatus.NONE;
+        return PlayerStatus.INIT;
     }
 
     @Override

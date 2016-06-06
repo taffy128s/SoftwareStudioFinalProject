@@ -5,9 +5,9 @@ package client;
  */
 public enum PlayerStatus {
     /**
-     * No card was selected
+     * No card was selected, initial state
      */
-    NONE(0),
+    INIT(0),
     /**
      * A card was selected by pressing LEFT mouse key
      */
