@@ -342,6 +342,16 @@ public class Applet extends PApplet {
                 sendMessage(GameMessage.CARD_EFFECT + " " +
                             cardPointed.getCardID().value() + " " + username + " " + username);
             }
+            else if(typedCard.isNotTargeting()) {
+                usedSuccessfully = true;
+                sendMessage(GameMessage.CARD_EFFECT + " " +
+                            cardPointed.getCardID().value() + " " + username + " " + username);
+            }
+            else {
+                usedSuccessfully = true;
+                sendMessage(GameMessage.CARD_EFFECT + " " +
+                            cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
+            }
         }
         else if(cardPointed.getCategory() == CardCategory.WEA) {
 
