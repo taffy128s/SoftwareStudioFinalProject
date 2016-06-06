@@ -496,8 +496,8 @@ public class Applet extends PApplet {
         textarea = cp5.addTextarea("txtarea")
                       .setPosition(25, cp5.getController("textfield").getPosition()[1] - 80 - 15)
                       .setSize(350, 80)
-                      .setFont(createFont("arial", 20))
-                      .setLineHeight(20)
+                      .setFont(createFont("arial", 16))
+                      .setLineHeight(16)
                       .setColor(color(0))
                       .setColorBackground(color(245, 245, 220))
                       .setColorForeground(color(0))
@@ -510,6 +510,7 @@ public class Applet extends PApplet {
                 try {
                     String string = chatReader.readLine();
                     textarea.append(string + "\n");
+                    textarea.scroll(1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -519,7 +520,7 @@ public class Applet extends PApplet {
     }
     
     public void textfield(String text) {
-        chatWriter.write(text);
+        chatWriter.println(username + ": " + text);
         chatWriter.flush();
     }
 
