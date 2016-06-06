@@ -765,13 +765,12 @@ public class Applet extends PApplet {
                 break;
             case END:
                 background(245, 222, 179);
+                textarea.setVisible(false);
+                cp5.getController("done").setVisible(false);
+                cp5.getController("textfield").setVisible(false);
                 image(image, 0, 0);
                 strokeWeight(1);
                 stroke(0);
-                line(textarea.getPosition()[0], textarea.getPosition()[1] - 1, textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] - 1);
-                line(textarea.getPosition()[0] - 1, textarea.getPosition()[1] - 1, textarea.getPosition()[0] - 1, textarea.getPosition()[1] + textarea.getHeight());
-                line(textarea.getPosition()[0], textarea.getPosition()[1] + textarea.getHeight(), textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] + textarea.getHeight());
-                line(textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] - 1, textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] + textarea.getHeight());
                 bigCircle.display();
                 alivePlayers.forEach(Player::display);
                 for (int i = 0; i < handCards.size(); ++i) {
