@@ -9,6 +9,8 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import card.*;
 import controlP5.ControlFont;
@@ -175,6 +177,32 @@ public class Applet extends PApplet {
                 case GameMessage.RECEIVE_CARD:
                     System.out.println("get card id " + param[1]);
                     handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
+                    break;
+                case GameMessage.ASK_FOR_CARD:
+                    System.out.println("be asked for card id " + param[1]);
+                    int cardIDAsked = Integer.parseInt(param[1]);
+                    int result = JOptionPane.showConfirmDialog(null,
+                                                               new JLabel("Do you want to use " + cardMap.get(cardIDAsked).getName()),
+                                                               "HAHAHAHA", 
+                                                               JOptionPane.OK_CANCEL_OPTION);
+                    if (result == JOptionPane.OK_OPTION) {
+                        boolean hasCard = false;
+                        for(int i=0 ; i<handCards.size() ; i++) {
+                            if(handCards.get(i).getCardID().value() == cardIDAsked) {
+                                hasCard = true;
+                                Card used = handCards.get(i);
+                                sendMessage(GameMessage.RESPONCE_YES);
+                                handCards.remove(used);
+                                break;
+                            }
+                        }
+                        if(!hasCard) {
+                            // TODO show message to player that you don't have this kind of card
+                            sendMessage(GameMessage.RESPONCE_NO);
+                        }
+                    } else {
+                        sendMessage(GameMessage.RESPONCE_NO);
+                    }
                     break;
                 case GameMessage.MODIFY_PLAYER:
                     Player target = null;

@@ -66,6 +66,20 @@ public class GameMessage {
      */
     public static final String NUMBER_OF_HAND_CARDS = "numberOfHandCard";
 
+    /**
+     * <p><code>Format: ASK_FOR_CARD card_number</code></p>
+     */
+    public static final String ASK_FOR_CARD = "ASKFORCARD";
+    
+    /**
+     * <p><code>Format: RESPONCE_NO </code></p>
+     */
+    public static final String RESPONCE_NO = "RESPONCEFORNO";
+    /**
+     * <p><code>Format: RESPONCE_YES </code></p>
+     */
+    public static final String RESPONCE_YES = "RESPONCEFORYES";
+    
     public static final String KILL = "kill";
     public static final String DODGE = "dodge";
     public static final String GOLDEN_APPLE = "goldenapple" ;
