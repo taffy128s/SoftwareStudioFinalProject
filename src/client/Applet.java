@@ -399,7 +399,7 @@ public class Applet extends PApplet {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
         this.cp5 = new ControlP5(this);
-        cp5.addButton("done").setLabel("END TURN").setPosition(525, 530).setSize(200, 50).setVisible(false);
+        cp5.addButton("done").setLabel("END TURN").setPosition(Client.WINDOW_WIDTH - 220, 530).setSize(200, 50).setVisible(false);
         PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
         ControlFont font = new ControlFont(pfont, 241);
         cp5.getController("done").getCaptionLabel().setFont(font).toUpperCase(false).setSize(24);
