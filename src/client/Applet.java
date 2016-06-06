@@ -34,6 +34,9 @@ public class Applet extends PApplet {
 
 	private boolean yourTurn;
 
+    private boolean showCardDescription;
+    private Card cardDescription;
+
 	private boolean showOtherCard;
     private Card otherCard;
 
@@ -367,7 +370,14 @@ public class Applet extends PApplet {
         switch (playerStatus) {
             case INIT:
                 checkMouseOverPlayer();
-                handCards.setPositions(new Point2D(event.getX(), event.getY()));
+                Card pointed = handCards.setPositions(new Point2D(event.getX(), event.getY()));
+                if (pointed != null) {
+                    showCardDescription = true;
+                    cardDescription = pointed;
+                }
+                else {
+                    showCardDescription = false;
+                }
                 break;
             case SELECTING:
                 if (cardPointed != null) {
@@ -544,7 +554,6 @@ public class Applet extends PApplet {
             case WAIT:
             	background(245, 222, 179);
                 image(imageInitial,0,0) ;
-
                 textSize(32);
                 fill(255, 255, 255);
                 text("Please wait until the game starts.", 350, 375);
@@ -591,6 +600,9 @@ public class Applet extends PApplet {
                         break;
                     default:
                         break;
+                }
+                if (showCardDescription) {
+                    image(cardDescription.getdImage(), cardDescription.x, cardDescription.y - 130);
                 }
                 if (showOtherCard) {
                     image(otherCard.getImage(), otherCard.x, otherCard.y);
