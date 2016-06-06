@@ -77,9 +77,11 @@ public class ServerUtility {
     }
 
     private boolean makeUserMove(int userIndex) {
+        String username = connectionToUsername.get(connections.get(userIndex));
         int newCardIndex = cardStack.drawTop().getCardID().value();
         connections.get(userIndex).sendMessage(GameMessage.YOUR_TURN);
         connections.get(userIndex).sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
+        broadCast(GameMessage.MODIFY_PLAYER + " " + username + " " + GameMessage.NUMBER_OF_HAND_CARDS + " 1");
         while (true) {
             String message = connections.get(userIndex).readMessage();
             if (message == null) {
@@ -97,7 +99,7 @@ public class ServerUtility {
 
 			}
             // broadcast to let all clients know its number of hand cards
-            broadCast(GameMessage.MODIFY_PLAYER + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
+            broadCast(GameMessage.MODIFY_PLAYER + " " + args[1] + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
 		}
         return true;
     }

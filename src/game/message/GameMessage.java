@@ -33,7 +33,7 @@ public class GameMessage {
     public static final String RECEIVE_CARD = "receivecard";
 
     /**
-     * <p><code>Format: MODIFY_PLAYER attribute value</code>
+     * <p><code>Format: MODIFY_PLAYER username attribute value</code>
      * <p>All attributes can be modified are:
      * <p><code>LIFE_POINT</code> using <code>GameMessage.LIFE_POINT</code>
      * <p><code>numberOfHandCard</code> using <code>GameMessage.NUMBER_OF_HAND_CARDS</code>
@@ -42,14 +42,14 @@ public class GameMessage {
     public static final String MODIFY_PLAYER = "modifyplayer";
     /**
      * Attribute string for <code>GameMessage.MODIFY_PLAYER</code>
-     * <p><code>MODIFY_PLAYER LIFE_POINT value</code>
+     * <p><code>MODIFY_PLAYER username LIFE_POINT value</code>
      * <p><code>value</code> is its delta value.
      * <p>Example: MODIFY_PLAYER LIFE_POINT -1
      */
     public static final String LIFE_POINT = "lifePoint";
     /**
      * <p>Attribute string for <code>GameMessage.MODIFY_PLAYER</code>
-     * <p><code>MODIFY_PLAYER NUMBER_OF_HAND_CARDS value</code>
+     * <p><code>MODIFY_PLAYER username NUMBER_OF_HAND_CARDS value</code>
      * <p><code>value</code> is its delta value.
      * <p>Example: MODIFY_PLAYER NUMBER_OF_HAND_CARDS -1
      */

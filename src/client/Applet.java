@@ -46,7 +46,7 @@ public class Applet extends PApplet {
 
     private String username;
     private Player playerPointed;
-    private Vector<Player> aliveCharacters;
+    private Vector<Player> alivePlayers;
     private BigCircle bigCircle;
     private Random random;
 
@@ -84,7 +84,7 @@ public class Applet extends PApplet {
         this.writer = writer;
         this.reader = reader;
         this.bigCircle = new BigCircle(this, Client.WINDOW_WIDTH / 3, Client.WINDOW_HEIGHT / 2 - 80, 500);
-        this.aliveCharacters = new Vector<>();
+        this.alivePlayers = new Vector<>();
         this.handCards = new HandCard();
         this.gameStatus = GameStatus.WAIT;
         this.playerStatus = PlayerStatus.INIT;
@@ -120,7 +120,7 @@ public class Applet extends PApplet {
                         System.out.println("WAIT " + string);
                         switch (param[0]) {
                             case GameMessage.INITIAL_PLAYER:
-                                aliveCharacters.add(
+                                alivePlayers.add(
                                         new Player(Applet.this, param[1], param[2], random.nextFloat() * 800, random.nextFloat() * 800)
                                 );
                                 break;
@@ -152,8 +152,23 @@ public class Applet extends PApplet {
                         		System.out.println("get card id " + param[1]);
                                 handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
                                 break;
-                        	case GameMessage.DECREASE_CARD:
-                        		break;
+                            case GameMessage.MODIFY_PLAYER:
+                                Player target = null;
+                                for (int i = 0; i < alivePlayers.size(); ++i) {
+                                    if (alivePlayers.get(i).getUserName().equals(param[1])) {
+                                        target = alivePlayers.get(i);
+                                        break;
+                                    }
+                                }
+                                if (target != null) {
+                                    if (param[2].equals(GameMessage.LIFE_POINT)) {
+                                        target.setLifePoint(target.getLifePoint() + Integer.parseInt(param[3]));
+                                    }
+                                    else {
+                                        target.setNumberOfHandCard(target.getNumberOfHandCard() + Integer.parseInt(param[3]));
+                                    }
+                                }
+                                break;
                             default:
                                 int cardID = Integer.parseInt(param[0]);
                                 System.out.println(CardUtility.copyCard(cardMap.get(cardID)).getName());
@@ -184,10 +199,10 @@ public class Applet extends PApplet {
      */
     private void makeACircle() {
         float angle = 0;
-        for (Player ch : aliveCharacters) {
+        for (Player ch : alivePlayers) {
             ani = Ani.to(ch, 2f, "x", bigCircle.getX() + bigCircle.getRadius() * cos(angle));
             ani = Ani.to(ch, 2f, "y", bigCircle.getY() - bigCircle.getRadius() * sin(angle));
-            angle += (TWO_PI / (float) aliveCharacters.size());
+            angle += (TWO_PI / (float) alivePlayers.size());
         }
     }
 
@@ -197,7 +212,7 @@ public class Applet extends PApplet {
      * @return player pointed by mouse
      */
     private Player checkMouseOverPlayer() {
-    	for (Player ch : aliveCharacters) {
+    	for (Player ch : alivePlayers) {
             if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
                 return ch;
             }
@@ -355,7 +370,7 @@ public class Applet extends PApplet {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
         this.cp5 = new ControlP5(this);
-        this.doneButton = cp5.addButton("done").setLabel("END_TURN").setPosition(525, 530).setSize(200, 50).setVisible(false);
+        this.doneButton = cp5.addButton("done").setLabel("END TURN").setPosition(525, 530).setSize(200, 50).setVisible(false);
         PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
         ControlFont font = new ControlFont(pfont, 241);
         cp5.getController("done").getCaptionLabel().setFont(font).toUpperCase(false).setSize(24);
@@ -387,7 +402,7 @@ public class Applet extends PApplet {
                     text("[System] Don't kill yourself!", 50, 50);
                 }
                 bigCircle.display();
-                for (Player ch : aliveCharacters) {
+                for (Player ch : alivePlayers) {
                     ch.display();
                     if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
                         ch.showCharacterInfo();
