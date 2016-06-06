@@ -24,7 +24,23 @@ import card.justcard.WeaTenSword;
 public class CardUtility {
 
     /**
-     * Return a new card of specified CardID
+     * Return a new card of specified CardID in type int
+     *
+     * @param id CardId to new
+     * @return card with specified ID
+     */
+    public static Card newCard(int id) {
+        CardID[] cardIds = CardID.values();
+        for (CardID cardID : cardIds) {
+            if (cardID.value() == id) {
+                return newCard(cardID);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Return a new card of specified CardID in type CardID
      *
      * @param id CardId to new
      * @return card with specified ID
