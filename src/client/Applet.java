@@ -52,7 +52,6 @@ public class Applet extends PApplet {
     private TreeMap<Integer, Card> cardMap;
     private HandCard handCards;
     private Card cardPointed;
-    private Card cardUsing;
     private int clickedOffsetX;
     private int clickedOffsetY;
     private BufferedImage bg;
@@ -139,21 +138,25 @@ public class Applet extends PApplet {
                         		onlyUseKill = false;
                                 onlyUseDodge = false;
                                 yourTurn = true;
+                                if (playerStatus == PlayerStatus.KILL_USED) {
+                                    playerStatus = PlayerStatus.NONE;
+                                }
                                 cp5.getController("done").setLock(false);
                                 break;
                         	case GameMessage.RECEIVE_CARD:
                         		System.out.println("get card id " + param[1]);
                                 handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
                                 break;
-                        	case GameMessage.KILL:
-                        		System.out.println("GOT KILLED!!!!!");
-                        		yourTurn = true;
-                        		onlyUseDodge = true;
-                        		cp5.getController("done").setLock(false);
-                        		break;
+//                        	case GameMessage.KILL:
+//                        		System.out.println("GOT KILLED!!!!!");
+//                        		yourTurn = true;
+//                        		onlyUseDodge = true;
+//                        		cp5.getController("done").setLock(false);
+//                        		break;
                         	case GameMessage.DECREASE_CARD:
                         		break;
                             default:
+                                int cardID = Integer.parseInt(param[0]);
                             	break;
                         }
                     }
@@ -260,7 +263,7 @@ public class Applet extends PApplet {
                 break;
             case TARGETING:
                 break;
-            case ENDED:
+            case CARD_USING_ENDED:
                 break;
             default:
                 break;
@@ -300,7 +303,7 @@ public class Applet extends PApplet {
                 if (mouseButton == LEFT) {
                     checkMouseOverPlayer();
                     if (playerPointed != null) {
-                        playerStatus = PlayerStatus.ENDED;
+                        playerStatus = PlayerStatus.CARD_USING_ENDED;
                     }
                 }
                 else {
@@ -310,8 +313,20 @@ public class Applet extends PApplet {
                     playerStatus = PlayerStatus.NONE;
                 }
                 break;
-            case ENDED:
-                sendMessage(cardPointed.getName() + " " + username + " " + playerPointed.getUserName());
+            case CARD_USING_ENDED:
+                if (playerPointed != null) {
+                    sendMessage(cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
+                }
+                else {
+                    sendMessage(cardPointed.getCardID().value() + " " + username);
+                }
+                if (cardPointed.getCardID().value() == CardID.BASIC_KILL.value()) {
+                    playerStatus = PlayerStatus.KILL_USED;
+                }
+                else {
+                    playerStatus = PlayerStatus.NONE;
+                }
+                cardPointed = null;
                 break;
             default:
                 break;
@@ -323,9 +338,11 @@ public class Applet extends PApplet {
             // FINDING SOME BETTER WRITE METHOD by LittleBird
             switch (cardPointed.getCardID()) {
                 case BASIC_APPLE:
-                    return PlayerStatus.ENDED;
+                    handCards.remove(cardPointed);
+                    return PlayerStatus.CARD_USING_ENDED;
                 case BASIC_DODGE:
-                    return PlayerStatus.ENDED;
+                    handCards.remove(cardPointed);
+                    return PlayerStatus.CARD_USING_ENDED;
                 case BASIC_KILL:
                     return PlayerStatus.TARGETING;
             }
@@ -367,49 +384,54 @@ public class Applet extends PApplet {
      */
     @Override
     public void draw() {
-        if (gameStatus == GameStatus.WAIT) {
-            background(245, 222, 179);
-            textSize(32);
-            fill(0, 100, 150);
-            text("Please wait until the game starts.", 225, 375);
-        } else if (gameStatus == GameStatus.READY) {
-            background(245, 222, 179);
-            image(image, 0, 0);
-            if (yourTurn) {
-            	fill(255, 0, 0);
-            	strokeWeight(0);
-            	ellipse(15, 15, 20, 20);
-            }
-            if (showDontKillSelf) {
-            	textSize(28);
-                fill(0);
-                text("[System] Don't kill yourself!", 50, 50);
-            }
-            bigCircle.display();
-            for (Player ch : aliveCharacters) {
-                ch.display();
-                if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
-                    ch.showCharacterInfo();
+        switch (gameStatus) {
+            case WAIT:
+                background(245, 222, 179);
+                textSize(32);
+                fill(0, 100, 150);
+                text("Please wait until the game starts.", 225, 375);
+                break;
+            case READY:
+                background(245, 222, 179);
+                image(image, 0, 0);
+                if (yourTurn) {
+                    fill(255, 0, 0);
+                    strokeWeight(0);
+                    ellipse(15, 15, 20, 20);
                 }
-            }
-            for (int i = 0; i < handCards.size(); ++i) {
-                image(handCards.get(i).getImage(), handCards.get(i).x, handCards.get(i).y);
-            }
-            switch (playerStatus) {
-                case TARGETING:
-                    noFill();
-                    color(255, 0, 0);
-                    strokeWeight(5.0f);
-                    ellipse(mouseX, mouseY, 45, 45);
-                    ellipse(mouseX, mouseY, 60, 60);
-                    line(mouseX + 10, mouseY, mouseX + 40, mouseY);
-                    line(mouseX - 10, mouseY, mouseX - 40, mouseY);
-                    line(mouseX, mouseY + 10, mouseX, mouseY + 40);
-                    line(mouseX, mouseY - 10, mouseX, mouseY - 40);
-                    break;
-                default:
-                    break;
-            }
+                if (showDontKillSelf) {
+                    textSize(28);
+                    fill(0);
+                    text("[System] Don't kill yourself!", 50, 50);
+                }
+                bigCircle.display();
+                for (Player ch : aliveCharacters) {
+                    ch.display();
+                    if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
+                        ch.showCharacterInfo();
+                    }
+                }
+                for (int i = 0; i < handCards.size(); ++i) {
+                    image(handCards.get(i).getImage(), handCards.get(i).x, handCards.get(i).y);
+                }
+                switch (playerStatus) {
+                    case TARGETING:
+                        noFill();
+                        color(255, 0, 0);
+                        strokeWeight(5.0f);
+                        ellipse(mouseX, mouseY, 45, 45);
+                        ellipse(mouseX, mouseY, 60, 60);
+                        line(mouseX + 10, mouseY, mouseX + 40, mouseY);
+                        line(mouseX - 10, mouseY, mouseX - 40, mouseY);
+                        line(mouseX, mouseY + 10, mouseX, mouseY + 40);
+                        line(mouseX, mouseY - 10, mouseX, mouseY - 40);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
         }
     }
 

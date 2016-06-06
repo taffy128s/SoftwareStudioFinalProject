@@ -19,7 +19,11 @@ public enum PlayerStatus {
     /**
      * Card can make effect or send to server
      */
-    ENDED(3);
+    CARD_USING_ENDED(3),
+    /**
+     * state that used kill, only can end this turn
+     */
+    KILL_USED(4);
 
     private final int value;
 
