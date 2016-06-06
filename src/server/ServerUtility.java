@@ -153,7 +153,7 @@ public class ServerUtility {
                 // Note CARD_EFFECT CARD_INDEX SOURCE TARGET
                 // Idx  0           1          2      3
                 int cardIndex = Integer.parseInt(args[1]);
-                broadCast(GameMessage.SHOW_CARD + " " + cardIndex + " " + args[2] + " " + args[3]);
+                broadCastExcept(GameMessage.SHOW_CARD + " " + cardIndex + " " + args[2] + " " + args[3], usernameToConnection.get(args[2]));
                 Card cardRead = cardMap.get(cardIndex);
                 if (cardRead.getCategory() == CardCategory.BASIC) {
                     basicCardEffect(args, cardRead);
@@ -188,14 +188,14 @@ public class ServerUtility {
             broadCast(cardRead.effectString(args[3]));
         }
     }
-    
+
     private void jinCardEffect(String[] args, Card cardRead) {
         JinCard card = (JinCard)cardRead;
         if(card.isConditional()) {
-            
+
         }
         else {
-            
+
         }
     }
 

@@ -39,8 +39,10 @@ public class Applet extends PApplet {
     private boolean haveUsedKill;
     private boolean onlyUseDodge;
 
+    private boolean showOtherCard;
+    private Card cardToShow;
+
     private boolean showSystemMessage;
-    private String systemMessage;
 
     private PrintWriter writer;
     private BufferedReader reader;
@@ -182,26 +184,44 @@ public class Applet extends PApplet {
                     handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
                     break;
                 case GameMessage.SHOW_CARD:
+                    System.out.println("SHOW CARD");
                     int cardIndex = Integer.parseInt(param[1]);
-                    Card cardToDisplay = CardUtility.newCard(cardIndex);
-                    systemMessage = param[2] + " used " + cardToDisplay.getName();
+                    cardToShow = CardUtility.newCard(cardIndex);
+                    if (cardToShow == null) {
+                        break;
+                    }
+                    int targetX = 0;
+                    int targetY = 0;
+                    for (Player player : alivePlayers) {
+                        if (player.getUserName().equals(param[2])) {
+                            cardToShow.x = (int) player.x;
+                            cardToShow.y = (int) player.y;
+                        }
+                        if (player.getUserName().equals(param[3])) {
+                            targetX = (int) player.x;
+                            targetY = (int) player.y;
+                        }
+                    }
                     new Thread(() -> {
-                        showSystemMessage = true;
-                        delay(2000);
-                        showSystemMessage = false;
+                        showOtherCard = true;
+                        while (cardToShow.x != Client.WINDOW_WIDTH - 200 && cardToShow.y != 20) {
+                            delay(1000);
+                        }
                     }).start();
+                    Ani.to(cardToShow, 0.75f, "x", Client.WINDOW_WIDTH - 200);
+                    Ani.to(cardToShow, 0.75f, "y", 20);
                     break;
                 case GameMessage.ASK_FOR_CARD:
                     System.out.println("be asked for card id " + param[1]);
                     int cardIDAsked = Integer.parseInt(param[1]);
                     int result = JOptionPane.showConfirmDialog(null,
-                                                               new JLabel("Do you want to use " + cardMap.get(cardIDAsked).getName()),
-                                                               "HAHAHAHA",
+                                                               new JLabel("Do you want to use " + cardMap.get(cardIDAsked).getName() + "?"),
+                                                               "Choose",
                                                                JOptionPane.OK_CANCEL_OPTION);
                     if (result == JOptionPane.OK_OPTION) {
                         boolean hasCard = false;
-                        for(int i=0 ; i<handCards.size() ; i++) {
-                            if(handCards.get(i).getCardID().value() == cardIDAsked) {
+                        for (int i=0 ; i< handCards.size() ; i++) {
+                            if (handCards.get(i).getCardID().value() == cardIDAsked) {
                                 hasCard = true;
                                 Card used = handCards.get(i);
                                 sendMessage(GameMessage.RESPONSE_YES);
@@ -209,7 +229,7 @@ public class Applet extends PApplet {
                                 break;
                             }
                         }
-                        if(!hasCard) {
+                        if (!hasCard) {
                             // TODO show message to player that you don't have this kind of card
                             sendMessage(GameMessage.RESPONSE_NO);
                         }
@@ -491,11 +511,6 @@ public class Applet extends PApplet {
                 	fill(0, 0, 0);
                     text("Not your turn!", 280, 340);
                 }
-                if (showSystemMessage) {
-                    textSize(28);
-                    fill(0);
-                    text("[System] " + systemMessage, 50, 50);
-                }
                 for (Player ch : alivePlayers) {
                     ch.display();
                     if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
@@ -519,6 +534,9 @@ public class Applet extends PApplet {
                         break;
                     default:
                         break;
+                }
+                if (showOtherCard) {
+                    image(cardToShow.getImage(), cardToShow.x, cardToShow.y);
                 }
                 break;
             default:
