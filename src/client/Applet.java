@@ -282,7 +282,7 @@ public class Applet extends PApplet {
                                         cardPointed.getCardID().value() + " " + username + " " + username);
                     break;
                 case BASIC_KILL:
-                    if (playerPointed.getUserName().equals(username)) {
+                    /*if (playerPointed.getUserName().equals(username)) {
                         Ani.to(cardPointed, 0.75f, "x", cardPointed.getInitialX());
                         Ani.to(cardPointed, 0.75f, "y", cardPointed.getInitialY());
                         Thread thread = new Thread(() -> {
@@ -293,10 +293,12 @@ public class Applet extends PApplet {
                         thread.start();
                         usedSuccessfully = false;
                         break;
-                    }
+                    }*/
                     usedSuccessfully = true;
                     sendMessage(GameMessage.CARD_EFFECT + " " +
                                         cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
+                    break;
+                default:
                     break;
             }
         }
@@ -389,6 +391,8 @@ public class Applet extends PApplet {
                     return PlayerStatus.INIT;
                 case BASIC_KILL:
                     return PlayerStatus.TARGETING;
+                default:
+                    break;
             }
         }
         else if (cardPointed.getCategory() == CardCategory.JIN) {
@@ -423,7 +427,7 @@ public class Applet extends PApplet {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
         this.cp5 = new ControlP5(this);
-        cp5.addButton("done").setLabel("END TURN").setPosition(525, 530).setSize(200, 50).setVisible(false);
+        cp5.addButton("done").setLabel("END TURN").setPosition(Client.WINDOW_WIDTH - 220, 530).setSize(200, 50).setVisible(false);
         PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
         ControlFont font = new ControlFont(pfont, 241);
         cp5.getController("done").getCaptionLabel().setFont(font).toUpperCase(false).setSize(24);

@@ -20,7 +20,7 @@ import javax.swing.WindowConstants;
 @SuppressWarnings("serial")
 public class Client extends JFrame {
 
-    public final static int WINDOW_WIDTH = 1000;
+    public final static int WINDOW_WIDTH = 1200;
     public final static int WINDOW_HEIGHT = 800;
 
     private Socket socket;
