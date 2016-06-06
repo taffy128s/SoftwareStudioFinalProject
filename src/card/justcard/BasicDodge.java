@@ -19,6 +19,9 @@ public class BasicDodge extends Card {
               "When you targeted by 'Kill', you can issue an 'Dodge' to nullify the damage caused by the 'Kill'.",
               "basic_dodge.png");
     }
-
-
+    @Override
+    public String effectString(String targetUsername) {
+        // TODO Auto-generated method stub
+        return super.effectString(targetUsername);
+    }
 }
