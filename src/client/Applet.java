@@ -15,6 +15,8 @@ import javax.swing.JOptionPane;
 import card.*;
 import controlP5.ControlP5;
 import controlP5.Textarea;
+import ddf.minim.AudioPlayer;
+import ddf.minim.Minim;
 import de.looksgood.ani.Ani;
 import game.message.GameMessage;
 import javafx.geometry.Point2D;
@@ -30,6 +32,8 @@ import processing.event.MouseEvent;
 public class Applet extends PApplet {
 
     private ControlP5 cp5;
+    private Minim minim;
+    private AudioPlayer makelose, allcard, getcard, kill, dodge, apple, steal, arrow, done, ride, ohya;
     private Textarea textarea;
 
 	private boolean yourTurn;
@@ -67,10 +71,14 @@ public class Applet extends PApplet {
     private Card cardPointed;
     private int clickedOffsetX;
     private int clickedOffsetY;
+
     private BufferedImage bg;
-    private BufferedImage initialPage ;
+    private BufferedImage initialPage;
+    private BufferedImage endPage;
+
     private PImage image;
-    private PImage imageInitial ;
+    private PImage imageInitial;
+    private PImage imageEnd;
 
     private boolean pause;
 
@@ -98,6 +106,15 @@ public class Applet extends PApplet {
     	this.imageInitial = new PImage(initialPage.getWidth(), initialPage.getHeight(), PConstants.ARGB);
         initialPage.getRGB(0, 0, imageInitial.width, imageInitial.height, imageInitial.pixels, 0, imageInitial.width);
         imageInitial.updatePixels();
+        try {
+            endPage = ImageIO.read(getClass().getResource("img/End.png"));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.imageEnd = new PImage(endPage.getWidth(), endPage.getHeight(), PConstants.ARGB);
+        endPage.getRGB(0, 0, imageEnd.width, imageEnd.height, imageEnd.pixels, 0, imageEnd.width);
+        imageEnd.updatePixels();
         Ani.init(this);
         this.username = name;
         this.random = new Random();
@@ -124,6 +141,8 @@ public class Applet extends PApplet {
     public void done() {
         if (yourTurn) {
             yourTurn = false;
+            done.rewind();
+            done.play();
             sendMessage(GameMessage.END_TURN);
         }
     }
@@ -226,12 +245,10 @@ public class Applet extends PApplet {
                     System.out.println("SHOW CARD");
                     int cardIndex = Integer.parseInt(param[1]);
                     otherCard = CardUtility.newCard(cardIndex);
-                    for (Player player : alivePlayers) {
-                        if (player.getUserName().equals(param[2])) {
-                            otherCard.x = (int) player.x;
-                            otherCard.y = (int) player.y;
-                        }
-                    }
+                    alivePlayers.stream().filter(player -> player.getUserName().equals(param[2])).forEach(player -> {
+                        otherCard.x = (int) player.x;
+                        otherCard.y = (int) player.y;
+                    });
                     new Thread(() -> {
                         showOtherCard = true;
                         while (otherCard.x != Client.WINDOW_WIDTH - 200 && otherCard.y != 20) {
@@ -264,6 +281,13 @@ public class Applet extends PApplet {
                                                                "Choose",
                                                                JOptionPane.OK_CANCEL_OPTION);
                     if (result == JOptionPane.OK_OPTION) {
+                        if (used.getCardID() == CardID.BASIC_DODGE) {
+                            dodge.rewind();
+                            dodge.play();
+                        } else if (used.getCardID() == CardID.BASIC_KILL) {
+                            kill.rewind();
+                            kill.play();
+                        }
                         sendMessage(GameMessage.RESPONSE_YES);
                         handCards.remove(used);
                         new Thread(() -> {
@@ -478,6 +502,50 @@ public class Applet extends PApplet {
                     Ani.to(cardPointed, 0.75f, "x", Client.WINDOW_WIDTH - 200);
                     Ani.to(cardPointed, 0.75f, "y", 20);
                     playerStatus = changeState(cardPointed);
+                    switch (cardPointed.getCardID()) {
+                        case BASIC_APPLE:
+                            apple.rewind();
+                            apple.play();
+                            break;
+                        case BASIC_DODGE:
+                            dodge.rewind();
+                            dodge.play();
+                            break;
+                        case BASIC_KILL:
+                            kill.rewind();
+                            kill.play();
+                            break;
+                        case JIN_CARZYBANQUET:
+                            ohya.rewind();
+                            ohya.play();
+                            break;
+                        case JIN_GETCARD:
+                            getcard.rewind();
+                            getcard.play();
+                            break;
+                        case JIN_THIEF:
+                            steal.rewind();
+                            steal.play();
+                            break;
+                        case JIN_THOUSANDARROW:
+                            arrow.rewind();
+                            arrow.play();
+                            break;
+                        case JIN_THROW:
+                            makelose.rewind();
+                            makelose.play();
+                            break;
+                        case JIN_TUSHI:
+                            ride.rewind();
+                            ride.play();
+                            break;
+                        case JIN_WUKU:
+                            allcard.rewind();
+                            allcard.play();
+                            break;
+                        default:
+                            break;
+                    }
                     if (playerStatus == PlayerStatus.INIT) {
                         new Thread(this::useCard).start();
                     }
@@ -558,6 +626,18 @@ public class Applet extends PApplet {
      */
     @Override
     public void setup() {
+        minim = new Minim(this);
+        makelose = minim.loadFile(this.getClass().getResource("audio/makelose.mp3").getPath());
+        allcard = minim.loadFile(this.getClass().getResource("audio/allcard.mp3").getPath());
+        getcard = minim.loadFile(this.getClass().getResource("audio/getcard.mp3").getPath());
+        kill = minim.loadFile(this.getClass().getResource("audio/kill.mp3").getPath());
+        dodge = minim.loadFile(this.getClass().getResource("audio/dodge.mp3").getPath());
+        apple = minim.loadFile(this.getClass().getResource("audio/apple.mp3").getPath());
+        steal = minim.loadFile(this.getClass().getResource("audio/steal.mp3").getPath());
+        done = minim.loadFile(this.getClass().getResource("audio/done.mp3").getPath());
+        arrow = minim.loadFile(this.getClass().getResource("audio/arrow.mp3").getPath());
+        ride = minim.loadFile(this.getClass().getResource("audio/ride.mp3").getPath());
+        ohya = minim.loadFile(this.getClass().getResource("audio/ohya.mp3").getPath());
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
         this.cp5 = new ControlP5(this);
@@ -698,8 +778,9 @@ public class Applet extends PApplet {
                     image(handCards.get(i).getImage(), handCards.get(i).x, handCards.get(i).y);
                 }
                 textSize(76);
-                fill(0, 0, 0);
-                text("Player " + winner + " Wins!!!", 325, 400);
+                fill(255, 255, 255);
+                image(imageEnd, 0, 0);
+                text("Player " + winner + " Wins!!!", 290, 400);
                 break;
             default:
                 break;
