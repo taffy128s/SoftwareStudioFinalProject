@@ -154,16 +154,16 @@ public class ServerUtility {
                 // Idx  0           1          2      3
                 int cardIndex = Integer.parseInt(args[1]);
                 Card cardRead = cardMap.get(cardIndex);
-                if(cardRead.getCategory() == CardCategory.BASIC) {
+                if (cardRead.getCategory() == CardCategory.BASIC) {
                     Card card = cardRead;
-                    if(card.getCardID() == CardID.BASIC_KILL) {
+                    if (card.getCardID() == CardID.BASIC_KILL) {
                         Connection targetConnection = usernameToConnection.get(args[3]);
                         targetConnection.sendMessage(GameMessage.ASK_FOR_CARD + " " + CardID.BASIC_DODGE.value());
-                        String responce = targetConnection.readMessage();
-                        if(responce.equals(GameMessage.RESPONCE_YES)) {
+                        String response = targetConnection.readMessage();
+                        if (response.equals(GameMessage.RESPONSE_OK)) {
                             cardStack.discardCard(CardUtility.newCard(CardID.BASIC_DODGE));
                         }
-                        else if(responce.equals(GameMessage.RESPONCE_NO)) {
+                        else if (response.equals(GameMessage.RESPONSE_NO)) {
                             broadCast(card.effectString(args[3]));
                         }
                     }
@@ -171,11 +171,11 @@ public class ServerUtility {
                         broadCast(cardRead.effectString(args[3]));
                     }
                 }
-                else if(cardRead.getCategory() == CardCategory.JIN) {
-                    JinCard card = (JinCard)cardRead;
+                else if (cardRead.getCategory() == CardCategory.JIN) {
+                    JinCard card = (JinCard) cardRead;
                 }
-                else if(cardRead.getCategory() == CardCategory.WEA) {
-                    WeaCard card = (WeaCard)cardRead;
+                else if (cardRead.getCategory() == CardCategory.WEA) {
+                    WeaCard card = (WeaCard) cardRead;
                 }
                 cardStack.discardCard(CardUtility.copyCard(cardRead));
             }

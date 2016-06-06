@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import card.*;
-import controlP5.CColor;
 import controlP5.ControlFont;
 import controlP5.ControlP5;
 import de.looksgood.ani.Ani;
@@ -192,17 +191,17 @@ public class Applet extends PApplet {
                             if(handCards.get(i).getCardID().value() == cardIDAsked) {
                                 hasCard = true;
                                 Card used = handCards.get(i);
-                                sendMessage(GameMessage.RESPONCE_YES);
+                                sendMessage(GameMessage.RESPONSE_OK);
                                 handCards.remove(used);
                                 break;
                             }
                         }
                         if(!hasCard) {
                             // TODO show message to player that you don't have this kind of card
-                            sendMessage(GameMessage.RESPONCE_NO);
+                            sendMessage(GameMessage.RESPONSE_NO);
                         }
                     } else {
-                        sendMessage(GameMessage.RESPONCE_NO);
+                        sendMessage(GameMessage.RESPONSE_NO);
                     }
                     break;
                 case GameMessage.MODIFY_PLAYER:
