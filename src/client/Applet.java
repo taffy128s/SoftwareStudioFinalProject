@@ -63,6 +63,7 @@ public class Applet extends PApplet {
     private BufferedImage bg;
     private BufferedImage initialPage ;
     private PImage image;
+    private PImage imageInitial ;
 
     /**
      * Initialize a PApplet with writer, printer to server
@@ -79,6 +80,16 @@ public class Applet extends PApplet {
     	this.image = new PImage(bg.getWidth(), bg.getHeight(), PConstants.ARGB);
         bg.getRGB(0, 0, image.width, image.height, image.pixels, 0, image.width);
         image.updatePixels();
+        // InitialPage
+        try {
+			initialPage = ImageIO.read(getClass().getResource("img/InitialPage.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	this.imageInitial = new PImage(initialPage.getWidth(), initialPage.getHeight(), PConstants.ARGB);
+        initialPage.getRGB(0, 0, imageInitial.width, imageInitial.height, imageInitial.pixels, 0, imageInitial.width);
+        imageInitial.updatePixels();
+        
         Ani.init(this);
         this.onlyUseKill = false;
         this.onlyUseDodge = false;
@@ -527,17 +538,11 @@ public class Applet extends PApplet {
     public void draw() {
         switch (gameStatus) {
             case WAIT:
-            	try {
-        			initialPage = ImageIO.read(getClass().getResource("img/InitialPage.png"));
-        		} catch (IOException e) {
-        			e.printStackTrace();
-        		}
-            	this.image = new PImage(initialPage.getWidth(), initialPage.getHeight(), PConstants.ARGB);
-            	initialPage.getRGB(0, 0, image.width, image.height, image.pixels, 0, image.width);
-                image.updatePixels();
+            	background(245, 222, 179);
+                image(imageInitial,0,0) ;
                 
                 textSize(32);
-                fill(0, 100, 150);
+                fill(255, 255, 255);
                 text("Please wait until the game starts.", 350, 375);
                 break;
             case READY:
