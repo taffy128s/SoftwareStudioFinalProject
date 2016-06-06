@@ -25,8 +25,8 @@ import card.justcard.WeaTenSword;
 public class CardStack {
 
     private final static int BASIC_CARD_NUM = 5;
-    private final static int JIN_CARD_NUM = 0; // 2
-    private final static int WEAPON_CARD_NUM = 0; // 2
+    private final static int JIN_CARD_NUM = 0;
+    private final static int WEAPON_CARD_NUM = 0;
 
     private Vector<Card> drawArea = new Vector<>();
     private Vector<Card> discardArea = new Vector<>();
@@ -37,13 +37,11 @@ public class CardStack {
      */
     public CardStack() {
         for (int i = 0; i < BASIC_CARD_NUM; i++) {
-            // TODO 把基本牌加入牌組
             drawArea.add(new BasicApple());
             drawArea.add(new BasicDodge());
             drawArea.add(new BasicKill());
         }
-        for (int i = 0; i< JIN_CARD_NUM; i++) {
-            // TODO 把錦囊牌加入牌組
+        for (int i = 0; i < JIN_CARD_NUM; i++) {
         	drawArea.add(new JinBattle());
         	drawArea.add(new JinThief());
         	drawArea.add(new JinCrazyBanquet());
@@ -52,8 +50,7 @@ public class CardStack {
         	drawArea.add(new JinTuShi());
         	drawArea.add(new JinWuKu());
         }
-        for (int i = 0; i< WEAPON_CARD_NUM; i++) {
-            // TODO 把武器牌加入牌組
+        for (int i = 0; i < WEAPON_CARD_NUM; i++) {
         	drawArea.add(new WeaBigShield());
         	drawArea.add(new WeaBlackShield());
         	drawArea.add(new WeaContinue());
