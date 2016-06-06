@@ -67,10 +67,14 @@ public class Applet extends PApplet {
     private Card cardPointed;
     private int clickedOffsetX;
     private int clickedOffsetY;
+
     private BufferedImage bg;
-    private BufferedImage initialPage ;
+    private BufferedImage initialPage;
+    private BufferedImage endPage;
+
     private PImage image;
-    private PImage imageInitial ;
+    private PImage imageInitial;
+    private PImage imageEnd;
 
     private boolean pause;
 
@@ -98,6 +102,15 @@ public class Applet extends PApplet {
     	this.imageInitial = new PImage(initialPage.getWidth(), initialPage.getHeight(), PConstants.ARGB);
         initialPage.getRGB(0, 0, imageInitial.width, imageInitial.height, imageInitial.pixels, 0, imageInitial.width);
         imageInitial.updatePixels();
+        try {
+            endPage = ImageIO.read(getClass().getResource("img/End.png"));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.imageEnd = new PImage(endPage.getWidth(), endPage.getHeight(), PConstants.ARGB);
+        endPage.getRGB(0, 0, imageEnd.width, imageEnd.height, imageEnd.pixels, 0, imageEnd.width);
+        imageEnd.updatePixels();
         Ani.init(this);
         this.username = name;
         this.random = new Random();
@@ -226,12 +239,10 @@ public class Applet extends PApplet {
                     System.out.println("SHOW CARD");
                     int cardIndex = Integer.parseInt(param[1]);
                     otherCard = CardUtility.newCard(cardIndex);
-                    for (Player player : alivePlayers) {
-                        if (player.getUserName().equals(param[2])) {
-                            otherCard.x = (int) player.x;
-                            otherCard.y = (int) player.y;
-                        }
-                    }
+                    alivePlayers.stream().filter(player -> player.getUserName().equals(param[2])).forEach(player -> {
+                        otherCard.x = (int) player.x;
+                        otherCard.y = (int) player.y;
+                    });
                     new Thread(() -> {
                         showOtherCard = true;
                         while (otherCard.x != Client.WINDOW_WIDTH - 200 && otherCard.y != 20) {
@@ -698,7 +709,8 @@ public class Applet extends PApplet {
                     image(handCards.get(i).getImage(), handCards.get(i).x, handCards.get(i).y);
                 }
                 textSize(76);
-                fill(0, 0, 0);
+                fill(255, 255, 255);
+                image(imageEnd, 0, 0);
                 text("Player " + winner + " Wins!!!", 290, 400);
                 break;
             default:
