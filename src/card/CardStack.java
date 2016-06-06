@@ -25,8 +25,9 @@ import card.justcard.WeaTenSword;
  */
 public class CardStack {
 
-    private final static int BASIC_CARD_NUM = 5;
-    private final static int JIN_CARD_NUM = 5;
+    private final static int BASIC_CARD_NUM = 15;
+    private final static int JIN_CARD_HARM_NUM = 12;
+    private final static int JIN_CARD_OTHER_NUM = 8;
     private final static int WEAPON_CARD_NUM = 0;
 
     private Vector<Card> drawArea = new Vector<>();
@@ -40,17 +41,20 @@ public class CardStack {
         for (int i = 0; i < BASIC_CARD_NUM; i++) {
             drawArea.add(new BasicApple());
             drawArea.add(new BasicDodge());
-            drawArea.add(new BasicKill());
+            for (int j=0 ; j<2 ; j++) {
+                drawArea.add(new BasicKill());
+            }
         }
-        for (int i = 0; i < JIN_CARD_NUM; i++) {
+        for (int i = 0; i < JIN_CARD_HARM_NUM; i++) {
+            drawArea.add(new JinThousandArrow());
+            drawArea.add(new JinTuShi());
+        }
+        for (int i = 0; i < JIN_CARD_OTHER_NUM; i++) {
             drawArea.add(new JinGetCard());
-        	//drawArea.add(new JinBattle());
-        	drawArea.add(new JinThief());
-        	drawArea.add(new JinCrazyBanquet());
-        	drawArea.add(new JinThousandArrow());
-        	drawArea.add(new JinThrow());
-        	drawArea.add(new JinTuShi());
-        	drawArea.add(new JinWuKu());
+            drawArea.add(new JinThief());
+            drawArea.add(new JinThrow());
+            drawArea.add(new JinCrazyBanquet());
+            drawArea.add(new JinWuKu());
         }
         for (int i = 0; i < WEAPON_CARD_NUM; i++) {
         	drawArea.add(new WeaBigShield());
