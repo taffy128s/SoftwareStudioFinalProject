@@ -780,7 +780,9 @@ public class Applet extends PApplet {
                 textSize(76);
                 fill(255, 255, 255);
                 image(imageEnd, 0, 0);
-                text("Player " + winner + " Wins!!!", 290, 400);
+                text("Player", 470, 400);
+                text(winner, 470, 500);
+                text("Wins!!!", 465, 600);
                 break;
             default:
                 break;
