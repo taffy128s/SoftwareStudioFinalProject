@@ -4,8 +4,8 @@ import java.awt.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.Vector;
 
 import javax.swing.*;
 
@@ -21,11 +21,11 @@ public class Server extends JFrame {
     private int connectionCount;
     private ServerSocket serverSocket;
     private ServerSocket chatServerSocket;
-    private ArrayList<Socket> sockets = new ArrayList<>();
-    private ArrayList<Socket> chatSockets = new ArrayList<>();
-    private ArrayList<ServerUtility> games = new ArrayList<>();
+    private Vector<Socket> sockets = new Vector<>();
+    private Vector<Socket> chatSockets = new Vector<>();
+    private Vector<ServerUtility> games = new Vector<>();
 
-    private JTextArea textArea = new JTextArea(); 
+    private JTextArea textArea = new JTextArea();
 
     /**
      * Initialize server with a port to listen
@@ -54,7 +54,9 @@ public class Server extends JFrame {
                 JOptionPane.showConfirmDialog(null, new JLabel("No client connected!"), "Error", JOptionPane.DEFAULT_OPTION);
                 return;
             }
+            System.out.println("fuck2");
             appendMessage("New game started, number of players: " + connectionCount + "\n");
+            System.out.println("fuck3");
             games.add(new ServerUtility(sockets, chatSockets, this));
             sockets.clear();
             chatSockets.clear();
@@ -115,7 +117,7 @@ public class Server extends JFrame {
         });
         thread.start();
     }
-    
+
     private void startAcceptChatSocket() {
         Thread thread = new Thread(() -> {
             while (!chatServerSocket.isClosed()) {
