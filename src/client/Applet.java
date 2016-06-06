@@ -211,41 +211,30 @@ public class Applet extends PApplet {
      * Do nothing if <code>cardUsing</code> is <code>null</code>.
      */
     private void useCard() {
-//        if (cardUsing == null) {
-//            return;
-//        }
-//        if (onlyUseDodge && cardUsing.getCardID() != CardID.BASIC_DODGE) {
-//            Thread thread = new Thread(() -> {
-//                // TODO: show only dodge
-//            });
-//            thread.start();
-//            return;
-//        }
-//        if (cardUsing.getCardID() == CardID.BASIC_KILL) {
-//            if (characterPointed != null) {
-//                if (characterPointed.getUserName().equals(username)) {
-//                    Thread thread = new Thread(() -> {
-//                        showDontKillSelf = true;
-//                        delay(3000);
-//                        showDontKillSelf = false;
-//                    });
-//                    thread.start();
-//                    return;
-//                }
-//                String commandToSend = GameMessage.KILL + " " + username + " " + characterPointed.getUserName();
-//                sendMessage(commandToSend);
-//                yourTurn = false;
-//                cp5.getController("done").setLock(true);
-//            } else {
-//                return;
-//            }
-//        } else if (cardUsing.getCardID() == CardID.BASIC_DODGE) {
-//            sendMessage(GameMessage.DODGE);
-//            yourTurn = false;
-//            cp5.getController("done").setLock(true);
-//        }
-//        handCards.remove(cardUsing);
-//        System.out.println("card " + cardUsing.getName() + " used!");
+        if (cardPointed.getCategory() == CardCategory.BASIC) {
+            switch (cardPointed.getCardID()) {
+                case BASIC_APPLE:
+                    sendMessage(cardPointed.getCardID().value() + " " + username);
+                    break;
+                case BASIC_DODGE:
+                    sendMessage(cardPointed.getCardID().value() + " " + username);
+                    break;
+                case BASIC_KILL:
+                    if (playerPointed.getUserName().equals(username)) {
+                        Thread thread = new Thread(() -> {
+                            showDontKillSelf = true;
+                            delay(3000);
+                            showDontKillSelf = false;
+                        });
+                        thread.start();
+                        break;
+                    }
+                    sendMessage(cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
+                    break;
+            }
+        }
+        System.out.println("card " + cardPointed.getName() + " used!");
+        cardPointed = null;
     }
 
     @Override
@@ -262,8 +251,6 @@ public class Applet extends PApplet {
                 }
                 break;
             case TARGETING:
-                break;
-            case CARD_USING_ENDED:
                 break;
             default:
                 break;
@@ -291,6 +278,9 @@ public class Applet extends PApplet {
                     Ani.to(cardPointed, 0.75f, "x", Client.WINDOW_WIDTH - 200);
                     Ani.to(cardPointed, 0.75f, "y", 20);
                     playerStatus = changeState(cardPointed);
+                    if (playerStatus == PlayerStatus.NONE) {
+                        new Thread(this::useCard).start();
+                    }
                 }
                 else {
                     Ani.to(cardPointed, 0.75f, "x", cardPointed.getInitialX());
@@ -303,7 +293,8 @@ public class Applet extends PApplet {
                 if (mouseButton == LEFT) {
                     checkMouseOverPlayer();
                     if (playerPointed != null) {
-                        playerStatus = PlayerStatus.CARD_USING_ENDED;
+                        new Thread(this::useCard).start();
+                        playerStatus = PlayerStatus.NONE;
                     }
                 }
                 else {
@@ -312,21 +303,6 @@ public class Applet extends PApplet {
                     cardPointed = null;
                     playerStatus = PlayerStatus.NONE;
                 }
-                break;
-            case CARD_USING_ENDED:
-                if (playerPointed != null) {
-                    sendMessage(cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
-                }
-                else {
-                    sendMessage(cardPointed.getCardID().value() + " " + username);
-                }
-                if (cardPointed.getCardID().value() == CardID.BASIC_KILL.value()) {
-                    playerStatus = PlayerStatus.KILL_USED;
-                }
-                else {
-                    playerStatus = PlayerStatus.NONE;
-                }
-                cardPointed = null;
                 break;
             default:
                 break;
@@ -339,10 +315,10 @@ public class Applet extends PApplet {
             switch (cardPointed.getCardID()) {
                 case BASIC_APPLE:
                     handCards.remove(cardPointed);
-                    return PlayerStatus.CARD_USING_ENDED;
+                    return PlayerStatus.NONE;
                 case BASIC_DODGE:
                     handCards.remove(cardPointed);
-                    return PlayerStatus.CARD_USING_ENDED;
+                    return PlayerStatus.NONE;
                 case BASIC_KILL:
                     return PlayerStatus.TARGETING;
             }
