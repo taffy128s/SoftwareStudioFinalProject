@@ -63,40 +63,43 @@ public class ServerUtility {
             writer.println(message);
             writer.flush();
         }
-        
+
         public String readMessage() {
-        	String retString = "";
         	try {
-				retString = reader.readLine();
+				return reader.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
-				System.out.println("A client just logged out unexpectedly.");
-				System.exit(0);
+				server.appendMessage("A client just logged out unexpectedly.");
+                return null;
 			}
-        	return retString;
         }
 
     }
-    
-    private void makeUserMove(int i) {
+
+    private boolean makeUserMove(int userIndex) {
     	while (true) {
-			connections.get(i).sendMessage(GameMessage.YOUR_TURN);
-			String mesg = connections.get(i).readMessage();
-			System.out.println(mesg);
-			String[] arg = mesg.split(" "); 
-			if (arg[0].equals(GameMessage.DONE)) {
+			connections.get(userIndex).sendMessage(GameMessage.YOUR_TURN);
+			String message = connections.get(userIndex).readMessage();
+            if (message == null) {
+                return false;
+            }
+			System.out.println(message);
+			String[] args = message.split(" ");
+			if (args[0].equals(GameMessage.DONE)) {
 				break;
-			} else if (arg[0].equals(GameMessage.KILL)) {
+			} else if (args[0].equals(GameMessage.KILL)) {
 				// TODO: decrease the user's number of cards.
-				usernameToConnection.get(arg[2]).sendMessage(mesg);
-				String reply = usernameToConnection.get(arg[2]).readMessage();
+				usernameToConnection.get(args[2]).sendMessage(message);
+				String reply = usernameToConnection.get(args[2]).readMessage();
 				if (reply.equals(GameMessage.DONE)) {
 					System.out.println("SOMEBODY got killed.");
 				} else if (reply.equals(GameMessage.DODGE)) {
 					System.out.println("DODGE detected.");
 				}
 			}
+            return true;
 		}
+        return true;
     }
 
     /**
@@ -123,13 +126,11 @@ public class ServerUtility {
             }
         }
         Thread thread = new Thread(() -> {
-        	for (int i = 0; i < connections.size(); i++) {
-        		if (i != connections.size() - 1) {
-        			makeUserMove(i);
-        		} else {
-        			makeUserMove(i);
-        			i = -1;
-        		}
+        	for (int i = 0; i < connections.size(); i = (i + 1) % connections.size()) {
+                boolean result = makeUserMove(i);
+                if (!result) {
+                    break;
+                }
         	}
         });
         thread.start();
