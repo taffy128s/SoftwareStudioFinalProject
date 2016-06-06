@@ -17,7 +17,7 @@ public class BasicDodge extends Card {
               CardID.BASIC_DODGE,
               "Dodge",
               "When you targeted by 'Kill', you can issue an 'Dodge' to nullify the damage caused by the 'Kill'.",
-              "basic_dodge.JPG");
+              "basic_dodge.png");
     }
 
 

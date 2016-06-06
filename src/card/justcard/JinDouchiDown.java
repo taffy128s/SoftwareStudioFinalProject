@@ -17,7 +17,7 @@ public class JinDouchiDown extends JinCard {
               CardID.JIN_DOUCHIDOWN,
               "Enjoyment Drown",
               "Place this card in the fate of the gauge card is not the 'WEAPON CARD', the player's play phase in this turn will be skipped." ,
-              "jin_douchidown.JPG",
+              "jin_douchidown.png",
               false, true, false, true);
     }
 

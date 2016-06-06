@@ -17,7 +17,7 @@ public class WeaContinue extends WeaCard {
               CardID.WEA_CONTINUE,
               "Arbalest",
               "In your play phase, you can use any amount of 'Kill'." ,
-              "wea_continue.JPG",
+              "wea_continue.png",
               false,
               1);
     }
