@@ -57,8 +57,8 @@ public class Card {
         BufferedImage iBufferedImage = null;
         BufferedImage dBufferedImage = null;
         try {
-            iBufferedImage = ImageIO.read(getClass().getResource("../img/" + filename));
-            dBufferedImage = ImageIO.read(getClass().getResource("../img/" + "des_" + filename));
+            iBufferedImage = ImageIO.read(getClass().getResource("/card/justcard/img/" + filename));
+            dBufferedImage = ImageIO.read(getClass().getResource("/card/justcard/img/" + "des_" + filename));
         }
         catch (IOException e) {
             e.printStackTrace();
