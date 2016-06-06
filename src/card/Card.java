@@ -136,6 +136,15 @@ public class Card {
     }
 
     /**
+     * Get description image of this card
+     *
+     * @return description image of this card
+     */
+    public PImage getdImage() {
+        return dImage;
+    }
+
+    /**
      * Get initial position x-axis of this card
      *
      * @return x-axis
