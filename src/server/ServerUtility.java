@@ -232,6 +232,21 @@ public class ServerUtility {
             return;
         }
         if(card.getCardID() == CardID.JIN_THIEF) {
+            Connection targetConnection = usernameToConnection.get(target);
+            targetConnection.sendMessage(GameMessage.THROW_CARD);
+            String thrownMessage = targetConnection.readMessage();
+            String[] thrownInfo = thrownMessage.split(" ");
+            if(thrownInfo[0].equals(GameMessage.THROW_FAIL)) {
+                return;
+            }
+            else if(thrownInfo[0].equals(GameMessage.CARD_LOSS)) {
+                int cardIDThrown = Integer.parseInt(thrownInfo[1]);
+                broadCast(card.effectString(target));
+                
+                usernameToConnection.get(source).sendMessage(GameMessage.RECEIVE_CARD + " " + cardIDThrown);
+                broadCast(GameMessage.MODIFY_PLAYER + " " + source + " " + GameMessage.NUMBER_OF_HAND_CARDS + " 1");
+            }
+
             return;
         }
         if(card.isConditional()) {
