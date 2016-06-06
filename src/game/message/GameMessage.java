@@ -31,23 +31,29 @@ public class GameMessage {
      * <p>To get id number, use <code>Card.getCardID().value()</code>
      */
     public static final String RECEIVE_CARD = "receivecard";
-    public static final String DECREASE_CARD = "decreasecard";
 
     /**
      * <p><code>Format: MODIFY_PLAYER attribute value</code>
      * <p>All attributes can be modified are:
      * <p><code>LIFE_POINT</code> using <code>GameMessage.LIFE_POINT</code>
      * <p><code>numberOfHandCard</code> using <code>GameMessage.NUMBER_OF_HAND_CARDS</code>
+     * <p>For more detail, see LIFE_POINT and NUMBER_OF_HAND_CARDS
      */
     public static final String MODIFY_PLAYER = "modifyplayer";
     /**
      * Attribute string for <code>GameMessage.MODIFY_PLAYER</code>
+     * <p><code>MODIFY_PLAYER LIFE_POINT value</code>
+     * <p><code>value</code> is its delta value.
+     * <p>Example: MODIFY_PLAYER LIFE_POINT -1
      */
-    public static final String LIFE_POINT = "lifepoint";
+    public static final String LIFE_POINT = "lifePoint";
     /**
-     * Attribute string for <code>GameMessage.MODIFY_PLAYER</code>
+     * <p>Attribute string for <code>GameMessage.MODIFY_PLAYER</code>
+     * <p><code>MODIFY_PLAYER NUMBER_OF_HAND_CARDS value</code>
+     * <p><code>value</code> is its delta value.
+     * <p>Example: MODIFY_PLAYER NUMBER_OF_HAND_CARDS -1
      */
-    public static final String NUMBER_OF_HAND_CARDS = "numberofhandcards";
+    public static final String NUMBER_OF_HAND_CARDS = "numberOfHandCard";
 
     public static final String KILL = "kill";
     public static final String DODGE = "dodge";

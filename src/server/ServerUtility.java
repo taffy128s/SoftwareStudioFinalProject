@@ -93,10 +93,11 @@ public class ServerUtility {
                 }
 			} else if (args.length == 2) {
 
-            } else if (args.length == 3){
-				// TODO: decrease the user's number of cards.
-				usernameToConnection.get(args[2]).sendMessage(message);
+            } else if (args.length == 3) {
+
 			}
+            // broadcast to let all clients know its number of hand cards
+            broadCast(GameMessage.MODIFY_PLAYER + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
 		}
         return true;
     }
