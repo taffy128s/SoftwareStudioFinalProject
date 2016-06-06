@@ -65,7 +65,7 @@ public class Applet extends PApplet {
      */
     Applet(PrintWriter writer, BufferedReader reader, String name) {
     	try {
-			bg = ImageIO.read(getClass().getResource("bg.jpg"));
+			bg = ImageIO.read(getClass().getResource("img/bg.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
