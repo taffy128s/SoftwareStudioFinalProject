@@ -45,7 +45,7 @@ public class CardStack {
         for (int i = 0; i < JIN_CARD_NUM; i++) {
             drawArea.add(new JinGetCard());
         	//drawArea.add(new JinBattle());
-        	//drawArea.add(new JinThief());
+        	drawArea.add(new JinThief());
         	drawArea.add(new JinCrazyBanquet());
         	drawArea.add(new JinThousandArrow());
         	drawArea.add(new JinThrow());
