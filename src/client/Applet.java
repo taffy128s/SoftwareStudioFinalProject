@@ -65,7 +65,7 @@ public class Applet extends PApplet {
      */
     Applet(PrintWriter writer, BufferedReader reader, String name) {
     	try {
-			bg = ImageIO.read(getClass().getResource("bg.jpg"));
+			bg = ImageIO.read(getClass().getResource("img/bg.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -108,73 +108,93 @@ public class Applet extends PApplet {
 
         @Override
         public void run() {
-            String string;
-            String[] param;
             while (true) {
                 try {
                     if(gameStatus == GameStatus.WAIT) {
-                        string = reader.readLine();
-                        param = string.split(" ");
-                        System.out.println("WAIT " + string);
-                        switch (param[0]) {
-                            case GameMessage.INITIAL_PLAYER:
-                                alivePlayers.add(
-                                        new Player(Applet.this, param[1], param[2], random.nextFloat() * 800, random.nextFloat() * 800)
-                                );
-                                break;
-                            case GameMessage.START:
-                                gameStatus = GameStatus.READY;
-                                makeACircle();
-                                cp5.getController("done").setLock(true);
-                                cp5.getController("done").setVisible(true);
-                                break;
-                            default:
-                                break;
-                        }
+                        readWait();
                     }
                     else if(gameStatus == GameStatus.READY) {
-                        string = reader.readLine();
-                        param = string.split(" ");
-                        System.out.println("READY " + string);
-                        switch (param[0]) {
-                        	case GameMessage.YOUR_TURN:
-                        		onlyUseKill = false;
-                                onlyUseDodge = false;
-                                yourTurn = true;
-                                if (playerStatus == PlayerStatus.KILL_USED) {
-                                    playerStatus = PlayerStatus.INIT;
-                                }
-                                cp5.getController("done").setLock(false);
-                                break;
-                        	case GameMessage.RECEIVE_CARD:
-                        		System.out.println("get card id " + param[1]);
-                                handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
-                                break;
-                            case GameMessage.MODIFY_PLAYER:
-                                Player target = null;
-                                for (Player alivePlayer : alivePlayers) {
-                                    if (alivePlayer.getUserName().equals(param[1])) {
-                                        target = alivePlayer;
-                                        break;
-                                    }
-                                }
-                                if (target != null) {
-                                    if (param[2].equals(GameMessage.LIFE_POINT)) {
-                                        target.setLifePoint(target.getLifePoint() + Integer.parseInt(param[3]));
-                                    }
-                                    else if (param[2].equals(GameMessage.NUMBER_OF_HAND_CARDS)){
-                                        target.setNumberOfHandCard(target.getNumberOfHandCard() + Integer.parseInt(param[3]));
-                                    }
-                                }
-                                break;
-                            default:
-                                break;
-                        }
+                        readReady();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.exit(0);
                 }
+            }
+        }
+
+        /**
+         * Read message, used when gameStatus is WAIT
+         *
+         * @throws IOException read error on socket
+         */
+        private void readWait() throws IOException {
+            String string;
+            String[] param;
+            string = reader.readLine();
+            param = string.split(" ");
+            System.out.println("WAIT " + string);
+            switch (param[0]) {
+                case GameMessage.INITIAL_PLAYER:
+                    alivePlayers.add(
+                            new Player(Applet.this, param[1], param[2], random.nextFloat() * 800, random.nextFloat() * 800)
+                    );
+                    break;
+                case GameMessage.START:
+                    gameStatus = GameStatus.READY;
+                    makeACircle();
+                    cp5.getController("done").setLock(true);
+                    cp5.getController("done").setVisible(true);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /**
+         * Read message, used when gameStatus is READY
+         *
+         * @throws IOException read error on socket
+         */
+        private void readReady() throws IOException {
+            String string;
+            String[] param;
+            string = reader.readLine();
+            param = string.split(" ");
+            System.out.println("READY " + string);
+            switch (param[0]) {
+                case GameMessage.YOUR_TURN:
+                    onlyUseKill = false;
+                    onlyUseDodge = false;
+                    yourTurn = true;
+                    if (playerStatus == PlayerStatus.KILL_USED) {
+                        playerStatus = PlayerStatus.INIT;
+                    }
+                    cp5.getController("done").setLock(false);
+                    break;
+                case GameMessage.RECEIVE_CARD:
+                    System.out.println("get card id " + param[1]);
+                    handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
+                    break;
+                case GameMessage.MODIFY_PLAYER:
+                    Player target = null;
+                    for (Player alivePlayer : alivePlayers) {
+                        if (alivePlayer.getUserName().equals(param[1])) {
+                            target = alivePlayer;
+                            break;
+                        }
+                    }
+                    if (target != null) {
+                        if (param[2].equals(GameMessage.LIFE_POINT)) {
+                            target.setLifePoint(target.getLifePoint() + Integer.parseInt(param[3]));
+                        }
+                        else if (param[2].equals(GameMessage.NUMBER_OF_HAND_CARDS)){
+                            target.setNumberOfHandCard(target.getNumberOfHandCard() + Integer.parseInt(param[3]));
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 
