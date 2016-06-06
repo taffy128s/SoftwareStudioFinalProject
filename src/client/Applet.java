@@ -38,7 +38,9 @@ public class Applet extends PApplet {
     private boolean onlyUseKill;
     private boolean haveUsedKill;
     private boolean onlyUseDodge;
-    private boolean showDontKillSelf;
+
+    private boolean showSystemMessage;
+    private String systemMessage;
 
     private PrintWriter writer;
     private BufferedReader reader;
@@ -77,7 +79,7 @@ public class Applet extends PApplet {
         Ani.init(this);
         this.onlyUseKill = false;
         this.onlyUseDodge = false;
-        this.showDontKillSelf = false;
+        this.showSystemMessage = false;
         this.haveUsedKill = false;
         this.username = name;
         this.random = new Random();
@@ -96,7 +98,6 @@ public class Applet extends PApplet {
 
     public void done() {
         if (yourTurn) {
-            System.out.println("done() was called");
             yourTurn = false;
             cp5.getController("done").setLock(true);
             sendMessage(GameMessage.END_TURN);
@@ -177,6 +178,16 @@ public class Applet extends PApplet {
                 case GameMessage.RECEIVE_CARD:
                     System.out.println("get card id " + param[1]);
                     handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
+                    break;
+                case GameMessage.SHOW_CARD:
+                    int cardIndex = Integer.parseInt(param[1]);
+                    Card cardToDisplay = CardUtility.newCard(cardIndex);
+                    systemMessage = param[2] + " used " + cardToDisplay.getName();
+                    new Thread(() -> {
+                        showSystemMessage = true;
+                        delay(2000);
+                        showSystemMessage = false;
+                    }).start();
                     break;
                 case GameMessage.ASK_FOR_CARD:
                     System.out.println("be asked for card id " + param[1]);
@@ -282,18 +293,6 @@ public class Applet extends PApplet {
                                         cardPointed.getCardID().value() + " " + username + " " + username);
                     break;
                 case BASIC_KILL:
-                    /*if (playerPointed.getUserName().equals(username)) {
-                        Ani.to(cardPointed, 0.75f, "x", cardPointed.getInitialX());
-                        Ani.to(cardPointed, 0.75f, "y", cardPointed.getInitialY());
-                        Thread thread = new Thread(() -> {
-                            showDontKillSelf = true;
-                            delay(3000);
-                            showDontKillSelf = false;
-                        });
-                        thread.start();
-                        usedSuccessfully = false;
-                        break;
-                    }*/
                     usedSuccessfully = true;
                     sendMessage(GameMessage.CARD_EFFECT + " " +
                                         cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
@@ -470,10 +469,10 @@ public class Applet extends PApplet {
                 	fill(0, 100, 150);
                     text("Not your turn!", 225, 375);
                 }
-                if (showDontKillSelf) {
+                if (showSystemMessage) {
                     textSize(28);
                     fill(0);
-                    text("[System] Don't kill yourself!", 50, 50);
+                    text("[System] " + systemMessage, 50, 50);
                 }
                 for (Player ch : alivePlayers) {
                     ch.display();

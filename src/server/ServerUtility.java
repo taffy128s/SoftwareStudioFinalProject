@@ -153,6 +153,7 @@ public class ServerUtility {
                 // Note CARD_EFFECT CARD_INDEX SOURCE TARGET
                 // Idx  0           1          2      3
                 int cardIndex = Integer.parseInt(args[1]);
+                broadCast(GameMessage.SHOW_CARD + " " + cardIndex + " " + args[2] + " " + args[3]);
                 Card cardRead = cardMap.get(cardIndex);
                 if (cardRead.getCategory() == CardCategory.BASIC) {
                     basicCardEffect(args, cardRead);
