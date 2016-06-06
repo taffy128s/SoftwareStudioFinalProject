@@ -441,6 +441,12 @@ public class Applet extends PApplet {
         }
         else if (cardPointed.getCategory() == CardCategory.JIN) {
             JinCard jinCard = (JinCard) cardPointed;
+            if(jinCard.isSelfOnly() == false && jinCard.isNotTargeting() == false) {
+                return PlayerStatus.TARGETING;
+            }
+            else {
+                return PlayerStatus.INIT;
+            }
         }
         else {
             WeaCard weaCard = (WeaCard) cardPointed;

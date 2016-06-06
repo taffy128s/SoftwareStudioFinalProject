@@ -3,6 +3,7 @@ package card.justcard;
 import card.CardCategory;
 import card.CardID;
 import card.JinCard;
+import game.message.GameMessage;
 
 /**
  * Myriads of Arrows
@@ -20,5 +21,10 @@ public class JinThousandArrow extends JinCard {
               "jin_thouarrow.png",
               true, true, true);
     }
-
+    
+    @Override
+    public String effectString(String targetUsername) {
+        return GameMessage.MODIFY_PLAYER + " " + targetUsername + 
+                " " + GameMessage.LIFE_POINT + " -1";
+    }
 }
