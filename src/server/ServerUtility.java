@@ -29,6 +29,7 @@ public class ServerUtility {
 
     private TreeMap<Integer, Card> cardMap;
     private CardStack cardStack = new CardStack();
+    private int aliveNum;
 
     /**
      * This class handle input/output to a single socket
@@ -37,8 +38,10 @@ public class ServerUtility {
 
         private BufferedReader reader;
         private PrintWriter writer;
+        private boolean isAlive;
 
         Connection(Socket socket) {
+            isAlive = true;
             try {
                 this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -93,6 +96,7 @@ public class ServerUtility {
         this.cardStack.shuffle();
         this.server = server;
         initCardMap();
+        aliveNum = sockets.size();
         sockets.forEach(socket -> connections.add(new Connection(socket)));
         for (Connection connectionThread : connections) {
             String string = GameMessage.INITIAL_PLAYER + " " +
@@ -191,13 +195,15 @@ public class ServerUtility {
 
     private void jinCardEffect(String[] args, Card cardRead) {
         JinCard card = (JinCard)cardRead;
+        String target = args[3];
+        String source = args[2];
         if(card.isConditional()) {
 
         }
         else {
             if(card.isSelfOnly()) {
-                broadCast(card.effectString(args[3]));
-                Connection targetConnection = usernameToConnection.get(args[3]);
+                broadCast(card.effectString(target));
+                Connection targetConnection = usernameToConnection.get(target);
                 if(card.getCardID() == CardID.JIN_GETCARD) {
                     for(int i=0 ; i<2 ; i++) {
                         int newCardIndex = cardStack.drawTop().getCardID().value();
@@ -207,10 +213,19 @@ public class ServerUtility {
             }
             else if(card.isNotTargeting()) {
                 if(card.isSelfExclusive()) {
-                    
+                    for(Connection connection : connections) {
+                        if(connection.isAlive == false) continue;
+                        target = connectionToUsername.get(connection);
+                        if(target.equals(source)) continue;
+                        broadCast(card.effectString(target));
+                    }
                 }
                 else {
-                    
+                    for(Connection connection : connections) {
+                        if(connection.isAlive == false) continue;
+                        target = connectionToUsername.get(connection);
+                        broadCast(card.effectString(target));
+                    }
                 }
             }
             else {
