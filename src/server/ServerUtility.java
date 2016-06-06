@@ -100,6 +100,7 @@ public class ServerUtility {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        break;
                     }
                 }
             });
@@ -271,7 +272,7 @@ public class ServerUtility {
                 }
             }
             else {
-                
+
             }
         }
         else {
@@ -302,7 +303,7 @@ public class ServerUtility {
                 }
             }
             else {
-                
+
             }
 
             if(card.getCardID() == CardID.JIN_GETCARD) {
@@ -323,7 +324,7 @@ public class ServerUtility {
             }
         }
     }
-    
+
     private void askCard(Card cardRead, String target, int userIndex)
     {
         Connection targetConnection = usernameToConnection.get(target);
@@ -338,8 +339,8 @@ public class ServerUtility {
             broadCast(cardRead.effectString(target));
         }
     }
-    
-    
+
+
     /**
      * Send message to all socket connected to server
      *
