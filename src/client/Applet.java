@@ -103,14 +103,11 @@ public class Applet extends PApplet {
         this.playerStatus = PlayerStatus.INIT;
         this.yourTurn = false;
         initCardMap();
-        ReadThread thread = new ReadThread();
-        thread.start();
     }
 
     public void done() {
         if (yourTurn) {
             yourTurn = false;
-            cp5.getController("done").setLock(true);
             sendMessage(GameMessage.END_TURN);
         }
     }
@@ -505,7 +502,7 @@ public class Applet extends PApplet {
            .setSize(350, 30)
            .setPosition(25, Client.WINDOW_HEIGHT - 70)
            .setVisible(false);
-        textarea = cp5.addTextarea("txtarea")
+        textarea = cp5.addTextarea("textarea")
                       .setPosition(25, cp5.getController("textfield").getPosition()[1] - 80 - 15)
                       .setSize(350, 80)
                       .setFont(createFont("arial", 16))
@@ -529,6 +526,8 @@ public class Applet extends PApplet {
             }
         });
         chatThread.start();
+        ReadThread thread = new ReadThread();
+        thread.start();
     }
 
     public void textfield(String text) {
