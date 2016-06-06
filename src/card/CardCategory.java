@@ -15,11 +15,11 @@ public enum CardCategory {
     /**
      * Skill cards
      */
-    SKILL(200),
+    JIN(200),
     /**
      * Weapon cards
      */
-    CATEGORY_EQUIPMENT(300);
+    WEA(300);
 
     private final int value;
 

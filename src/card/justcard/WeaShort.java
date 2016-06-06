@@ -13,7 +13,7 @@ public class WeaShort extends WeaCard {
      * Default constructor
      */
     public WeaShort() {
-        super(CardCategory.CATEGORY_EQUIPMENT,
+        super(CardCategory.WEA,
               CardID.WEA_SHORT,
               "Persian knife",
               "When you use 'Kill', the target's defensive equipment will be negelected" ,

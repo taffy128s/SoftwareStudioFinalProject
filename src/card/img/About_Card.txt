@@ -29,10 +29,10 @@ Card's Attribute:
     Targeting( !AreaEffective ): 效果只針對一個人
     SelfExclusive:  如為 Targeting 牌種，該張牌不能用在自己身上。
                     如為 AreaEffective 牌種，該張牌效果會跳過出牌者本身。
-    
+
     EffectiveNow: 在這個回合就要進行判定、並產生效果
     EffectiveLater( !EffectiveNow ): 會先將該錦囊放在被指定的角色的判定區，等該角色回合開始才進行判定
-    
+
     Conditional: 只在某些條件下生效
     Unconditional( !Conditional ): 無論如何一定生效
 
@@ -65,7 +65,7 @@ jin_wuku.JPG ： 五穀豐登（AreaEffective, JudgedNow, !Conditional）（Card
 
 
 
-武器牌 
+武器牌
 
 wea_bigshield.JPG ： 羅馬大盾
 每當需要使用（或打出）一張【閃】時，可以進行一次判定，若結果為“殺”或“閃”，則視為使用（或打出）了一張【閃】。
@@ -80,7 +80,7 @@ wea_short.JPG ： 波斯短刀
 攻擊範圍2， 鎖定技，每當你使用【殺】時，無視目標角色的防具。
 
 wea_tensword.JPG ： 十字劍
-攻擊範圍3，目標角色使用【閃】抵消使用【殺】的效果時，可以棄兩張牌，則【殺】依然造成傷害。 
+攻擊範圍3，目標角色使用【閃】抵消使用【殺】的效果時，可以棄兩張牌，則【殺】依然造成傷害。
 
 
 該回合輪到自己時： 判定階段 -> 摸牌階段 -> 出牌階段 -> 棄牌階段
@@ -94,38 +94,38 @@ wea_tensword.JPG ： 十字劍
     突襲：摸牌階段，你可以放棄摸牌，然後從至多兩名（至少一名）角色的手牌裡各抽取一張牌。
     強襲：出牌階段，你可以自減1點體力或棄一張武器牌，然後對你攻擊範圍內的一名角色造成1點傷害。每回合限用一次。
 二、被動技能
-    咆哮：出牌階段，你可以使用任意數量的【殺】。 
-    連營：每當你失去最後一張手牌時，可立即摸一張牌。 
+    咆哮：出牌階段，你可以使用任意數量的【殺】。
+    連營：每當你失去最後一張手牌時，可立即摸一張牌。
     英姿：摸牌階段，你可以額外摸一張牌。
     狂骨：鎖定技，任何時候，你每對與你距離1以內的一名角色造成1點傷害，你回復1點體力。
     天妒：在你的判定牌生效時，你可以立即獲得它。
-    空城：鎖定技，當你沒有手牌時，你不能成為【殺】或【決鬥】的目標。 
-    
-    
-    
+    空城：鎖定技，當你沒有手牌時，你不能成為【殺】或【決鬥】的目標。
+
+
+
 目前認為 Card 的使用方法：
     client 跟 server 都要先建立一個從 cardID 對應到某個 class 的對照表。我目前想到的實作方法是：一開始就把每張不同種的牌實體化一次，開一個 map 把他們的 cardID 對應到該實體。等到要解讀別人傳來的 cardID 時再利用此實體作為 copy constructor 的 source，來 new 一個自己要用的實體。
 
-    一、發牌：由 server 給牌，利用 cardStack 建好的 method 來控管（cardStack 裡面應改為只放 cardID 即可，不必裝實體） 
+    一、發牌：由 server 給牌，利用 cardStack 建好的 method 來控管（cardStack 裡面應改為只放 cardID 即可，不必裝實體）
          然後把該卡 cardID 單獨寄送給被發牌的人，被發牌的人再對照表中找到該牌，創一個新的實體再放到 handCards 中。
-    
+
     二、從手牌出牌：client 端的手牌端應該要有自己的實體，當牌被『丟出』時，先看該牌的 category：
         1. BASIC(基本牌)：三張牌個別判定是否可以出、是否需要指定目標（閃不能直接出、桃不能指定目標、殺必須指定目標）
                          如需指定目標，則 giveEffectString() 就要傳入 target。如不需則傳 NULL
-        2. SKILL(錦囊牌)：
+        2. JIN(錦囊牌)：
             會有四個 boolean function 可用：   isNotTargeting();
                                              isSelfExclusive();
                                              isEffectiveNow();
-                                             isConditional(); 
+                                             isConditional();
             當牌被丟出時，先檢查其是否 isNotTargeting() ? 如果是（範圍技、或者自我抽牌），就可以直接 giveEffectString(this, NULL);
             如果不是，就要求 Player 指定一個範圍內的對象，且如果該牌 isSelfExclusive() 就不能指定自己。
-                    
+
         3. EQUIPMENT(裝備牌)： 可用 isSheild() 來判別該張牌為防具或武器。
             若為防具，則把該牌放置到角色的防具區，若防具區已滿，採用 LRU policy 進行替換。武器區同理。
             ...好啦防具武器區應該都只有一格的空間。
-            
+
         若順利把牌丟出，則將 effectString() 回傳字串傳給 ServerUtility 來廣播。 (effectString() 的 giver 永遠要傳入出牌者自己)
-    
+
     三、產生效果：接收到 server 的廣播之後，先把廣播來的 cardID 轉換成實體，就能知道這是哪張牌。
         1. BASIC(基本牌)：一樣三種牌各自判斷。
         2. SKILL(錦囊牌)：如果該牌為 isNotTargeting()（範圍技、或者自我抽牌），就把 server 傳來的 giver name 讀進來，
@@ -133,9 +133,9 @@ wea_tensword.JPG ： 十字劍
                (b) 若該牌為範圍記---- 甲、if isSelfExclusive() == true , 只有 giver 本人可以不用呼叫 takeEffectStrin(this)
                                     乙、if isSelfExclusive() == false, 則每個人都要呼叫 takeEffectString(this)
                         如果該牌 isNotTargeting() == false，就從 socket 讀入第二個自傳(target name)，若你本身為 target，就要呼叫takeEffectString(this)
-                        
+
         拿到 takeEffectString 的回傳字串之後，要傳給 server，server 再廣播出去有誰要扣血、加血、少牌、多牌等等。
         （這個字串本身就是說明：哪個角色的哪個數值發生了什麼變化）
-        
+
         不過在所有呼叫 takeEffectString 之前，都要看該牌的 isConditional()----(a)true: 直接呼叫 takeEffectString，然後傳給 server
                                                                          (b)false: 要進行各種判斷（這應該不好寫><）

@@ -13,7 +13,7 @@ public class JinThief extends JinCard {
      * Default constructor
      */
     public JinThief() {
-        super(CardCategory.SKILL,
+        super(CardCategory.JIN,
               CardID.JIN_THIEF,
               "Thief",
               "In your phase, you can use 'Thief' to a player, and you obtain a card from the player's cards-in-hand, equipment area or fate area." ,

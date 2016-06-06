@@ -13,7 +13,7 @@ public class JinGetCard extends JinCard {
      * Default constructor
      */
     public JinGetCard() {
-        super(CardCategory.SKILL,
+        super(CardCategory.JIN,
               CardID.JIN_GETCARD,
               "Midas Touch",
               "In your phase, you can use 'Midas Touch' to yourself, then you draw 2 cards." ,

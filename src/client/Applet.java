@@ -344,6 +344,12 @@ public class Applet extends PApplet {
                     return PlayerStatus.TARGETING;
             }
         }
+        else if (cardPointed.getCategory() == CardCategory.JIN) {
+            JinCard jinCard = (JinCard) cardPointed;
+        }
+        else {
+            WeaCard weaCard = (WeaCard) cardPointed;
+        }
         return PlayerStatus.INIT;
     }
 
