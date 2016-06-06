@@ -21,6 +21,7 @@ import java.util.TreeMap;
  */
 public class ServerUtility {
 
+    private ArrayList<Connection> chatConnections = new ArrayList<>();
     private ArrayList<Connection> connections = new ArrayList<>();
     private HashMap<Connection, String> connectionToUsername = new HashMap<>();
     private HashMap<String, Connection> usernameToConnection = new HashMap<>();
@@ -38,28 +39,17 @@ public class ServerUtility {
 
         private BufferedReader reader;
         private PrintWriter writer;
+        private Socket socket;
         private boolean isAlive;
 
         Connection(Socket socket) {
-            isAlive = true;
+            this.socket = socket;
+            this.isAlive = true;
             try {
                 this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
             }
             catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                String name = reader.readLine();
-                String intent = reader.readLine();
-                if (name == null || intent == null) {
-                    return;
-                }
-                server.appendMessage(name + " wants to " + intent + ".\n");
-                usernameToIntent.put(name, intent);
-                connectionToUsername.put(this, name);
-                usernameToConnection.put(name, this);
-            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -83,6 +73,38 @@ public class ServerUtility {
                 return null;
 			}
         }
+        
+        public void getNameAndIntent() {
+            try {
+                String name = reader.readLine();
+                String intent = reader.readLine();
+                if (name == null || intent == null) {
+                    return;
+                }
+                server.appendMessage(name + " wants to " + intent + ".\n");
+                usernameToIntent.put(name, intent);
+                connectionToUsername.put(this, name);
+                usernameToConnection.put(name, this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        public void startThread() {
+            Thread thread = new Thread(() -> {
+                while (!socket.isClosed()) {
+                    try {
+                        String string = reader.readLine();
+                        for (Connection connection : chatConnections) {
+                            connection.sendMessage(string);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
+        }
 
     }
 
@@ -92,12 +114,15 @@ public class ServerUtility {
      * @param sockets a list of sockets who will play together
      * @param server server to call appendMessage() to show message on TextField
      */
-    public ServerUtility(ArrayList<Socket> sockets, Server server) {
+    public ServerUtility(ArrayList<Socket> sockets, ArrayList<Socket> chatSockets, Server server) {
         this.cardStack.shuffle();
         this.server = server;
         initCardMap();
         aliveNum = sockets.size();
         sockets.forEach(socket -> connections.add(new Connection(socket)));
+        connections.forEach(connection -> connection.getNameAndIntent());
+        chatSockets.forEach(socket -> chatConnections.add(new Connection(socket)));
+        chatConnections.forEach(connection -> connection.startThread());
         for (Connection connectionThread : connections) {
             String string = GameMessage.INITIAL_PLAYER + " " +
                                     connectionToUsername.get(connectionThread) + " " +
