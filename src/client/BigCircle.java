@@ -31,7 +31,7 @@ public class BigCircle {
     public void display() {
         parent.noFill();
         parent.stroke(38, 58, 109);
-        parent.strokeWeight(5);
+        parent.strokeWeight(10);
         parent.ellipse(x, y, diameter, diameter);
     }
 
