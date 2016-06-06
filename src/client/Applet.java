@@ -61,6 +61,7 @@ public class Applet extends PApplet {
     private int clickedOffsetX;
     private int clickedOffsetY;
     private BufferedImage bg;
+    private BufferedImage initialPage ;
     private PImage image;
 
     /**
@@ -526,7 +527,15 @@ public class Applet extends PApplet {
     public void draw() {
         switch (gameStatus) {
             case WAIT:
-                background(245, 222, 179);
+            	try {
+        			initialPage = ImageIO.read(getClass().getResource("img/InitialPage.png"));
+        		} catch (IOException e) {
+        			e.printStackTrace();
+        		}
+            	this.image = new PImage(initialPage.getWidth(), initialPage.getHeight(), PConstants.ARGB);
+            	initialPage.getRGB(0, 0, image.width, image.height, image.pixels, 0, image.width);
+                image.updatePixels();
+                
                 textSize(32);
                 fill(0, 100, 150);
                 text("Please wait until the game starts.", 350, 375);
