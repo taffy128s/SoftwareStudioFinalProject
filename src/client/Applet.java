@@ -99,7 +99,7 @@ public class Applet extends PApplet {
             System.out.println("done() was called");
             yourTurn = false;
             cp5.getController("done").setLock(true);
-            sendMessage(GameMessage.DONE);
+            sendMessage(GameMessage.END_TURN);
         }
     }
 
@@ -355,7 +355,7 @@ public class Applet extends PApplet {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
         this.cp5 = new ControlP5(this);
-        this.doneButton = cp5.addButton("done").setLabel("DONE").setPosition(525, 530).setSize(200, 50).setVisible(false);
+        this.doneButton = cp5.addButton("done").setLabel("END_TURN").setPosition(525, 530).setSize(200, 50).setVisible(false);
         PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
         ControlFont font = new ControlFont(pfont, 241);
         cp5.getController("done").getCaptionLabel().setFont(font).toUpperCase(false).setSize(24);

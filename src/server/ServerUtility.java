@@ -88,7 +88,7 @@ public class ServerUtility {
 			System.out.println(message);
 			String[] args = message.split(" ");
             if (args.length == 1) {
-                if (args[0].equals(GameMessage.DONE)) {
+                if (args[0].equals(GameMessage.END_TURN)) {
                     break;
                 }
 			} else if (args.length == 2) {
