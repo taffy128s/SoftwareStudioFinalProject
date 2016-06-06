@@ -103,7 +103,7 @@ public class HandCard {
                 return handCards.get(index);
             case HandCard.RECALCULATE_POSITION:
                 for (int i = 0; i < handCards.size(); ++i) {
-                    handCards.get(i).setInitialX(400 + i * 90);
+                    handCards.get(i).setInitialX(400 + i * 80);
                     handCards.get(i).setInitialY(Client.WINDOW_HEIGHT - 180);
                     Ani.to(handCards.get(i), 0.75f, "x", handCards.get(i).getInitialX());
                     Ani.to(handCards.get(i), 0.75f, "y", handCards.get(i).getInitialY());
