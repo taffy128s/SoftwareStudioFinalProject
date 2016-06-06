@@ -14,18 +14,27 @@ public class GameMessage {
      * <code>Format: START</code>
      */
     public static final String START = "start";
+
     /**
      * <code>Format: INITIAL_PLAYER player_name player_intent</code>
      */
     public static final String INITIAL_PLAYER = "initialplayer";
+
     /**
      * <code>Format: YOUR_TURN</code>
      */
     public static final String YOUR_TURN = "yourturn";
+
     /**
      * <code>Format: END_TURN</code>
      */
     public static final String END_TURN = "endturn";
+
+    /**
+     * <p><code>Format: CARD_EFFECT card_number source_user target_user</code></p>
+     */
+    public static final String CARD_EFFECT = "cardeffect";
+
     /**
      * <p><code>Format: RECEIVE_CARD card_id_number</code>
      * <p>To get id number, use <code>Card.getCardID().value()</code>
@@ -40,6 +49,7 @@ public class GameMessage {
      * <p>For more detail, see LIFE_POINT and NUMBER_OF_HAND_CARDS
      */
     public static final String MODIFY_PLAYER = "modifyplayer";
+
     /**
      * Attribute string for <code>GameMessage.MODIFY_PLAYER</code>
      * <p><code>MODIFY_PLAYER username LIFE_POINT value</code>
@@ -47,6 +57,7 @@ public class GameMessage {
      * <p>Example: MODIFY_PLAYER LIFE_POINT -1
      */
     public static final String LIFE_POINT = "lifePoint";
+
     /**
      * <p>Attribute string for <code>GameMessage.MODIFY_PLAYER</code>
      * <p><code>MODIFY_PLAYER username NUMBER_OF_HAND_CARDS value</code>

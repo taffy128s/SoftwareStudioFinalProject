@@ -11,7 +11,6 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 
 import card.*;
-import controlP5.Button;
 import controlP5.ControlFont;
 import controlP5.ControlP5;
 import de.looksgood.ani.Ani;
@@ -57,7 +56,6 @@ public class Applet extends PApplet {
     private int clickedOffsetY;
     private BufferedImage bg;
     private PImage image;
-    private Button doneButton;
 
     /**
      * Initialize a PApplet with writer, printer to server
@@ -154,9 +152,9 @@ public class Applet extends PApplet {
                                 break;
                             case GameMessage.MODIFY_PLAYER:
                                 Player target = null;
-                                for (int i = 0; i < alivePlayers.size(); ++i) {
-                                    if (alivePlayers.get(i).getUserName().equals(param[1])) {
-                                        target = alivePlayers.get(i);
+                                for (Player alivePlayer : alivePlayers) {
+                                    if (alivePlayer.getUserName().equals(param[1])) {
+                                        target = alivePlayer;
                                         break;
                                     }
                                 }
@@ -164,14 +162,12 @@ public class Applet extends PApplet {
                                     if (param[2].equals(GameMessage.LIFE_POINT)) {
                                         target.setLifePoint(target.getLifePoint() + Integer.parseInt(param[3]));
                                     }
-                                    else {
+                                    else if (param[2].equals(GameMessage.NUMBER_OF_HAND_CARDS)){
                                         target.setNumberOfHandCard(target.getNumberOfHandCard() + Integer.parseInt(param[3]));
                                     }
                                 }
                                 break;
                             default:
-                                int cardID = Integer.parseInt(param[0]);
-                                System.out.println(CardUtility.copyCard(cardMap.get(cardID)).getName());
                                 break;
                         }
                     }
@@ -229,11 +225,13 @@ public class Applet extends PApplet {
             switch (cardPointed.getCardID()) {
                 case BASIC_APPLE:
                     usedSuccessfully = true;
-                    sendMessage(cardPointed.getCardID().value() + " " + username);
+                    sendMessage(GameMessage.CARD_EFFECT + " " +
+                                        cardPointed.getCardID().value() + " " + username + " " + username);
                     break;
                 case BASIC_DODGE:
                     usedSuccessfully = true;
-                    sendMessage(cardPointed.getCardID().value() + " " + username);
+                    sendMessage(GameMessage.CARD_EFFECT + " " +
+                                        cardPointed.getCardID().value() + " " + username + " " + username);
                     break;
                 case BASIC_KILL:
                     if (playerPointed.getUserName().equals(username)) {
@@ -249,7 +247,8 @@ public class Applet extends PApplet {
                         break;
                     }
                     usedSuccessfully = true;
-                    sendMessage(cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
+                    sendMessage(GameMessage.CARD_EFFECT + " " +
+                                        cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
                     break;
             }
         }
@@ -376,7 +375,7 @@ public class Applet extends PApplet {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
         this.cp5 = new ControlP5(this);
-        this.doneButton = cp5.addButton("done").setLabel("END TURN").setPosition(525, 530).setSize(200, 50).setVisible(false);
+        cp5.addButton("done").setLabel("END TURN").setPosition(525, 530).setSize(200, 50).setVisible(false);
         PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
         ControlFont font = new ControlFont(pfont, 241);
         cp5.getController("done").getCaptionLabel().setFont(font).toUpperCase(false).setSize(24);

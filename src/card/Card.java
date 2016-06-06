@@ -1,13 +1,11 @@
 package card;
 
-import com.sun.istack.internal.Nullable;
 import processing.core.PConstants;
 import processing.core.PImage;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import client.Player;
 
 /**
  * Card
@@ -171,24 +169,13 @@ public class Card {
     }
 
     /**
-     * Card effect string send to server
+     * Effect to send to client
      *
-     * @param giver player who use this card
-     * @param target player target by this card
-     * @return effect string to send to server
+     * @param targetUsername target username
+     * @return string to send
      */
-    public String giveEffectString(Player giver, @Nullable Player target) {
-        return null;
-    }
-
-    /**
-     * Card effect string send to server
-     *
-     * @param taker player who use this card
-     * @return effect string to send to server
-     */
-    public String tageEffectString(Player taker) {
-        return null;
+    public String effectString(String targetUsername) {
+        return "";
     }
 
     /**

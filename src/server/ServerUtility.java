@@ -1,6 +1,9 @@
 package server;
 
+import card.Card;
+import card.CardID;
 import card.CardStack;
+import card.CardUtility;
 import game.message.GameMessage;
 
 import java.io.*;
@@ -21,6 +24,7 @@ public class ServerUtility {
     private TreeMap<String, String> usernameToIntent = new TreeMap<>();
     private Server server;
 
+    private TreeMap<Integer, Card> cardMap;
     private CardStack cardStack = new CardStack();
 
     /**
@@ -76,34 +80,6 @@ public class ServerUtility {
 
     }
 
-    private boolean makeUserMove(int userIndex) {
-        String username = connectionToUsername.get(connections.get(userIndex));
-        int newCardIndex = cardStack.drawTop().getCardID().value();
-        connections.get(userIndex).sendMessage(GameMessage.YOUR_TURN);
-        connections.get(userIndex).sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
-        broadCast(GameMessage.MODIFY_PLAYER + " " + username + " " + GameMessage.NUMBER_OF_HAND_CARDS + " 1");
-        while (true) {
-            String message = connections.get(userIndex).readMessage();
-            if (message == null) {
-                return false;
-            }
-			System.out.println(message);
-			String[] args = message.split(" ");
-            if (args.length == 1) {
-                if (args[0].equals(GameMessage.END_TURN)) {
-                    break;
-                }
-			} else if (args.length == 2) {
-
-            } else if (args.length == 3) {
-
-			}
-            // broadcast to let all clients know its number of hand cards
-            broadCast(GameMessage.MODIFY_PLAYER + " " + args[1] + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
-		}
-        return true;
-    }
-
     /**
      * Initialize with a list of sockets
      *
@@ -113,16 +89,17 @@ public class ServerUtility {
     public ServerUtility(ArrayList<Socket> sockets, Server server) {
         this.cardStack.shuffle();
         this.server = server;
+        initCardMap();
         sockets.forEach(socket -> connections.add(new Connection(socket)));
         for (Connection connectionThread : connections) {
             String string = GameMessage.INITIAL_PLAYER + " " +
-                            connectionToUsername.get(connectionThread) + " " +
-                            usernameToIntent.get(connectionToUsername.get(connectionThread));
+                                    connectionToUsername.get(connectionThread) + " " +
+                                    usernameToIntent.get(connectionToUsername.get(connectionThread));
             broadCast(string);
         }
         broadCast(GameMessage.START);
         for (Connection connection : connections) {
-        	for (int i = 0; i < 3; ++i) {
+            for (int i = 0; i < 3; ++i) {
                 int index = cardStack.drawTop().getCardID().value();
                 connection.sendMessage(GameMessage.RECEIVE_CARD + " " + index);
             }
@@ -138,6 +115,47 @@ public class ServerUtility {
             }
         });
         thread.start();
+    }
+
+    /**
+     * Initialize card map with all cards and its ID
+     */
+    private void initCardMap() {
+        this.cardMap = new TreeMap<>();
+        for (CardID id : CardID.values()) {
+            cardMap.put(id.value(), CardUtility.newCard(id));
+        }
+    }
+
+    private boolean makeUserMove(int userIndex) {
+        String username = connectionToUsername.get(connections.get(userIndex));
+        int newCardIndex = cardStack.drawTop().getCardID().value();
+        connections.get(userIndex).sendMessage(GameMessage.YOUR_TURN);
+        connections.get(userIndex).sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
+        broadCast(GameMessage.MODIFY_PLAYER + " " + username + " " + GameMessage.NUMBER_OF_HAND_CARDS + " 1");
+        while (true) {
+            String message = connections.get(userIndex).readMessage();
+            if (message == null) {
+                return false;
+            }
+			System.out.println(message);
+			String[] args = message.split(" ");
+            if (args.length <= 0) {
+                continue;
+            }
+            if (args[0].equals(GameMessage.END_TURN)) {
+                break;
+            }
+            else if (args[0].equals(GameMessage.CARD_EFFECT)) {
+                // Note CARD_EFFECT CARD_INDEX SOURCE TARGET
+                // Idx  0           1          2      3
+                int cardIndex = Integer.parseInt(args[1]);
+                broadCast(cardMap.get(cardIndex).effectString(args[3]));
+            }
+            // broadcast to let all clients know its number of hand cards
+            broadCast(GameMessage.MODIFY_PLAYER + " " + args[1] + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
+		}
+        return true;
     }
 
     /**
