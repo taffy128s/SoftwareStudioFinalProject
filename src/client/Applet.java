@@ -38,6 +38,8 @@ public class Applet extends PApplet {
 
 	private boolean yourTurn;
 
+    private String winner;
+
     private boolean showCardDescription;
     private Card cardDescription;
 
@@ -46,6 +48,9 @@ public class Applet extends PApplet {
 
     private boolean showDiscardCard;
     private Card discardedCard;
+
+    private boolean[] showThrownCard;
+    private Card[] thrownCard;
 
     private PrintWriter writer;
     private PrintWriter chatWriter;
@@ -110,8 +115,14 @@ public class Applet extends PApplet {
         this.gameStatus = GameStatus.WAIT;
         this.playerStatus = PlayerStatus.INIT;
         this.yourTurn = false;
-        initCardMap();
         this.pause = false;
+        this.showThrownCard = new boolean[2];
+        this.showThrownCard[0] = false;
+        this.showThrownCard[1] = false;
+        this.thrownCard = new Card[2];
+        this.thrownCard[0] = null;
+        this.thrownCard[1] = null;
+        initCardMap();
     }
 
     public void done() {
@@ -137,6 +148,9 @@ public class Applet extends PApplet {
                     }
                     else if(gameStatus == GameStatus.READY) {
                         readReady();
+                    }
+                    else {
+                        break;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -187,12 +201,28 @@ public class Applet extends PApplet {
             param = string.split(" ");
             System.out.println("READY " + string);
             switch (param[0]) {
+                case GameMessage.GAME_OVER:
+                    winner = param[1];
+                    gameStatus = GameStatus.END;
+                    break;
                 case GameMessage.YOUR_TURN:
                     yourTurn = true;
                     if (playerStatus == PlayerStatus.KILL_USED) {
                         playerStatus = PlayerStatus.INIT;
                     }
                     cp5.getController("done").setLock(false);
+                    break;
+                case GameMessage.CHECK_IS_ALIVE:
+                    for (Player player : alivePlayers) {
+                        if (player.getUserName().equals(username)) {
+                            if (player.getLifePoint() <= 0) {
+                                sendMessage(GameMessage.RESPONSE_NO);
+                            }
+                            else {
+                                sendMessage(GameMessage.RESPONSE_YES);
+                            }
+                        }
+                    }
                     break;
                 case GameMessage.RECEIVE_CARD:
                     System.out.println("get card id " + param[1]);
@@ -213,6 +243,7 @@ public class Applet extends PApplet {
                         while (otherCard.x != Client.WINDOW_WIDTH - 200 && otherCard.y != 20) {
                             delay(1000);
                         }
+                        delay(1000);
                         showOtherCard = false;
                         otherCard = null;
                     }).start();
@@ -223,12 +254,10 @@ public class Applet extends PApplet {
                     System.out.println("Be asked for card id " + param[1]);
                     int cardIDAsked = Integer.parseInt(param[1]);
                     Card used = null;
-                    discardedCard = CardUtility.newCard(cardIDAsked);
                     for (int i = 0; i < handCards.size(); i++) {
                         if (handCards.get(i).getCardID().value() == cardIDAsked) {
                             used = handCards.get(i);
-                            discardedCard.x = used.x;
-                            discardedCard.y = used.y;
+                            discardedCard = CardUtility.copyCard(handCards.get(i));
                             break;
                         }
                     }
@@ -255,6 +284,7 @@ public class Applet extends PApplet {
                             while (discardedCard.x != Client.WINDOW_WIDTH - 200 && discardedCard.y != 20) {
                                 delay(500);
                             }
+                            delay(1000);
                             showDiscardCard = false;
                             discardedCard = null;
                         }).start();
@@ -285,7 +315,7 @@ public class Applet extends PApplet {
                     pause = false;
                     break;
                 case GameMessage.THROW_CARD:
-                    if(handCards.size() == 0) {
+                    if (handCards.size() == 0) {
                         sendMessage(GameMessage.THROW_FAIL);
                     }
                     else {
@@ -294,6 +324,20 @@ public class Applet extends PApplet {
                         Card cardToThrow = handCards.get(toThrow);
                         handCards.remove(cardToThrow);
                         sendMessage(GameMessage.CARD_LOSS + " " + cardToThrow.getCardID().value());
+                        int targetIndex = (thrownCard[0] == null) ? 0 : 1;
+                        thrownCard[targetIndex] = CardUtility.copyCard(cardToThrow);
+                        new Thread(() -> {
+                            showThrownCard[targetIndex] = true;
+                            while (thrownCard[targetIndex].x != Client.WINDOW_WIDTH - 200 &&
+                                           thrownCard[targetIndex].y != 20) {
+                                delay(500);
+                            }
+                            delay(1000);
+                            showThrownCard[targetIndex] = false;
+                            thrownCard[targetIndex] = null;
+                        }).start();
+                        Ani.to(thrownCard[targetIndex], 0.75f, "x", Client.WINDOW_WIDTH - 200, Ani.SINE_IN_OUT);
+                        Ani.to(thrownCard[targetIndex], 0.75f, "y", 20, Ani.SINE_IN_OUT);
                     }
                     break;
                 default:
@@ -366,7 +410,7 @@ public class Applet extends PApplet {
                     break;
             }
         }
-        else if(cardPointed.getCategory() == CardCategory.JIN) {
+        else if (cardPointed.getCategory() == CardCategory.JIN) {
             JinCard typedCard = (JinCard)cardPointed;
             if(typedCard.isSelfOnly()) {
                 usedSuccessfully = true;
@@ -387,7 +431,7 @@ public class Applet extends PApplet {
                 pause = true;
             }
         }
-        else if(cardPointed.getCategory() == CardCategory.WEA) {
+        else if (cardPointed.getCategory() == CardCategory.WEA) {
 
         }
         if (usedSuccessfully) {
@@ -645,7 +689,7 @@ public class Applet extends PApplet {
         switch (gameStatus) {
             case WAIT:
             	background(245, 222, 179);
-                image(imageInitial,0,0) ;
+                image(imageInitial, 0, 0);
                 textSize(32);
                 fill(255, 255, 255);
                 text("Please wait until the game starts.", 350, 375);
@@ -702,6 +746,29 @@ public class Applet extends PApplet {
                 if (showDiscardCard) {
                     image(discardedCard.getImage(), discardedCard.x, discardedCard.y);
                 }
+                for (int i = 0; i < 2; ++i) {
+                    if (showThrownCard[i]) {
+                        image(thrownCard[i].getImage(), thrownCard[i].x, thrownCard[i].y);
+                    }
+                }
+                break;
+            case END:
+                background(245, 222, 179);
+                image(image, 0, 0);
+                strokeWeight(1);
+                stroke(0);
+                line(textarea.getPosition()[0], textarea.getPosition()[1] - 1, textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] - 1);
+                line(textarea.getPosition()[0] - 1, textarea.getPosition()[1] - 1, textarea.getPosition()[0] - 1, textarea.getPosition()[1] + textarea.getHeight());
+                line(textarea.getPosition()[0], textarea.getPosition()[1] + textarea.getHeight(), textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] + textarea.getHeight());
+                line(textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] - 1, textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] + textarea.getHeight());
+                bigCircle.display();
+                alivePlayers.forEach(Player::display);
+                for (int i = 0; i < handCards.size(); ++i) {
+                    image(handCards.get(i).getImage(), handCards.get(i).x, handCards.get(i).y);
+                }
+                textSize(76);
+                fill(0, 0, 0);
+                text("Player " + winner + " Wins!!!", 290, 400);
                 break;
             default:
                 break;

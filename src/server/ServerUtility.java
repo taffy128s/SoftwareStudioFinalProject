@@ -100,6 +100,7 @@ public class ServerUtility {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        break;
                     }
                 }
             });
@@ -139,8 +140,21 @@ public class ServerUtility {
         Thread thread = new Thread(() -> {
             while (true) {
                 for (int i = 0; i < connections.size(); i = (i + 1) % connections.size()) {
+                    if (!connections.get(i).isAlive) {
+                        continue;
+                    }
                     boolean result = makeUserMove(i);
                     if (!result) {
+                        break;
+                    }
+                    if (aliveNum == 1) {
+                        String winner = GameMessage.DONT_CARE_USER;
+                        for (Connection connection : connections) {
+                            if (connection.isAlive) {
+                                winner = connectionToUsername.get(connection);
+                            }
+                        }
+                        broadCast(GameMessage.GAME_OVER + " " + winner);
                         break;
                     }
                 }
@@ -161,12 +175,20 @@ public class ServerUtility {
 
     private boolean makeUserMove(int userIndex) {
         String username = connectionToUsername.get(connections.get(userIndex));
+        String message;
         int newCardIndex = cardStack.drawTop().getCardID().value();
         connections.get(userIndex).sendMessage(GameMessage.YOUR_TURN);
+        connections.get(userIndex).sendMessage(GameMessage.CHECK_IS_ALIVE);
+        message = connections.get(userIndex).readMessage();
+        if (message.equals(GameMessage.RESPONSE_NO)) {
+            connections.get(userIndex).isAlive = false;
+            --aliveNum;
+            return true;
+        }
         connections.get(userIndex).sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
         broadCast(GameMessage.MODIFY_PLAYER + " " + username + " " + GameMessage.NUMBER_OF_HAND_CARDS + " 1");
         while (true) {
-            String message = connections.get(userIndex).readMessage();
+            message = connections.get(userIndex).readMessage();
             if (message == null) {
                 return false;
             }
@@ -198,6 +220,12 @@ public class ServerUtility {
             // broadcast to let all clients know its number of hand cards
             broadCast(GameMessage.MODIFY_PLAYER + " " + args[2] + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
 		}
+        connections.get(userIndex).sendMessage(GameMessage.CHECK_IS_ALIVE);
+        message = connections.get(userIndex).readMessage();
+        if (message.equals(GameMessage.RESPONSE_NO)) {
+            connections.get(userIndex).isAlive = false;
+            --aliveNum;
+        }
         return true;
     }
 
@@ -214,16 +242,16 @@ public class ServerUtility {
         JinCard card = (JinCard)cardRead;
         String target = args[3];
         String source = args[2];
-        if(card.getCardID() == CardID.JIN_THROW) {
+        if (card.getCardID() == CardID.JIN_THROW) {
             Connection targetConnection = usernameToConnection.get(target);
-            for(int i=0 ; i<2 ; i++) {
+            for (int i = 0; i < 2; i++) {
                 targetConnection.sendMessage(GameMessage.THROW_CARD);
                 String thrownMessage = targetConnection.readMessage();
                 String[] thrownInfo = thrownMessage.split(" ");
-                if(thrownInfo[0].equals(GameMessage.THROW_FAIL)) {
+                if (thrownInfo[0].equals(GameMessage.THROW_FAIL)) {
                     break;
                 }
-                else if(thrownInfo[0].equals(GameMessage.CARD_LOSS)) {
+                else if (thrownInfo[0].equals(GameMessage.CARD_LOSS)) {
                     int cardIDThrown = Integer.parseInt(thrownInfo[1]);
                     cardStack.discardCard(CardUtility.newCard(cardIDThrown));
                     broadCast(card.effectString(target));
@@ -231,41 +259,62 @@ public class ServerUtility {
             }
             return;
         }
-        if(card.getCardID() == CardID.JIN_THIEF) {
+        if (card.getCardID() == CardID.JIN_THIEF) {
+            Connection targetConnection = usernameToConnection.get(target);
+            targetConnection.sendMessage(GameMessage.THROW_CARD);
+            String thrownMessage = targetConnection.readMessage();
+            String[] thrownInfo = thrownMessage.split(" ");
+            if (thrownInfo[0].equals(GameMessage.THROW_FAIL)) {
+                return;
+            }
+            else if (thrownInfo[0].equals(GameMessage.CARD_LOSS)) {
+                int cardIDThrown = Integer.parseInt(thrownInfo[1]);
+                broadCast(card.effectString(target));
+
+                usernameToConnection.get(source).sendMessage(GameMessage.RECEIVE_CARD + " " + cardIDThrown);
+                broadCast(GameMessage.MODIFY_PLAYER + " " + source + " " + GameMessage.NUMBER_OF_HAND_CARDS + " 1");
+            }
+
             return;
         }
-        if(card.isConditional()) {
-            if(card.isSelfOnly()) {
+        if (card.isConditional()) {
+            if (card.isSelfOnly()) {
                 askCard(cardRead, target, userIndex);
             }
-            else if(card.isNotTargeting()) {
-                if(card.isSelfExclusive()) {
-                    for(Connection connection : connections) {
-                        if(connection.isAlive == false) continue;
+            else if (card.isNotTargeting()) {
+                if (card.isSelfExclusive()) {
+                    for (Connection connection : connections) {
+                        if (!connection.isAlive) {
+                            continue;
+                        }
                         target = connectionToUsername.get(connection);
-                        if(target.equals(source)) continue;
+                        if (target.equals(source)) {
+                            continue;
+                        }
                         askCard(cardRead, target, userIndex);
                     }
                 }
                 else {
-                    for(Connection connection : connections) {
-                        if(connection.isAlive == false) continue;
+                    for (Connection connection : connections) {
+                        if (!connection.isAlive) {
+                            continue;
+                        }
                         target = connectionToUsername.get(connection);
                         askCard(cardRead, target, userIndex);
                     }
                 }
             }
             else {
-                
+
             }
         }
         else {
-            if(card.isSelfOnly()) {
+            if (card.isSelfOnly()) {
                 broadCast(card.effectString(target));
             }
-            else if(card.isNotTargeting()) {
-                if(card.isSelfExclusive()) {
-                    for(Connection connection : connections) {
+            else if (card.isNotTargeting()) {
+                if (card.isSelfExclusive()) {
+                    for (Connection connection : connections) {
                         if (!connection.isAlive) {
                             continue;
                         }
@@ -277,7 +326,7 @@ public class ServerUtility {
                     }
                 }
                 else {
-                    for(Connection connection : connections) {
+                    for (Connection connection : connections) {
                         if (!connection.isAlive) {
                             continue;
                         }
@@ -287,18 +336,17 @@ public class ServerUtility {
                 }
             }
             else {
-                
-            }
 
-            if(card.getCardID() == CardID.JIN_GETCARD) {
+            }
+            if (card.getCardID() == CardID.JIN_GETCARD) {
                 Connection targetConnection = usernameToConnection.get(target);
-                for(int i=0 ; i<2 ; i++) {
+                for (int i = 0; i < 2; i++) {
                     int newCardIndex = cardStack.drawTop().getCardID().value();
                     targetConnection.sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
                 }
             }
-            else if(card.getCardID() == CardID.JIN_WUKU) {
-                for(Connection connection : connections) {
+            else if (card.getCardID() == CardID.JIN_WUKU) {
+                for (Connection connection : connections) {
                     if (!connection.isAlive) {
                         continue;
                     }
@@ -308,7 +356,7 @@ public class ServerUtility {
             }
         }
     }
-    
+
     private void askCard(Card cardRead, String target, int userIndex)
     {
         Connection targetConnection = usernameToConnection.get(target);
@@ -323,8 +371,8 @@ public class ServerUtility {
             broadCast(cardRead.effectString(target));
         }
     }
-    
-    
+
+
     /**
      * Send message to all socket connected to server
      *

@@ -90,7 +90,12 @@ public class CardUtility {
      * @return a copy of the card
      */
     public static Card copyCard(Card card) {
-        return newCard(card.getCardID());
+        Card newed = newCard(card.getCardID());
+        if (newed != null) {
+            newed.x = card.x;
+            newed.y = card.y;
+        }
+        return newed;
     }
 
 }
