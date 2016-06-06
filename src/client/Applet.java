@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import card.*;
+import controlP5.CColor;
 import controlP5.ControlFont;
 import controlP5.ControlP5;
 import de.looksgood.ani.Ani;
@@ -183,7 +184,7 @@ public class Applet extends PApplet {
                     int cardIDAsked = Integer.parseInt(param[1]);
                     int result = JOptionPane.showConfirmDialog(null,
                                                                new JLabel("Do you want to use " + cardMap.get(cardIDAsked).getName()),
-                                                               "HAHAHAHA", 
+                                                               "HAHAHAHA",
                                                                JOptionPane.OK_CANCEL_OPTION);
                     if (result == JOptionPane.OK_OPTION) {
                         boolean hasCard = false;
@@ -427,10 +428,22 @@ public class Applet extends PApplet {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
         this.cp5 = new ControlP5(this);
-        cp5.addButton("done").setLabel("END TURN").setPosition(Client.WINDOW_WIDTH - 220, 530).setSize(200, 50).setVisible(false);
         PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
         ControlFont font = new ControlFont(pfont, 241);
-        cp5.getController("done").getCaptionLabel().setFont(font).toUpperCase(false).setSize(24);
+        cp5.addButton("done")
+           .setLabel("END TURN")
+           .setPosition(Client.WINDOW_WIDTH - 220, 530)
+           .setSize(200, 50)
+           .setVisible(false);
+        cp5.getController("done")
+           .getCaptionLabel()
+           .setFont(font)
+           .toUpperCase(false)
+           .setSize(24);
+        cp5.addTextfield("")
+           .setColor(color(0, 0, 0))
+           .setColorBackground(color(0, 0, 0))
+           .setColorForeground(color(0, 0, 0));
     }
 
     /**
