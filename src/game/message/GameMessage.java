@@ -42,6 +42,11 @@ public class GameMessage {
     public static final String RECEIVE_CARD = "receivecard";
 
     /**
+     * <code>Format: SHOW_CARD card_id_number source target</code>
+     */
+    public static final String SHOW_CARD = "SHOWCARD";
+
+    /**
      * <p><code>Format: MODIFY_PLAYER username attribute value</code>
      * <p>All attributes can be modified are:
      * <p><code>LIFE_POINT</code> using <code>GameMessage.LIFE_POINT</code>
@@ -70,32 +75,14 @@ public class GameMessage {
      * <p><code>Format: ASK_FOR_CARD card_number</code></p>
      */
     public static final String ASK_FOR_CARD = "ASKFORCARD";
-    
+
     /**
-     * <p><code>Format: RESPONCE_NO </code></p>
+     * <p><code>Format: RESPONSE_NO </code></p>
      */
-    public static final String RESPONCE_NO = "RESPONCEFORNO";
+    public static final String RESPONSE_NO = "RESPONCEFORNO";
     /**
-     * <p><code>Format: RESPONCE_YES </code></p>
+     * <p><code>Format: RESPONSE_OK </code></p>
      */
-    public static final String RESPONCE_YES = "RESPONCEFORYES";
-    
-    public static final String KILL = "kill";
-    public static final String DODGE = "dodge";
-    public static final String GOLDEN_APPLE = "goldenapple" ;
-    public static final String BATTLE = "battle" ;
-    public static final String CRAZY_BANQUET = "carnivalbanquet";
-    public static final String DOUCHI_DOWN = "enjoymentdrown";
-    public static final String GET_CARD = "midastouch";
-    public static final String THIEF = "thief";
-    public static final String THOUSAND_ARROW = "myriadsofarrows";
-    public static final String THROW = "disarm";
-    public static final String TUSHI = "cavalryinvasion";
-    public static final String WUKU = "bumperharvest";
-    public static final String BIG_SHIELD = "Romanshield";
-    public static final String BLACK_SHIELD = "swallowTailshield";
-    public static final String CONTINUE = "arbalest";
-    public static final String SHORT = "Persianknife";
-    public static final String TEN_SWORD = "crossswords";
+    public static final String RESPONSE_YES = "RESPONCEFORYES";
 
 }

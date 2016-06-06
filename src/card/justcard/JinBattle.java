@@ -18,7 +18,7 @@ public class JinBattle extends JinCard {
               "Duel",
               "The target and you need to issue a 'Kill' alternatingly. The one who doesn't issue a 'Kill' first will take one point damage." ,
               "jin_battle.png",
-              false, true, true, true);
+              false, true, true);
     }
 
 }

@@ -153,29 +153,16 @@ public class ServerUtility {
                 // Note CARD_EFFECT CARD_INDEX SOURCE TARGET
                 // Idx  0           1          2      3
                 int cardIndex = Integer.parseInt(args[1]);
+                broadCast(GameMessage.SHOW_CARD + " " + cardIndex + " " + args[2] + " " + args[3]);
                 Card cardRead = cardMap.get(cardIndex);
-                if(cardRead.getCategory() == CardCategory.BASIC) {
-                    Card card = cardRead;
-                    if(card.getCardID() == CardID.BASIC_KILL) {
-                        Connection targetConnection = usernameToConnection.get(args[3]);
-                        targetConnection.sendMessage(GameMessage.ASK_FOR_CARD + " " + CardID.BASIC_DODGE.value());
-                        String responce = targetConnection.readMessage();
-                        if(responce.equals(GameMessage.RESPONCE_YES)) {
-                            cardStack.discardCard(CardUtility.newCard(CardID.BASIC_DODGE));
-                        }
-                        else if(responce.equals(GameMessage.RESPONCE_NO)) {
-                            broadCast(card.effectString(args[3]));
-                        }
-                    }
-                    else {
-                        broadCast(cardRead.effectString(args[3]));
-                    }
+                if (cardRead.getCategory() == CardCategory.BASIC) {
+                    basicCardEffect(args, cardRead);
                 }
-                else if(cardRead.getCategory() == CardCategory.JIN) {
-                    JinCard card = (JinCard)cardRead;
+                else if (cardRead.getCategory() == CardCategory.JIN) {
+                    jinCardEffect(args, cardRead);
                 }
-                else if(cardRead.getCategory() == CardCategory.WEA) {
-                    WeaCard card = (WeaCard)cardRead;
+                else if (cardRead.getCategory() == CardCategory.WEA) {
+                    WeaCard card = (WeaCard) cardRead;
                 }
                 cardStack.discardCard(CardUtility.copyCard(cardRead));
             }
@@ -183,6 +170,33 @@ public class ServerUtility {
             broadCast(GameMessage.MODIFY_PLAYER + " " + args[1] + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
 		}
         return true;
+    }
+
+    private void basicCardEffect(String[] args, Card cardRead) {
+        if (cardRead.getCardID() == CardID.BASIC_KILL) {
+            Connection targetConnection = usernameToConnection.get(args[3]);
+            targetConnection.sendMessage(GameMessage.ASK_FOR_CARD + " " + CardID.BASIC_DODGE.value());
+            String response = targetConnection.readMessage();
+            if (response.equals(GameMessage.RESPONSE_YES)) {
+                cardStack.discardCard(CardUtility.newCard(CardID.BASIC_DODGE));
+            }
+            else if (response.equals(GameMessage.RESPONSE_NO)) {
+                broadCast(cardRead.effectString(args[3]));
+            }
+        }
+        else {
+            broadCast(cardRead.effectString(args[3]));
+        }
+    }
+    
+    private void jinCardEffect(String[] args, Card cardRead) {
+        JinCard card = (JinCard)cardRead;
+        if(card.isConditional()) {
+            
+        }
+        else {
+            
+        }
     }
 
     /**

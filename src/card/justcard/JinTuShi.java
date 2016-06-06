@@ -18,7 +18,7 @@ public class JinTuShi extends JinCard {
               "Cavalry Invasion",
               "In your phase, you can use 'Cavalry Invasion' to all other players expect you. The targets need to issue a 'Kill' according to the action order, or else take one point of damage." ,
               "jin_tushi.png",
-              true, true, true, true);
+              true, true, true);
     }
 
 }

@@ -18,7 +18,7 @@ public class JinThief extends JinCard {
               "Thief",
               "In your phase, you can use 'Thief' to a player, and you obtain a card from the player's cards-in-hand, equipment area or fate area." ,
               "jin_thief.png",
-              false, true, true, false);
+              false, true, false);
     }
 
 }

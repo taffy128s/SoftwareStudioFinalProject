@@ -53,9 +53,12 @@ public class Client extends JFrame {
         while (true) {
             int result = JOptionPane.showConfirmDialog(null, panel, "New player", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                if (nameField.getText().length() == 0 || intentField.getText().length() == 0) {
-                    JOptionPane.showConfirmDialog(null, new JLabel("All fields cannot be empty!"), "Error", JOptionPane.DEFAULT_OPTION);
+                if (nameField.getText().length() == 0) {
+                    JOptionPane.showConfirmDialog(null, new JLabel("Name cannot be empty!"), "Error", JOptionPane.DEFAULT_OPTION);
                     continue;
+                }
+                if (intentField.getText().length() == 0) {
+                    intentField.setText("EAT_SHIT");
                 }
                 try {
                     this.socket = new Socket(IP, port);
