@@ -11,9 +11,9 @@ import game.message.GameMessage;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.Vector;
 
 /**
  * This class handle all game input/output to the clients in list of sockets.
@@ -21,8 +21,8 @@ import java.util.TreeMap;
  */
 public class ServerUtility {
 
-    private ArrayList<Connection> chatConnections = new ArrayList<>();
-    private ArrayList<Connection> connections = new ArrayList<>();
+    private Vector<Connection> chatConnections = new Vector<>();
+    private Vector<Connection> connections = new Vector<>();
     private HashMap<Connection, String> connectionToUsername = new HashMap<>();
     private HashMap<String, Connection> usernameToConnection = new HashMap<>();
     private TreeMap<String, String> usernameToIntent = new TreeMap<>();
@@ -73,7 +73,7 @@ public class ServerUtility {
                 return null;
 			}
         }
-        
+
         public void getNameAndIntent() {
             try {
                 String name = reader.readLine();
@@ -89,7 +89,7 @@ public class ServerUtility {
                 e.printStackTrace();
             }
         }
-        
+
         public void startThread() {
             Thread thread = new Thread(() -> {
                 while (!socket.isClosed()) {
@@ -114,7 +114,7 @@ public class ServerUtility {
      * @param sockets a list of sockets who will play together
      * @param server server to call appendMessage() to show message on TextField
      */
-    public ServerUtility(ArrayList<Socket> sockets, ArrayList<Socket> chatSockets, Server server) {
+    public ServerUtility(Vector<Socket> sockets, Vector<Socket> chatSockets, Server server) {
         this.cardStack.shuffle();
         this.server = server;
         initCardMap();
@@ -232,22 +232,28 @@ public class ServerUtility {
             else if(card.isNotTargeting()) {
                 if(card.isSelfExclusive()) {
                     for(Connection connection : connections) {
-                        if(connection.isAlive == false) continue;
+                        if (!connection.isAlive) {
+                            continue;
+                        }
                         target = connectionToUsername.get(connection);
-                        if(target.equals(source)) continue;
+                        if (target.equals(source)) {
+                            continue;
+                        }
                         broadCast(card.effectString(target));
                     }
                 }
                 else {
                     for(Connection connection : connections) {
-                        if(connection.isAlive == false) continue;
+                        if (!connection.isAlive) {
+                            continue;
+                        }
                         target = connectionToUsername.get(connection);
                         broadCast(card.effectString(target));
                     }
                 }
             }
             else {
-                
+
             }
 
             if(card.getCardID() == CardID.JIN_GETCARD) {
@@ -259,7 +265,9 @@ public class ServerUtility {
             }
             else if(card.getCardID() == CardID.JIN_WUKU) {
                 for(Connection connection : connections) {
-                    if(connection.isAlive == false) continue;
+                    if (!connection.isAlive) {
+                        continue;
+                    }
                     int newCardIndex = cardStack.drawTop().getCardID().value();
                     connection.sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
                 }
