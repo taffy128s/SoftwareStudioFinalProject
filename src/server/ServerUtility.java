@@ -155,20 +155,7 @@ public class ServerUtility {
                 int cardIndex = Integer.parseInt(args[1]);
                 Card cardRead = cardMap.get(cardIndex);
                 if (cardRead.getCategory() == CardCategory.BASIC) {
-                    if (cardRead.getCardID() == CardID.BASIC_KILL) {
-                        Connection targetConnection = usernameToConnection.get(args[3]);
-                        targetConnection.sendMessage(GameMessage.ASK_FOR_CARD + " " + CardID.BASIC_DODGE.value());
-                        String response = targetConnection.readMessage();
-                        if (response.equals(GameMessage.RESPONSE_OK)) {
-                            cardStack.discardCard(CardUtility.newCard(CardID.BASIC_DODGE));
-                        }
-                        else if (response.equals(GameMessage.RESPONSE_NO)) {
-                            broadCast(cardRead.effectString(args[3]));
-                        }
-                    }
-                    else {
-                        broadCast(cardRead.effectString(args[3]));
-                    }
+                    basicCard(args, cardRead);
                 }
                 else if (cardRead.getCategory() == CardCategory.JIN) {
                     JinCard card = (JinCard) cardRead;
@@ -182,6 +169,23 @@ public class ServerUtility {
             broadCast(GameMessage.MODIFY_PLAYER + " " + args[1] + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
 		}
         return true;
+    }
+
+    private void basicCard(String[] args, Card cardRead) {
+        if (cardRead.getCardID() == CardID.BASIC_KILL) {
+            Connection targetConnection = usernameToConnection.get(args[3]);
+            targetConnection.sendMessage(GameMessage.ASK_FOR_CARD + " " + CardID.BASIC_DODGE.value());
+            String response = targetConnection.readMessage();
+            if (response.equals(GameMessage.RESPONSE_OK)) {
+                cardStack.discardCard(CardUtility.newCard(CardID.BASIC_DODGE));
+            }
+            else if (response.equals(GameMessage.RESPONSE_NO)) {
+                broadCast(cardRead.effectString(args[3]));
+            }
+        }
+        else {
+            broadCast(cardRead.effectString(args[3]));
+        }
     }
 
     /**
