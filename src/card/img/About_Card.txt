@@ -42,9 +42,6 @@ jin_battle.JPG ： 決鬥 （!AreaEffective, JudgedNow, Conditional）（Harmful
 in_crazybanquet.JPG ： 狂歡宴會（AreaEffective, JudgedNow, !Conditional）（Recoverable）
 出牌階段，對所有角色使用。按照行動順序結算，所有受傷角色各回復1點體力。
 
-jin_douchidown.JPG ：鬥志沉淪（!AreaEffective, !JudgedNow, Conditional）（RoundSkipping）
-出牌階段，對除自己外，任意一名角色使用，將【鬥志沉淪】橫置於該角色的判定區裡。【鬥志沉淪】與該角色的判定階段開始結算，其效果是，該角色進行一次判定，除非判定結果為”武器牌“，否則跳過其出牌階段。
-
 jin_getcard.JPG ： 點石成金（!AreaEffective, JudgedNow, !Conditional）（CardGetable）
 出牌階段，對自己使用，摸兩張牌。
 

@@ -3,6 +3,7 @@ package card.justcard;
 import card.CardCategory;
 import card.CardID;
 import card.JinCard;
+import game.message.GameMessage;
 
 /**
  * Bumper Harvest
@@ -20,5 +21,9 @@ public class JinWuKu extends JinCard {
               "jin_wuku.png",
               true, false, false);
     }
-
+    @Override
+    public String effectString(String targetUsername) {
+        return GameMessage.MODIFY_PLAYER + " " + targetUsername + 
+                " " + GameMessage.NUMBER_OF_HAND_CARDS + " 1";
+    }
 }
