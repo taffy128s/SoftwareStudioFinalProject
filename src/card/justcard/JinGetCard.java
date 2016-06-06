@@ -18,7 +18,8 @@ public class JinGetCard extends JinCard {
               "Midas Touch",
               "In your phase, you can use 'Midas Touch' to yourself, then you draw 2 cards." ,
               "jin_getcard.png",
-              true, false, true, false);
+              true, false, true, false, true);
+        
     }
 
 }

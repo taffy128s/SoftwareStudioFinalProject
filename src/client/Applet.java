@@ -191,7 +191,7 @@ public class Applet extends PApplet {
                             if(handCards.get(i).getCardID().value() == cardIDAsked) {
                                 hasCard = true;
                                 Card used = handCards.get(i);
-                                sendMessage(GameMessage.RESPONSE_OK);
+                                sendMessage(GameMessage.RESPONSE_YES);
                                 handCards.remove(used);
                                 break;
                             }

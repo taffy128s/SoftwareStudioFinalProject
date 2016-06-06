@@ -78,7 +78,7 @@ public class GameMessage {
     /**
      * <p><code>Format: RESPONSE_OK </code></p>
      */
-    public static final String RESPONSE_OK = "RESPONCEFORYES";
+    public static final String RESPONSE_YES = "RESPONCEFORYES";
 
     public static final String KILL = "kill";
     public static final String DODGE = "dodge";

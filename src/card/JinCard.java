@@ -2,6 +2,7 @@ package card;
 
 public class JinCard extends Card {
 
+    private boolean selfOnly;
     private boolean notTargeting;
     private boolean selfExclusive;
     private boolean effectiveNow;
@@ -28,8 +29,17 @@ public class JinCard extends Card {
         this.selfExclusive = selfExclusive;
         this.effectiveNow = effectiveNow;
         this.conditional = conditional;
+        
+        this.selfOnly = false;
     }
-    
+    public JinCard(CardCategory cardCategory, CardID cardID,String name, String description, String filename,
+            boolean notTargeting, boolean selfExclusive, boolean effectiveNow, boolean conditional,
+            boolean selfOnly) {
+        this(cardCategory, cardID, name, description, filename,
+             notTargeting, selfExclusive, effectiveNow, conditional);
+        
+        this.selfOnly = selfOnly;
+    }
     public boolean isNotTargeting() {
         return notTargeting;
     }
@@ -45,5 +55,8 @@ public class JinCard extends Card {
     public boolean isConditional() {
         return conditional;
     }
-
+    
+    public boolean isSelfOnly() {
+        return selfOnly;
+    }
 }
