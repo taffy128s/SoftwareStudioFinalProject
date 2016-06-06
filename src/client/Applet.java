@@ -13,15 +13,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import card.*;
-import controlP5.CColor;
-import controlP5.ControlFont;
 import controlP5.ControlP5;
+import controlP5.Textarea;
 import de.looksgood.ani.Ani;
 import game.message.GameMessage;
 import javafx.geometry.Point2D;
 import processing.core.PApplet;
 import processing.core.PConstants;
-import processing.core.PFont;
 import processing.core.PImage;
 import processing.event.MouseEvent;
 
@@ -428,8 +426,6 @@ public class Applet extends PApplet {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
         this.cp5 = new ControlP5(this);
-        PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
-        ControlFont font = new ControlFont(pfont, 241);
         cp5.addButton("done")
            .setLabel("END TURN")
            .setPosition(Client.WINDOW_WIDTH - 220, 530)
@@ -437,13 +433,29 @@ public class Applet extends PApplet {
            .setVisible(false);
         cp5.getController("done")
            .getCaptionLabel()
-           .setFont(font)
+           .setFont(createFont("arial", 20))
            .toUpperCase(false)
            .setSize(24);
         cp5.addTextfield("")
-           .setColor(color(0, 0, 0))
-           .setColorBackground(color(0, 0, 0))
-           .setColorForeground(color(0, 0, 0));
+           .setColor(color(0))
+           .setColorBackground(color(255))
+           .setColorForeground(color(0))
+           .setFont(createFont("arial", 20))
+           .setSize(350, 30)
+           .setPosition(25, Client.WINDOW_HEIGHT - 70);
+        Textarea textarea;
+        textarea = cp5.addTextarea("txt")
+                      .setPosition(0, 0)
+                      .setFont(createFont("arial", 18))
+                      .setLineHeight(18)
+                      .setColor(color(0))
+                      .setColorBackground(color(240))
+                      .setColorForeground(color(0))
+                      .setScrollBackground(color(255))
+                      .setScrollForeground(color(0))
+                      .setBorderColor(color(0))
+                      .append("1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n");
+        textarea.scroll(1);
     }
 
     /**
