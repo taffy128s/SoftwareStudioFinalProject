@@ -194,10 +194,10 @@ public class Applet extends PApplet {
                     for (Player player : alivePlayers) {
                         if (player.getUserName().equals(username)) {
                             if (player.getLifePoint() <= 0) {
-                                sendMessage(GameMessage.RESPONSE_YES);
+                                sendMessage(GameMessage.RESPONSE_NO);
                             }
                             else {
-                                sendMessage(GameMessage.RESPONSE_NO);
+                                sendMessage(GameMessage.RESPONSE_YES);
                             }
                         }
                     }
