@@ -190,10 +190,10 @@ public class ServerUtility {
     
     private void jinCardEffect(String[] args, Card cardRead) {
         JinCard card = (JinCard)cardRead;
-        if(card.isSelfOnly()) {
+        if(card.isConditional()) {
             
         }
-        else if(card.isConditional()) {
+        else {
             
         }
     }

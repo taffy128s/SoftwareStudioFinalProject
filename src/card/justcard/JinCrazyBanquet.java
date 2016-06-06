@@ -18,7 +18,7 @@ public class JinCrazyBanquet extends JinCard {
               "Carnival banquet",
               "Use it to all players in your play phase, every player wil recover 1 point of HP according to the action order." ,
               "jin_crazybanquet.png",
-              true, false, true, false);
+              true, false, false);
     }
 
 }

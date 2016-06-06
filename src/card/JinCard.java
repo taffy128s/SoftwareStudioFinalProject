@@ -5,7 +5,6 @@ public class JinCard extends Card {
     private boolean selfOnly;
     private boolean notTargeting;
     private boolean selfExclusive;
-    private boolean effectiveNow;
     private boolean conditional;
 
     /**
@@ -18,16 +17,14 @@ public class JinCard extends Card {
      * @param filename path to its image file
      * @param notTargeting is not targeting
      * @param selfExclusive is self exclusive
-     * @param effectiveNow is effectiveNow
      * @param conditional is conditional
      */
     public JinCard(CardCategory cardCategory, CardID cardID,String name, String description, String filename,
-            boolean notTargeting, boolean selfExclusive, boolean effectiveNow, boolean conditional) {
+            boolean notTargeting, boolean selfExclusive, boolean conditional) {
         super(cardCategory, cardID, name, description, filename);
 
         this.notTargeting = notTargeting;
         this.selfExclusive = selfExclusive;
-        this.effectiveNow = effectiveNow;
         this.conditional = conditional;
         
         this.selfOnly = false;
@@ -36,7 +33,7 @@ public class JinCard extends Card {
             boolean notTargeting, boolean selfExclusive, boolean effectiveNow, boolean conditional,
             boolean selfOnly) {
         this(cardCategory, cardID, name, description, filename,
-             notTargeting, selfExclusive, effectiveNow, conditional);
+             notTargeting, selfExclusive, conditional);
         
         this.selfOnly = selfOnly;
     }
