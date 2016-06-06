@@ -32,6 +32,7 @@ public class Applet extends PApplet {
     @SuppressWarnings("unused")
     private Ani ani;
     private ControlP5 cp5;
+    private Textarea textarea;
 
 	private boolean yourTurn;
     private boolean onlyUseKill;
@@ -147,6 +148,8 @@ public class Applet extends PApplet {
                     makeACircle();
                     cp5.getController("done").setLock(true);
                     cp5.getController("done").setVisible(true);
+                    cp5.getController("textfield").setVisible(true);
+                    textarea.setVisible(true);
                     break;
                 default:
                     break;
@@ -435,26 +438,26 @@ public class Applet extends PApplet {
            .setFont(createFont("arial", 20))
            .toUpperCase(false)
            .setSize(24);
-        cp5.addTextfield("")
+        cp5.addTextfield("textfield")
            .setColor(color(0))
-           .setColorBackground(color(255))
+           .setColorBackground(color(255, 255, 245))
            .setColorForeground(color(0))
            .setFont(createFont("arial", 20))
            .setSize(350, 30)
-           .setPosition(25, Client.WINDOW_HEIGHT - 70);
-        Textarea textarea;
-        textarea = cp5.addTextarea("txt")
-                      .setPosition(0, 0)
+           .setPosition(25, Client.WINDOW_HEIGHT - 70)
+           .setVisible(false);
+        textarea = cp5.addTextarea("txtarea")
+                      .setPosition(25, cp5.getController("textfield").getPosition()[1] - 72 - 15)
+                      .setSize(350, 72)
                       .setFont(createFont("arial", 18))
                       .setLineHeight(18)
                       .setColor(color(0))
-                      .setColorBackground(color(240))
+                      .setColorBackground(color(245, 245, 220))
                       .setColorForeground(color(0))
                       .setScrollBackground(color(255))
-                      .setScrollForeground(color(0))
+                      .setScrollForeground(color(139, 71, 38))
                       .setBorderColor(color(0))
-                      .append("1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n");
-        textarea.scroll(1);
+                      .setVisible(false);
     }
 
     /**
@@ -472,6 +475,12 @@ public class Applet extends PApplet {
             case READY:
                 background(245, 222, 179);
                 image(image, 0, 0);
+                strokeWeight(1);
+                stroke(0);
+                line(textarea.getPosition()[0], textarea.getPosition()[1] - 1, textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] - 1);
+                line(textarea.getPosition()[0] - 1, textarea.getPosition()[1] - 1, textarea.getPosition()[0] - 1, textarea.getPosition()[1] + textarea.getHeight());
+                line(textarea.getPosition()[0], textarea.getPosition()[1] + textarea.getHeight(), textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] + textarea.getHeight());
+                line(textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] - 1, textarea.getPosition()[0] + textarea.getWidth(), textarea.getPosition()[1] + textarea.getHeight());
                 bigCircle.display();
                 if (yourTurn) {
                     fill(255, 0, 0);
