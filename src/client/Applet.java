@@ -41,8 +41,10 @@ public class Applet extends PApplet {
     private PrintWriter writer;
     private BufferedReader reader;
     private GameStatus gameStatus;
+    private PlayerStatus playerStatus;
+
     private String username;
-    private Player characterPointed;
+    private Player playerPointed;
     private Vector<Player> aliveCharacters;
     private BigCircle bigCircle;
     private Random random;
@@ -84,6 +86,7 @@ public class Applet extends PApplet {
         this.aliveCharacters = new Vector<>();
         this.handCards = new HandCard();
         this.gameStatus = GameStatus.WAIT;
+        this.playerStatus = PlayerStatus.NONE;
         this.yourTurn = false;
         initCardMap();
         ReadThread thread = new ReadThread();
@@ -187,15 +190,17 @@ public class Applet extends PApplet {
 
     /**
      * Check character pointed by mouse, stored in <code>characterPointed</code>
+     *
+     * @return player pointed by mouse
      */
-    private void checkMouseOverCharacter() {
+    private Player checkMouseOverPlayer() {
     	for (Player ch : aliveCharacters) {
             if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
-            	characterPointed = ch;
-            	return;
+            	playerPointed = ch;
+                return ch;
             }
         }
-    	characterPointed = null;
+        return null;
     }
 
     /**
@@ -242,13 +247,23 @@ public class Applet extends PApplet {
 
     @Override
     public void mouseMoved(MouseEvent event) {
-    	checkMouseOverCharacter();
-        if (cardPointed != null) {
-            cardPointed.x = event.getX() - clickedOffsetX;
-            cardPointed.y = event.getY() - clickedOffsetY;
-        }
-        else if (cardUsing == null) {
-            handCards.setPositions(new Point2D(event.getX(), event.getY()));
+        switch (playerStatus) {
+            case NONE:
+                checkMouseOverPlayer();
+                handCards.setPositions(new Point2D(event.getX(), event.getY()));
+                break;
+            case SELECTING:
+                if (cardPointed != null) {
+                    cardPointed.x = event.getX() - clickedOffsetX;
+                    cardPointed.y = event.getY() - clickedOffsetY;
+                }
+                break;
+            case TARGETING:
+                break;
+            case ENDED:
+                break;
+            default:
+                break;
         }
     }
 
@@ -257,37 +272,65 @@ public class Applet extends PApplet {
     	if (!yourTurn) {
             return;
         }
-        // click right button will cancel the selection of card
-        if (mouseButton == RIGHT) {
-            if (cardPointed != null) {
-                ani = Ani.to(cardPointed, 0.75f, "x", cardPointed.getInitialX());
-                ani = Ani.to(cardPointed, 0.75f, "y", cardPointed.getInitialY());
-                cardPointed = null;
-            }
-            if (cardUsing != null) {
-                Ani.to(cardUsing, 0.75f, "x", cardUsing.getInitialX());
-                Ani.to(cardUsing, 0.75f, "y", cardUsing.getInitialY());
-                cardUsing = null;
-            }
-        }
-        // click left button to
-        // 1. if no card selected, select one point to
-        // 2. if a card selected, used it
-        if (mouseButton == LEFT) {
-            if (cardPointed != null) {
-                cardUsing = cardPointed;
-                cardPointed = null;
-                Ani.to(cardUsing, 0.75f, "x", Client.WINDOW_WIDTH - 200);
-                Ani.to(cardUsing, 0.75f, "y", 20);
-            }
-            else {
-                cardPointed = handCards.setPositions(new Point2D(event.getX(), event.getY()));
-                if (cardPointed != null) {
-                    clickedOffsetX = event.getX() - cardPointed.x;
-                    clickedOffsetY = event.getY() - cardPointed.y;
+        switch (playerStatus) {
+            case NONE:
+                if (mouseButton == LEFT) {
+                    cardPointed = handCards.setPositions(new Point2D(event.getX(), event.getY()));
+                    if (cardPointed != null) {
+                        clickedOffsetX = event.getX() - cardPointed.x;
+                        clickedOffsetY = event.getY() - cardPointed.y;
+                        playerStatus = PlayerStatus.SELECTING;
+                    }
                 }
+                break;
+            case SELECTING:
+                if (mouseButton == LEFT) {
+                    Ani.to(cardPointed, 0.75f, "x", Client.WINDOW_WIDTH - 200);
+                    Ani.to(cardPointed, 0.75f, "y", 20);
+                    playerStatus = changeState(cardPointed);
+                }
+                else {
+                    Ani.to(cardPointed, 0.75f, "x", cardPointed.getInitialX());
+                    Ani.to(cardPointed, 0.75f, "y", cardPointed.getInitialY());
+                    cardPointed = null;
+                    playerStatus = PlayerStatus.NONE;
+                }
+                break;
+            case TARGETING:
+                if (mouseButton == LEFT) {
+                    checkMouseOverPlayer();
+                    if (playerPointed != null) {
+                        playerStatus = PlayerStatus.ENDED;
+                    }
+                }
+                else {
+                    Ani.to(cardPointed, 0.75f, "x", cardPointed.getInitialX());
+                    Ani.to(cardPointed, 0.75f, "y", cardPointed.getInitialY());
+                    cardPointed = null;
+                    playerStatus = PlayerStatus.NONE;
+                }
+                break;
+            case ENDED:
+                sendMessage(cardPointed.getName() + " " + username + " " + playerPointed.getUserName());
+                break;
+            default:
+                break;
+        }
+    }
+
+    private PlayerStatus changeState(Card cardPointed) {
+        if (cardPointed.getCategory() == CardCategory.BASIC) {
+            // FINDING SOME BETTER WRITE METHOD by LittleBird
+            switch (cardPointed.getCardID()) {
+                case BASIC_APPLE:
+                    return PlayerStatus.ENDED;
+                case BASIC_DODGE:
+                    return PlayerStatus.ENDED;
+                case BASIC_KILL:
+                    return PlayerStatus.TARGETING;
             }
         }
+        return PlayerStatus.NONE;
     }
 
     @Override
@@ -352,16 +395,20 @@ public class Applet extends PApplet {
             for (int i = 0; i < handCards.size(); ++i) {
                 image(handCards.get(i).getImage(), handCards.get(i).x, handCards.get(i).y);
             }
-            if (cardUsing != null) {
-                noFill();
-                color(255, 0, 0);
-                strokeWeight(5.0f);
-                ellipse(mouseX, mouseY, 45, 45);
-                ellipse(mouseX, mouseY, 60, 60);
-                line(mouseX + 10, mouseY, mouseX + 40, mouseY);
-                line(mouseX - 10, mouseY, mouseX - 40, mouseY);
-                line(mouseX, mouseY + 10, mouseX, mouseY + 40);
-                line(mouseX, mouseY - 10, mouseX, mouseY - 40);
+            switch (playerStatus) {
+                case TARGETING:
+                    noFill();
+                    color(255, 0, 0);
+                    strokeWeight(5.0f);
+                    ellipse(mouseX, mouseY, 45, 45);
+                    ellipse(mouseX, mouseY, 60, 60);
+                    line(mouseX + 10, mouseY, mouseX + 40, mouseY);
+                    line(mouseX - 10, mouseY, mouseX - 40, mouseY);
+                    line(mouseX, mouseY + 10, mouseX, mouseY + 40);
+                    line(mouseX, mouseY - 10, mouseX, mouseY - 40);
+                    break;
+                default:
+                    break;
             }
         }
     }

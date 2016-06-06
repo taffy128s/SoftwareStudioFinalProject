@@ -2,12 +2,10 @@ package card.justcard;
 import card.Card;
 import card.CardCategory;
 import card.CardID;
-//s
+
 /**
  * Card "Golden Apple"
  */
-import client.*;
-
 public class BasicApple extends Card {
 
     /**
@@ -21,5 +19,5 @@ public class BasicApple extends Card {
               "2. When a player (yourself included) has no HP left, you may use 'Golden Apple' to the player to stop the player from dying. One 'Golden Apple' will let the player recover one point of HP." ,
               "basic_apple.JPG");
     }
-    
+
 }

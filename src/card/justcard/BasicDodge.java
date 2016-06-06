@@ -3,10 +3,10 @@ package card.justcard;
 import card.Card;
 import card.CardCategory;
 import card.CardID;
+
 /**
  * Card "Dodge"
  */
-import client.*;
 public class BasicDodge extends Card {
 
     /**
@@ -19,6 +19,6 @@ public class BasicDodge extends Card {
               "When you targeted by 'Kill', you can issue an 'Dodge' to nullify the damage caused by the 'Kill'.",
               "basic_dodge.JPG");
     }
-    
+
 
 }

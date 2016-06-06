@@ -13,13 +13,13 @@ public enum PlayerStatus {
      */
     SELECTING(1),
     /**
-     * A card was using by selected -> press LEFT mouse key again
-     */
-    USING(2),
-    /**
      * Choose a target if the card need a target
      */
-    TARGETING(3);
+    TARGETING(2),
+    /**
+     * Card can make effect or send to server
+     */
+    ENDED(3);
 
     private final int value;
 

@@ -7,8 +7,6 @@ import card.CardID;
 /**
  * Card "Kill"
  */
-
-import client.*;
 public class BasicKill extends Card {
 
     /**
