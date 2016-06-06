@@ -185,10 +185,10 @@ public class ServerUtility {
                 broadCastExcept(GameMessage.SHOW_CARD + " " + cardIndex + " " + args[2] + " " + args[3], usernameToConnection.get(args[2]));
                 Card cardRead = cardMap.get(cardIndex);
                 if (cardRead.getCategory() == CardCategory.BASIC) {
-                    basicCardEffect(args, cardRead);
+                    basicCardEffect(args, cardRead, userIndex);
                 }
                 else if (cardRead.getCategory() == CardCategory.JIN) {
-                    jinCardEffect(args, cardRead);
+                    jinCardEffect(args, cardRead, userIndex);
                 }
                 else if (cardRead.getCategory() == CardCategory.WEA) {
                     WeaCard card = (WeaCard) cardRead;
@@ -201,31 +201,22 @@ public class ServerUtility {
         return true;
     }
 
-    private void basicCardEffect(String[] args, Card cardRead) {
+    private void basicCardEffect(String[] args, Card cardRead, int userIndex) {
         if (cardRead.getCardID() == CardID.BASIC_KILL) {
-            if(askCard(cardRead, args[3])) {
-                cardStack.discardCard(CardUtility.newCard(CardID.BASIC_DODGE));
-            }
-            else {
-                broadCast(cardRead.effectString(args[3]));
-            }
+            askCard(cardRead, args[3], userIndex);
         }
         else {
             broadCast(cardRead.effectString(args[3]));
         }
     }
 
-    private void jinCardEffect(String[] args, Card cardRead) {
+    private void jinCardEffect(String[] args, Card cardRead, int userIndex) {
         JinCard card = (JinCard)cardRead;
         String target = args[3];
         String source = args[2];
         if(card.isConditional()) {
             if(card.isSelfOnly()) {
-                if(askCard(cardRead, target) == true) {
-                    cardStack.discardCard(CardUtility.newCard(card.getAskedCardID()));
-                } else {
-                    broadCast(card.effectString(target));
-                }
+                askCard(cardRead, target, userIndex);
             }
             else if(card.isNotTargeting()) {
                 if(card.isSelfExclusive()) {
@@ -234,12 +225,8 @@ public class ServerUtility {
                         target = connectionToUsername.get(connection);
                         if(target.equals(source)) continue;
                         
-                        if(askCard(card, target)) {
-                            cardStack.discardCard(CardUtility.newCard(card.getAskedCardID()));
-                        }
-                        else {
-                            broadCast(card.effectString(target));
-                        }
+                        askCard(cardRead, target, userIndex);
+                        
                     }
                 }
                 else {
@@ -247,12 +234,7 @@ public class ServerUtility {
                         if(connection.isAlive == false) continue;
                         target = connectionToUsername.get(connection);
                         
-                        if(askCard(card, target)) {
-                            cardStack.discardCard(CardUtility.newCard(card.getAskedCardID()));
-                        }
-                        else {
-                            broadCast(card.effectString(target));
-                        }
+                        askCard(cardRead, target, userIndex);
                     }
                 }
             }
@@ -310,18 +292,19 @@ public class ServerUtility {
         }
     }
     
-    private boolean askCard(Card cardRead, String target)
+    private void askCard(Card cardRead, String target, int userIndex)
     {
         Connection targetConnection = usernameToConnection.get(target);
         targetConnection.sendMessage(cardRead.askCardString());
         String response = targetConnection.readMessage();
+        connections.get(userIndex).sendMessage(GameMessage.TURN_RESUME);
         if (response.equals(GameMessage.RESPONSE_YES)) {
-            return true;
+            cardStack.discardCard(CardUtility.newCard(cardRead.getAskedCardID()));
+            broadCast(GameMessage.MODIFY_PLAYER + " " + target + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
         }
         else if (response.equals(GameMessage.RESPONSE_NO)) {
-            return false;
+            broadCast(cardRead.effectString(target));
         }
-        return false;
     }
     
     

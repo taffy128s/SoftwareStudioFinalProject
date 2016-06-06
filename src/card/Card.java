@@ -21,6 +21,7 @@ public class Card {
     private String description;
     private String filename;
     private PImage image;
+    private PImage dImage;
 
     private int initialX;
     private int initialY;
@@ -53,20 +54,30 @@ public class Card {
         this.name = name;
         this.description = description;
         this.filename = filename;
-        BufferedImage bufferedImage = null;
+        BufferedImage iBufferedImage = null;
+        BufferedImage dBufferedImage = null;
         try {
-            bufferedImage = ImageIO.read(getClass().getResource("../img/" + filename));
+            iBufferedImage = ImageIO.read(getClass().getResource("../img/" + filename));
+            dBufferedImage = ImageIO.read(getClass().getResource("../img/" + "des_" + filename));
         }
         catch (IOException e) {
             e.printStackTrace();
         }
-        if (bufferedImage != null) {
-            this.image = new PImage(bufferedImage.getWidth(), bufferedImage.getHeight(), PConstants.ARGB);
-            bufferedImage.getRGB(0, 0, image.width, image.height, image.pixels, 0, image.width);
+        if (iBufferedImage != null) {
+            this.image = new PImage(iBufferedImage.getWidth(), iBufferedImage.getHeight(), PConstants.ARGB);
+            iBufferedImage.getRGB(0, 0, image.width, image.height, image.pixels, 0, image.width);
             image.updatePixels();
         }
         else {
             this.image = null;
+        }
+        if (dBufferedImage != null) {
+            this.dImage = new PImage(dBufferedImage.getWidth(), dBufferedImage.getHeight(), PConstants.ARGB);
+            dBufferedImage.getRGB(0, 0, dImage.width, dImage.height, dImage.pixels, 0, dImage.width);
+            dImage.updatePixels();
+        }
+        else {
+            this.dImage = null;
         }
     }
 
@@ -122,6 +133,15 @@ public class Card {
      */
     public PImage getImage() {
         return image;
+    }
+
+    /**
+     * Get description image of this card
+     *
+     * @return description image of this card
+     */
+    public PImage getdImage() {
+        return dImage;
     }
 
     /**
@@ -184,7 +204,7 @@ public class Card {
     public CardID getAskedCardID() {
         return CardID.BASIC_DODGE;
     }
-    
+
     /**
      * Get string representation of this card
      *

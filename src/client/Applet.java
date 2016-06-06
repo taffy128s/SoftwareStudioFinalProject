@@ -63,6 +63,8 @@ public class Applet extends PApplet {
     private BufferedImage initialPage ;
     private PImage image;
     private PImage imageInitial ;
+    
+    private boolean pause;
 
     /**
      * Initialize a PApplet with writer, printer to server
@@ -88,7 +90,6 @@ public class Applet extends PApplet {
     	this.imageInitial = new PImage(initialPage.getWidth(), initialPage.getHeight(), PConstants.ARGB);
         initialPage.getRGB(0, 0, imageInitial.width, imageInitial.height, imageInitial.pixels, 0, imageInitial.width);
         imageInitial.updatePixels();
-        
         Ani.init(this);
         this.username = name;
         this.random = new Random();
@@ -103,6 +104,7 @@ public class Applet extends PApplet {
         this.playerStatus = PlayerStatus.INIT;
         this.yourTurn = false;
         initCardMap();
+        this.pause = false;
     }
 
     public void done() {
@@ -263,6 +265,9 @@ public class Applet extends PApplet {
                         }
                     }
                     break;
+                case GameMessage.TURN_RESUME:
+                    pause = false;
+                    break;
                 default:
                     break;
             }
@@ -327,6 +332,7 @@ public class Applet extends PApplet {
                     usedSuccessfully = true;
                     sendMessage(GameMessage.CARD_EFFECT + " " +
                                         cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
+                    pause = true;
                     break;
                 default:
                     break;
@@ -348,6 +354,9 @@ public class Applet extends PApplet {
                 usedSuccessfully = true;
                 sendMessage(GameMessage.CARD_EFFECT + " " +
                             cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
+            }
+            if(typedCard.isConditional()) {
+                pause = true;
             }
         }
         else if(cardPointed.getCategory() == CardCategory.WEA) {
@@ -382,7 +391,7 @@ public class Applet extends PApplet {
 
     @Override
     public void mousePressed(MouseEvent event) {
-    	if (!yourTurn) {
+    	if (!yourTurn || pause) {
             return;
         }
         switch (playerStatus) {
@@ -517,9 +526,9 @@ public class Applet extends PApplet {
         Thread chatThread = new Thread(() -> {
             while (true) {
                 try {
+                    textarea.scroll(1);
                     String string = chatReader.readLine();
                     textarea.append(string + "\n");
-                    textarea.scroll(1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -544,7 +553,7 @@ public class Applet extends PApplet {
             case WAIT:
             	background(245, 222, 179);
                 image(imageInitial,0,0) ;
-                
+
                 textSize(32);
                 fill(255, 255, 255);
                 text("Please wait until the game starts.", 350, 375);
