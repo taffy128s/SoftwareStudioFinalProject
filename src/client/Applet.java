@@ -50,7 +50,7 @@ public class Applet extends PApplet {
     private TreeMap<Integer, Card> cardMap;
     private HandCard handCards;
     private Card cardPointed;
-    private boolean usingACard;
+    private Card cardUsing;
     private int clickedOffsetX;
     private int clickedOffsetY;
     private BufferedImage bg;
@@ -179,8 +179,8 @@ public class Applet extends PApplet {
     private void makeACircle() {
         float angle = 0;
         for (Player ch : aliveCharacters) {
-            ani = Ani.to(ch, (float) 2, "x", bigCircle.getX() + bigCircle.getRadius() * cos(angle));
-            ani = Ani.to(ch, (float) 2, "y", bigCircle.getY() - bigCircle.getRadius() * sin(angle));
+            ani = Ani.to(ch, 2f, "x", bigCircle.getX() + bigCircle.getRadius() * cos(angle));
+            ani = Ani.to(ch, 2f, "y", bigCircle.getY() - bigCircle.getRadius() * sin(angle));
             angle += (TWO_PI / (float) aliveCharacters.size());
         }
     }
@@ -199,47 +199,45 @@ public class Applet extends PApplet {
     }
 
     /**
-     * Use the card <code>cardPointed</code>.
-     * Do nothing if <code>cardPointed</code> is <code>null</code>.
+     * Use the card <code>cardUsing</code>.
+     * Do nothing if <code>cardUsing</code> is <code>null</code>.
      */
     private void useCard() {
-        if (cardPointed == null) {
-            return;
-        }
-        if (onlyUseDodge && cardPointed.getCardID() != CardID.BASIC_DODGE) {
-            Thread thread = new Thread(() -> {
-                // TODO: show only dodge
-            });
-            thread.start();
-            return;
-        }
-        if (cardPointed.getCardID() == CardID.BASIC_KILL) {
-            if (characterPointed != null) {
-                if (characterPointed.getUserName().equals(username)) {
-                    Thread thread = new Thread(() -> {
-                        showDontKillSelf = true;
-                        delay(3000);
-                        showDontKillSelf = false;
-                    });
-                    thread.start();
-                    return;
-                }
-                String commandToSend = GameMessage.KILL + " " + username + " " + characterPointed.getUserName();
-                sendMessage(commandToSend);
-                yourTurn = false;
-                cp5.getController("done").setLock(true);
-            } else {
-                return;
-            }
-        } else if (cardPointed.getCardID() == CardID.BASIC_DODGE) {
-            sendMessage(GameMessage.DODGE);
-            yourTurn = false;
-            cp5.getController("done").setLock(true);
-        }
-        handCards.remove(cardPointed);
-        System.out.println("card " + cardPointed.getName() + " used!");
-        cardPointed = null;
-        usingACard = false;
+//        if (cardUsing == null) {
+//            return;
+//        }
+//        if (onlyUseDodge && cardUsing.getCardID() != CardID.BASIC_DODGE) {
+//            Thread thread = new Thread(() -> {
+//                // TODO: show only dodge
+//            });
+//            thread.start();
+//            return;
+//        }
+//        if (cardUsing.getCardID() == CardID.BASIC_KILL) {
+//            if (characterPointed != null) {
+//                if (characterPointed.getUserName().equals(username)) {
+//                    Thread thread = new Thread(() -> {
+//                        showDontKillSelf = true;
+//                        delay(3000);
+//                        showDontKillSelf = false;
+//                    });
+//                    thread.start();
+//                    return;
+//                }
+//                String commandToSend = GameMessage.KILL + " " + username + " " + characterPointed.getUserName();
+//                sendMessage(commandToSend);
+//                yourTurn = false;
+//                cp5.getController("done").setLock(true);
+//            } else {
+//                return;
+//            }
+//        } else if (cardUsing.getCardID() == CardID.BASIC_DODGE) {
+//            sendMessage(GameMessage.DODGE);
+//            yourTurn = false;
+//            cp5.getController("done").setLock(true);
+//        }
+//        handCards.remove(cardUsing);
+//        System.out.println("card " + cardUsing.getName() + " used!");
     }
 
     @Override
@@ -249,7 +247,7 @@ public class Applet extends PApplet {
             cardPointed.x = event.getX() - clickedOffsetX;
             cardPointed.y = event.getY() - clickedOffsetY;
         }
-        else {
+        else if (cardUsing == null) {
             handCards.setPositions(new Point2D(event.getX(), event.getY()));
         }
     }
@@ -266,21 +264,27 @@ public class Applet extends PApplet {
                 ani = Ani.to(cardPointed, 0.75f, "y", cardPointed.getInitialY());
                 cardPointed = null;
             }
-            usingACard = false;
+            if (cardUsing != null) {
+                Ani.to(cardUsing, 0.75f, "x", cardUsing.getInitialX());
+                Ani.to(cardUsing, 0.75f, "y", cardUsing.getInitialY());
+                cardUsing = null;
+            }
         }
         // click left button to
         // 1. if no card selected, select one point to
         // 2. if a card selected, used it
         if (mouseButton == LEFT) {
             if (cardPointed != null) {
-                new Thread(this::useCard);
+                cardUsing = cardPointed;
+                cardPointed = null;
+                Ani.to(cardUsing, 0.75f, "x", Client.WINDOW_WIDTH - 200);
+                Ani.to(cardUsing, 0.75f, "y", 20);
             }
             else {
                 cardPointed = handCards.setPositions(new Point2D(event.getX(), event.getY()));
                 if (cardPointed != null) {
                     clickedOffsetX = event.getX() - cardPointed.x;
                     clickedOffsetY = event.getY() - cardPointed.y;
-                    usingACard = true;
                 }
             }
         }
@@ -348,10 +352,16 @@ public class Applet extends PApplet {
             for (int i = 0; i < handCards.size(); ++i) {
                 image(handCards.get(i).getImage(), handCards.get(i).x, handCards.get(i).y);
             }
-            if (usingACard) {
-                textSize(26);
-                fill(0, 50, 30);
-                text("Press the left mouse button to use it.", 100, 340);
+            if (cardUsing != null) {
+                noFill();
+                color(255, 0, 0);
+                strokeWeight(5.0f);
+                ellipse(mouseX, mouseY, 45, 45);
+                ellipse(mouseX, mouseY, 60, 60);
+                line(mouseX + 10, mouseY, mouseX + 40, mouseY);
+                line(mouseX - 10, mouseY, mouseX - 40, mouseY);
+                line(mouseX, mouseY + 10, mouseX, mouseY + 40);
+                line(mouseX, mouseY - 10, mouseX, mouseY - 40);
             }
         }
     }

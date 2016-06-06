@@ -52,6 +52,12 @@ public class HandCard {
         modifyCards(HandCard.RECALCULATE_POSITION, null, null);
     }
 
+    /**
+     * Set cards position pointed at position
+     *
+     * @param position mouse position
+     * @return Card pointed
+     */
     public Card setPositions(Point2D position) {
         return modifyCards(HandCard.HIGHLIGHT_MOUSE_TARGET, null, position);
     }

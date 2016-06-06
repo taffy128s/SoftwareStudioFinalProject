@@ -14,6 +14,9 @@ import client.Player;
  */
 public class Card {
 
+    public static int CARD_WIDTH = 148;
+    public static int CARD_HEIGHT = 198;
+
     private CardCategory cardCategory;
     private CardID cardID;
     private String name;
