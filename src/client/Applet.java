@@ -209,31 +209,32 @@ public class Applet extends PApplet {
                         }
                         showOtherCard = false;
                     }).start();
-                    Ani.to(cardToShow, 0.75f, "x", Client.WINDOW_WIDTH - 200);
-                    Ani.to(cardToShow, 0.75f, "y", 20);
+                    Ani.to(cardToShow, 0.75f, "x", Client.WINDOW_WIDTH - 200, Ani.EXPO_IN_OUT);
+                    Ani.to(cardToShow, 0.75f, "y", 20, Ani.EXPO_IN_OUT);
                     break;
                 case GameMessage.ASK_FOR_CARD:
-                    System.out.println("be asked for card id " + param[1]);
+                    System.out.println("Be asked for card id " + param[1]);
+                    boolean hasCard = false;
                     int cardIDAsked = Integer.parseInt(param[1]);
+                    for (int i = 0; i < handCards.size(); i++) {
+                        if (handCards.get(i).getCardID().value() == cardIDAsked) {
+                            hasCard = true;
+                            Card used = handCards.get(i);
+                            sendMessage(GameMessage.RESPONSE_YES);
+                            handCards.remove(used);
+                            break;
+                        }
+                    }
+                    if (!hasCard) {
+                        sendMessage(GameMessage.RESPONSE_NO);
+                        break;
+                    }
                     int result = JOptionPane.showConfirmDialog(null,
                                                                new JLabel("Do you want to use " + cardMap.get(cardIDAsked).getName() + "?"),
                                                                "Choose",
                                                                JOptionPane.OK_CANCEL_OPTION);
                     if (result == JOptionPane.OK_OPTION) {
-                        boolean hasCard = false;
-                        for (int i=0 ; i< handCards.size() ; i++) {
-                            if (handCards.get(i).getCardID().value() == cardIDAsked) {
-                                hasCard = true;
-                                Card used = handCards.get(i);
-                                sendMessage(GameMessage.RESPONSE_YES);
-                                handCards.remove(used);
-                                break;
-                            }
-                        }
-                        if (!hasCard) {
-                            // TODO show message to player that you don't have this kind of card
-                            sendMessage(GameMessage.RESPONSE_NO);
-                        }
+                        sendMessage(GameMessage.RESPONSE_YES);
                     } else {
                         sendMessage(GameMessage.RESPONSE_NO);
                     }
@@ -526,7 +527,7 @@ public class Applet extends PApplet {
                 for (Player ch : alivePlayers) {
                     ch.display();
                     if (dist(ch.x, ch.y, mouseX, mouseY) < ch.getRadius()) {
-                        ch.showCharacterInfo();
+                        ch.showCharacterInfo(username);
                     }
                 }
                 for (int i = 0; i < handCards.size(); ++i) {
