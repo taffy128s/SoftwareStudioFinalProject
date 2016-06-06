@@ -21,6 +21,7 @@ import java.util.TreeMap;
  */
 public class ServerUtility {
 
+    private ArrayList<Connection> chatConnections = new ArrayList<>();
     private ArrayList<Connection> connections = new ArrayList<>();
     private HashMap<Connection, String> connectionToUsername = new HashMap<>();
     private HashMap<String, Connection> usernameToConnection = new HashMap<>();
@@ -37,8 +38,10 @@ public class ServerUtility {
 
         private BufferedReader reader;
         private PrintWriter writer;
+        private Socket socket;
 
         Connection(Socket socket) {
+            this.socket = socket;
             try {
                 this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -80,6 +83,22 @@ public class ServerUtility {
                 return null;
 			}
         }
+        
+        public void startThread() {
+            Thread thread = new Thread(() -> {
+                while (!socket.isClosed()) {
+                    try {
+                        String string = reader.readLine();
+                        for (Connection connection : chatConnections) {
+                            connection.sendMessage(string);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
+        }
 
     }
 
@@ -89,11 +108,13 @@ public class ServerUtility {
      * @param sockets a list of sockets who will play together
      * @param server server to call appendMessage() to show message on TextField
      */
-    public ServerUtility(ArrayList<Socket> sockets, Server server) {
+    public ServerUtility(ArrayList<Socket> sockets, ArrayList<Socket> chatSockets, Server server) {
         this.cardStack.shuffle();
         this.server = server;
         initCardMap();
         sockets.forEach(socket -> connections.add(new Connection(socket)));
+        chatSockets.forEach(socket -> chatConnections.add(new Connection(socket)));
+        chatConnections.forEach(connection -> connection.startThread());
         for (Connection connectionThread : connections) {
             String string = GameMessage.INITIAL_PLAYER + " " +
                                     connectionToUsername.get(connectionThread) + " " +

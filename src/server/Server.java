@@ -20,7 +20,9 @@ public class Server extends JFrame {
 
     private int connectionCount;
     private ServerSocket serverSocket;
+    private ServerSocket chatServerSocket;
     private ArrayList<Socket> sockets = new ArrayList<>();
+    private ArrayList<Socket> chatSockets = new ArrayList<>();
     private ArrayList<ServerUtility> games = new ArrayList<>();
 
     private JTextArea textArea = new JTextArea(); 
@@ -48,19 +50,23 @@ public class Server extends JFrame {
         startButton.setText("Start");
         startButton.setBounds(10, WINDOW_HEIGHT - 80, WINDOW_WIDTH - 2 * 10 - 5, 40);
         startButton.addActionListener(event -> {
+            System.out.println("fuck");
             if (sockets.isEmpty()) {
                 JOptionPane.showConfirmDialog(null, new JLabel("No client connected!"), "Error", JOptionPane.DEFAULT_OPTION);
                 return;
             }
             appendMessage("New game started, number of players: " + connectionCount + "\n");
-            games.add(new ServerUtility(sockets, this));
+            games.add(new ServerUtility(sockets, chatSockets, this));
+            System.out.println("fuck");
             sockets.clear();
+            chatSockets.clear();
             connectionCount = 0;
         });
         this.add(startButton);
 
         try {
             serverSocket = new ServerSocket(port);
+            chatServerSocket = new ServerSocket(port + 1);
             Date date = new Date();
             appendMessage(date.toString() + "\n" + "Server starts listening on port " + port + ".\n");
         } catch (Exception e) {
@@ -85,27 +91,47 @@ public class Server extends JFrame {
      * Let server start to accept connection on port specified
      */
     private void startAcceptConnection() {
-        while (!serverSocket.isClosed()) {
-            try {
-                Socket connSock = serverSocket.accept();
-                // Show message on server.
-                appendMessage("Connection established.\n");
-                StringBuilder builder = new StringBuilder("Player ");
-                builder.append(connectionCount + 1).append("'s host name: ").append(connSock.getInetAddress().getHostName()).append("\n");
-                appendMessage(builder.toString());
-                builder = new StringBuilder("Player ");
-                builder.append(connectionCount + 1).append("'s IP address: ").append(connSock.getInetAddress().getHostAddress()).append("\n");
-                appendMessage(builder.toString());
-                connectionCount++;
-                sockets.add(connSock);
-            } catch (SocketException e) {
-                System.out.println("Server socket closed.");
-                break;
-            } catch (Exception e) {
-                e.printStackTrace();
-                break;
+        Thread thread = new Thread(() -> {
+            while (!serverSocket.isClosed()) {
+                try {
+                    Socket connSock = serverSocket.accept();
+                    System.out.println("Accepted1.");
+                    // Show message on server.
+                    appendMessage("Connection established.\n");
+                    StringBuilder builder = new StringBuilder("Player ");
+                    builder.append(connectionCount + 1).append("'s host name: ").append(connSock.getInetAddress().getHostName()).append("\n");
+                    appendMessage(builder.toString());
+                    builder = new StringBuilder("Player ");
+                    builder.append(connectionCount + 1).append("'s IP address: ").append(connSock.getInetAddress().getHostAddress()).append("\n");
+                    appendMessage(builder.toString());
+                    connectionCount++;
+                    sockets.add(connSock);
+                } catch (SocketException e) {
+                    System.out.println("Server socket closed.");
+                    break;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
+                }
             }
-        }
+        });
+        thread.start();
+    }
+    
+    private void startAcceptChatSocket() {
+        Thread thread = new Thread(() -> {
+            while (!chatServerSocket.isClosed()) {
+                try {
+                    Socket connSock = chatServerSocket.accept();
+                    System.out.println("Accepted2.");
+                    chatSockets.add(connSock);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        });
+        thread.start();
     }
 
     public static void main(String[] args) {
@@ -122,6 +148,7 @@ public class Server extends JFrame {
         }
         Server server = new Server(port);
         server.startAcceptConnection();
+        server.startAcceptChatSocket();
     }
 
 }
