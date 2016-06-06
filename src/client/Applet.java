@@ -11,6 +11,7 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 
 import card.*;
+import controlP5.Button;
 import controlP5.ControlFont;
 import controlP5.ControlP5;
 import de.looksgood.ani.Ani;
@@ -56,6 +57,7 @@ public class Applet extends PApplet {
     private int clickedOffsetY;
     private BufferedImage bg;
     private PImage image;
+    private Button doneButton;
 
     /**
      * Initialize a PApplet with writer, printer to server
@@ -93,7 +95,8 @@ public class Applet extends PApplet {
     }
 
     public void done() {
-    	yourTurn = false;
+        System.out.println("done() was called");
+        yourTurn = false;
     	cp5.getController("done").setLock(true);
     	sendMessage(GameMessage.DONE);
     }
@@ -147,17 +150,12 @@ public class Applet extends PApplet {
                         		System.out.println("get card id " + param[1]);
                                 handCards.add(CardUtility.copyCard(cardMap.get(Integer.parseInt(param[1]))));
                                 break;
-//                        	case GameMessage.KILL:
-//                        		System.out.println("GOT KILLED!!!!!");
-//                        		yourTurn = true;
-//                        		onlyUseDodge = true;
-//                        		cp5.getController("done").setLock(false);
-//                        		break;
                         	case GameMessage.DECREASE_CARD:
                         		break;
                             default:
                                 int cardID = Integer.parseInt(param[0]);
-                            	break;
+                                System.out.println(CardUtility.copyCard(cardMap.get(cardID)).getName());
+                                break;
                         }
                     }
                 } catch (Exception e) {
@@ -192,7 +190,7 @@ public class Applet extends PApplet {
     }
 
     /**
-     * Check character pointed by mouse, stored in <code>characterPointed</code>
+     * Check character pointed by mouse, stored in <code>playerPointed</code>
      *
      * @return player pointed by mouse
      */
@@ -207,8 +205,7 @@ public class Applet extends PApplet {
     }
 
     /**
-     * Use the card <code>cardUsing</code>.
-     * Do nothing if <code>cardUsing</code> is <code>null</code>.
+     * Use the card <code>cardPointed</code>.
      */
     private void useCard() {
         if (cardPointed.getCategory() == CardCategory.BASIC) {
@@ -348,8 +345,8 @@ public class Applet extends PApplet {
     public void setup() {
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
-        cp5 = new ControlP5(this);
-        cp5.addButton("done").setLabel("DONE").setPosition(525, 530).setSize(200, 50).setVisible(false);
+        this.cp5 = new ControlP5(this);
+        this.doneButton = cp5.addButton("done").setLabel("DONE").setPosition(525, 530).setSize(200, 50).setVisible(false);
         PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
         ControlFont font = new ControlFont(pfont, 241);
         cp5.getController("done").getCaptionLabel().setFont(font).toUpperCase(false).setSize(24);
@@ -408,6 +405,11 @@ public class Applet extends PApplet {
                 break;
             default:
                 break;
+        }
+        if (!yourTurn) {
+            textSize(32);
+            fill(0, 100, 150);
+            text("Not your turn!", 225, 375);
         }
     }
 

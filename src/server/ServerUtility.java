@@ -87,15 +87,17 @@ public class ServerUtility {
 			String[] args = message.split(" ");
 			if (args[0].equals(GameMessage.DONE)) {
 				break;
-			} else if (args[0].equals(GameMessage.KILL)) {
+			} else if (args.length == 1) {
+
+            } else if (args.length == 2){
 				// TODO: decrease the user's number of cards.
 				usernameToConnection.get(args[2]).sendMessage(message);
-				String reply = usernameToConnection.get(args[2]).readMessage();
-				if (reply.equals(GameMessage.DONE)) {
-					System.out.println("SOMEBODY got killed.");
-				} else if (reply.equals(GameMessage.DODGE)) {
-					System.out.println("DODGE detected.");
-				}
+//				String reply = usernameToConnection.get(args[2]).readMessage();
+//				if (reply.equals(GameMessage.DONE)) {
+//					System.out.println("SOMEBODY got killed.");
+//				} else if (reply.equals(GameMessage.DODGE)) {
+//					System.out.println("DODGE detected.");
+//				}
 			}
             return true;
 		}
@@ -126,12 +128,14 @@ public class ServerUtility {
             }
         }
         Thread thread = new Thread(() -> {
-        	for (int i = 0; i < connections.size(); i = (i + 1) % connections.size()) {
-                boolean result = makeUserMove(i);
-                if (!result) {
-                    break;
+            while (true) {
+                for (int i = 0; i < connections.size(); i = (i + 1) % connections.size()) {
+                    boolean result = makeUserMove(i);
+                    if (!result) {
+                        break;
+                    }
                 }
-        	}
+            }
         });
         thread.start();
     }
