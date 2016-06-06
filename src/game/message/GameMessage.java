@@ -110,9 +110,15 @@ public class GameMessage {
 
     /**
      * Let server know that you have no card
-     *  <p><code>Format: THROW_FAIL </code></p>
+     * <p><code>Format: THROW_FAIL </code></p>
      */
     public static final String THROW_FAIL = "THROWFAIL";
+
+    /**
+     * Check player whether is alive or not
+     * <p><code>Format: CHECK_IS_ALIVE</code></p>
+     */
+    public static final String CHECK_IS_ALIVE = "CHECKISALIVE";
 
     /**
      * Tell clients that game is over.

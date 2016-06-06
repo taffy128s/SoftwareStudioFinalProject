@@ -178,6 +178,7 @@ public class ServerUtility {
         String message;
         int newCardIndex = cardStack.drawTop().getCardID().value();
         connections.get(userIndex).sendMessage(GameMessage.YOUR_TURN);
+        connections.get(userIndex).sendMessage(GameMessage.CHECK_IS_ALIVE);
         message = connections.get(userIndex).readMessage();
         if (message.equals(GameMessage.RESPONSE_NO)) {
             connections.get(userIndex).isAlive = false;
@@ -219,6 +220,12 @@ public class ServerUtility {
             // broadcast to let all clients know its number of hand cards
             broadCast(GameMessage.MODIFY_PLAYER + " " + args[2] + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
 		}
+        connections.get(userIndex).sendMessage(GameMessage.CHECK_IS_ALIVE);
+        message = connections.get(userIndex).readMessage();
+        if (message.equals(GameMessage.RESPONSE_NO)) {
+            connections.get(userIndex).isAlive = false;
+            --aliveNum;
+        }
         return true;
     }
 

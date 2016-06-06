@@ -200,6 +200,13 @@ public class Applet extends PApplet {
                     gameStatus = GameStatus.END;
                     break;
                 case GameMessage.YOUR_TURN:
+                    yourTurn = true;
+                    if (playerStatus == PlayerStatus.KILL_USED) {
+                        playerStatus = PlayerStatus.INIT;
+                    }
+                    cp5.getController("done").setLock(false);
+                    break;
+                case GameMessage.CHECK_IS_ALIVE:
                     for (Player player : alivePlayers) {
                         if (player.getUserName().equals(username)) {
                             if (player.getLifePoint() <= 0) {
@@ -210,11 +217,6 @@ public class Applet extends PApplet {
                             }
                         }
                     }
-                    yourTurn = true;
-                    if (playerStatus == PlayerStatus.KILL_USED) {
-                        playerStatus = PlayerStatus.INIT;
-                    }
-                    cp5.getController("done").setLock(false);
                     break;
                 case GameMessage.RECEIVE_CARD:
                     System.out.println("get card id " + param[1]);
