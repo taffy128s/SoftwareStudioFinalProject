@@ -203,13 +203,10 @@ public class ServerUtility {
 
     private void basicCardEffect(String[] args, Card cardRead) {
         if (cardRead.getCardID() == CardID.BASIC_KILL) {
-            Connection targetConnection = usernameToConnection.get(args[3]);
-            targetConnection.sendMessage(GameMessage.ASK_FOR_CARD + " " + CardID.BASIC_DODGE.value());
-            String response = targetConnection.readMessage();
-            if (response.equals(GameMessage.RESPONSE_YES)) {
+            if(askCard(cardRead, args[3])) {
                 cardStack.discardCard(CardUtility.newCard(CardID.BASIC_DODGE));
             }
-            else if (response.equals(GameMessage.RESPONSE_NO)) {
+            else {
                 broadCast(cardRead.effectString(args[3]));
             }
         }
@@ -223,7 +220,45 @@ public class ServerUtility {
         String target = args[3];
         String source = args[2];
         if(card.isConditional()) {
-
+            if(card.isSelfOnly()) {
+                if(askCard(cardRead, target) == true) {
+                    cardStack.discardCard(CardUtility.newCard(card.getAskedCardID()));
+                } else {
+                    broadCast(card.effectString(target));
+                }
+            }
+            else if(card.isNotTargeting()) {
+                if(card.isSelfExclusive()) {
+                    for(Connection connection : connections) {
+                        if(connection.isAlive == false) continue;
+                        target = connectionToUsername.get(connection);
+                        if(target.equals(source)) continue;
+                        
+                        if(askCard(card, target)) {
+                            cardStack.discardCard(CardUtility.newCard(card.getAskedCardID()));
+                        }
+                        else {
+                            broadCast(card.effectString(target));
+                        }
+                    }
+                }
+                else {
+                    for(Connection connection : connections) {
+                        if(connection.isAlive == false) continue;
+                        target = connectionToUsername.get(connection);
+                        
+                        if(askCard(card, target)) {
+                            cardStack.discardCard(CardUtility.newCard(card.getAskedCardID()));
+                        }
+                        else {
+                            broadCast(card.effectString(target));
+                        }
+                    }
+                }
+            }
+            else {
+                
+            }
         }
         else {
             if(card.isSelfOnly()) {
@@ -274,7 +309,22 @@ public class ServerUtility {
             }
         }
     }
-
+    
+    private boolean askCard(Card cardRead, String target)
+    {
+        Connection targetConnection = usernameToConnection.get(target);
+        targetConnection.sendMessage(cardRead.askCardString());
+        String response = targetConnection.readMessage();
+        if (response.equals(GameMessage.RESPONSE_YES)) {
+            return true;
+        }
+        else if (response.equals(GameMessage.RESPONSE_NO)) {
+            return false;
+        }
+        return false;
+    }
+    
+    
     /**
      * Send message to all socket connected to server
      *
