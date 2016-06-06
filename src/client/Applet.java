@@ -271,6 +271,18 @@ public class Applet extends PApplet {
                 case GameMessage.TURN_RESUME:
                     pause = false;
                     break;
+                case GameMessage.THROW_CARD:
+                    if(handCards.size() == 0) {
+                        sendMessage(GameMessage.THROW_FAIL);
+                    }
+                    else {
+                        Random random = new Random();
+                        int toThrow = random.nextInt(handCards.size());
+                        Card cardToThrow = handCards.get(toThrow);
+                        handCards.remove(cardToThrow);
+                        sendMessage(GameMessage.CARD_LOSS + " " + cardToThrow.getCardID().value());
+                    }
+                    break;
                 default:
                     break;
             }

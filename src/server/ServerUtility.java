@@ -214,6 +214,26 @@ public class ServerUtility {
         JinCard card = (JinCard)cardRead;
         String target = args[3];
         String source = args[2];
+        if(card.getCardID() == CardID.JIN_THROW) {
+            Connection targetConnection = usernameToConnection.get(target);
+            for(int i=0 ; i<2 ; i++) {
+                targetConnection.sendMessage(GameMessage.THROW_CARD);
+                String thrownMessage = targetConnection.readMessage();
+                String[] thrownInfo = thrownMessage.split(" ");
+                if(thrownInfo[0].equals(GameMessage.THROW_FAIL)) {
+                    break;
+                }
+                else if(thrownInfo[0].equals(GameMessage.CARD_LOSS)) {
+                    int cardIDThrown = Integer.parseInt(thrownInfo[1]);
+                    cardStack.discardCard(CardUtility.newCard(cardIDThrown));
+                    broadCast(card.effectString(target));
+                }
+            }
+            return;
+        }
+        if(card.getCardID() == CardID.JIN_THIEF) {
+            return;
+        }
         if(card.isConditional()) {
             if(card.isSelfOnly()) {
                 askCard(cardRead, target, userIndex);
@@ -224,16 +244,13 @@ public class ServerUtility {
                         if(connection.isAlive == false) continue;
                         target = connectionToUsername.get(connection);
                         if(target.equals(source)) continue;
-                        
                         askCard(cardRead, target, userIndex);
-                        
                     }
                 }
                 else {
                     for(Connection connection : connections) {
                         if(connection.isAlive == false) continue;
                         target = connectionToUsername.get(connection);
-                        
                         askCard(cardRead, target, userIndex);
                     }
                 }
@@ -270,7 +287,7 @@ public class ServerUtility {
                 }
             }
             else {
-
+                
             }
 
             if(card.getCardID() == CardID.JIN_GETCARD) {

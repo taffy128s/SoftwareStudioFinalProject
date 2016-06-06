@@ -48,7 +48,7 @@ public class CardStack {
         	//drawArea.add(new JinThief());
         	drawArea.add(new JinCrazyBanquet());
         	drawArea.add(new JinThousandArrow());
-        	//drawArea.add(new JinThrow());
+        	drawArea.add(new JinThrow());
         	drawArea.add(new JinTuShi());
         	drawArea.add(new JinWuKu());
         }
