@@ -23,9 +23,9 @@ public class Client extends JFrame {
     public final static int WINDOW_WIDTH = 1200;
     public final static int WINDOW_HEIGHT = 800;
 
-    private Socket socket;
-    private PrintWriter writer;
-    private BufferedReader reader;
+    private Socket socket, chatSocket;
+    private PrintWriter writer, chatWriter;
+    private BufferedReader reader, chatReader;
     private String name;
 
     /**
@@ -64,6 +64,9 @@ public class Client extends JFrame {
                     this.socket = new Socket(IP, port);
                     this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
                     this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    this.chatSocket = new Socket(IP, port + 1);
+                    this.chatWriter = new PrintWriter(new OutputStreamWriter(chatSocket.getOutputStream()));
+                    this.chatReader = new BufferedReader(new InputStreamReader(chatSocket.getInputStream()));
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -106,7 +109,7 @@ public class Client extends JFrame {
             return;
         }
         Client client = new Client(IP, port);
-        Applet applet = new Applet(client.writer, client.reader, client.name);
+        Applet applet = new Applet(client.writer, client.reader, client.chatWriter, client.chatReader, client.name);
         applet.init();
         applet.start();
         client.setContentPane(applet);

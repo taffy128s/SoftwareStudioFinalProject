@@ -35,15 +35,16 @@ public class Applet extends PApplet {
     private Textarea textarea;
 
 	private boolean yourTurn;
-
-    private boolean showOtherCard;
+    
+	private boolean showOtherCard;
     private Card otherCard;
 
     private boolean showDiscardCard;
     private Card discardedCard;
-
-    private PrintWriter writer;
-    private BufferedReader reader;
+    
+    private PrintWriter writer, chatWriter;
+    private BufferedReader reader, chatReader;
+    
     private GameStatus gameStatus;
     private PlayerStatus playerStatus;
 
@@ -67,7 +68,7 @@ public class Applet extends PApplet {
      * @param writer writer to server
      * @param reader reader to server
      */
-    Applet(PrintWriter writer, BufferedReader reader, String name) {
+    Applet(PrintWriter writer, BufferedReader reader, PrintWriter chatWriter, BufferedReader chatReader, String name) {
     	try {
 			bg = ImageIO.read(getClass().getResource("img/bg.jpg"));
 		} catch (IOException e) {
@@ -81,6 +82,8 @@ public class Applet extends PApplet {
         this.random = new Random();
         this.writer = writer;
         this.reader = reader;
+        this.chatWriter = chatWriter;
+        this.chatReader = chatReader;
         this.bigCircle = new BigCircle(this, Client.WINDOW_WIDTH / 3, Client.WINDOW_HEIGHT / 2 - 80, 500);
         this.alivePlayers = new Vector<>();
         this.handCards = new HandCard();
@@ -491,10 +494,10 @@ public class Applet extends PApplet {
            .setPosition(25, Client.WINDOW_HEIGHT - 70)
            .setVisible(false);
         textarea = cp5.addTextarea("txtarea")
-                      .setPosition(25, cp5.getController("textfield").getPosition()[1] - 72 - 15)
-                      .setSize(350, 72)
-                      .setFont(createFont("arial", 18))
-                      .setLineHeight(18)
+                      .setPosition(25, cp5.getController("textfield").getPosition()[1] - 80 - 15)
+                      .setSize(350, 80)
+                      .setFont(createFont("arial", 20))
+                      .setLineHeight(20)
                       .setColor(color(0))
                       .setColorBackground(color(245, 245, 220))
                       .setColorForeground(color(0))
@@ -502,6 +505,22 @@ public class Applet extends PApplet {
                       .setScrollForeground(color(139, 71, 38))
                       .setBorderColor(color(0))
                       .setVisible(false);
+        Thread chatThread = new Thread(() -> {
+            while (true) {
+                try {
+                    String string = chatReader.readLine();
+                    textarea.append(string + "\n");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        chatThread.start();
+    }
+    
+    public void textfield(String text) {
+        chatWriter.write(text);
+        chatWriter.flush();
     }
 
     /**
