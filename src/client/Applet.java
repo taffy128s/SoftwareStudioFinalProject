@@ -35,14 +35,12 @@ public class Applet extends PApplet {
     private Textarea textarea;
 
 	private boolean yourTurn;
-    private boolean onlyUseKill;
-    private boolean haveUsedKill;
-    private boolean onlyUseDodge;
 
     private boolean showOtherCard;
-    private Card cardToShow;
+    private Card otherCard;
 
-    private boolean showSystemMessage;
+    private boolean showDiscardCard;
+    private Card discardedCard;
 
     private PrintWriter writer;
     private BufferedReader reader;
@@ -79,10 +77,6 @@ public class Applet extends PApplet {
         bg.getRGB(0, 0, image.width, image.height, image.pixels, 0, image.width);
         image.updatePixels();
         Ani.init(this);
-        this.onlyUseKill = false;
-        this.onlyUseDodge = false;
-        this.showSystemMessage = false;
-        this.haveUsedKill = false;
         this.username = name;
         this.random = new Random();
         this.writer = writer;
@@ -171,8 +165,6 @@ public class Applet extends PApplet {
             System.out.println("READY " + string);
             switch (param[0]) {
                 case GameMessage.YOUR_TURN:
-                    onlyUseKill = false;
-                    onlyUseDodge = false;
                     yourTurn = true;
                     if (playerStatus == PlayerStatus.KILL_USED) {
                         playerStatus = PlayerStatus.INIT;
@@ -186,42 +178,34 @@ public class Applet extends PApplet {
                 case GameMessage.SHOW_CARD:
                     System.out.println("SHOW CARD");
                     int cardIndex = Integer.parseInt(param[1]);
-                    cardToShow = CardUtility.newCard(cardIndex);
-                    if (cardToShow == null) {
-                        break;
-                    }
-                    int targetX = 0;
-                    int targetY = 0;
+                    otherCard = CardUtility.newCard(cardIndex);
                     for (Player player : alivePlayers) {
                         if (player.getUserName().equals(param[2])) {
-                            cardToShow.x = (int) player.x;
-                            cardToShow.y = (int) player.y;
-                        }
-                        if (player.getUserName().equals(param[3])) {
-                            targetX = (int) player.x;
-                            targetY = (int) player.y;
+                            otherCard.x = (int) player.x;
+                            otherCard.y = (int) player.y;
                         }
                     }
                     new Thread(() -> {
                         showOtherCard = true;
-                        while (cardToShow.x != Client.WINDOW_WIDTH - 200 && cardToShow.y != 20) {
+                        while (otherCard.x != Client.WINDOW_WIDTH - 200 && otherCard.y != 20) {
                             delay(1000);
                         }
                         showOtherCard = false;
+                        otherCard = null;
                     }).start();
-                    Ani.to(cardToShow, 0.75f, "x", Client.WINDOW_WIDTH - 200, Ani.EXPO_IN_OUT);
-                    Ani.to(cardToShow, 0.75f, "y", 20, Ani.EXPO_IN_OUT);
+                    Ani.to(otherCard, 0.75f, "x", Client.WINDOW_WIDTH - 200, Ani.SINE_IN_OUT);
+                    Ani.to(otherCard, 0.75f, "y", 20, Ani.SINE_IN_OUT);
                     break;
                 case GameMessage.ASK_FOR_CARD:
                     System.out.println("Be asked for card id " + param[1]);
                     int cardIDAsked = Integer.parseInt(param[1]);
                     Card used = null;
-                    cardToShow = CardUtility.newCard(cardIDAsked);
+                    discardedCard = CardUtility.newCard(cardIDAsked);
                     for (int i = 0; i < handCards.size(); i++) {
                         if (handCards.get(i).getCardID().value() == cardIDAsked) {
                             used = handCards.get(i);
-                            cardToShow.x = used.x;
-                            cardToShow.y = used.y;
+                            discardedCard.x = used.x;
+                            discardedCard.y = used.y;
                             break;
                         }
                     }
@@ -237,14 +221,15 @@ public class Applet extends PApplet {
                         sendMessage(GameMessage.RESPONSE_YES);
                         handCards.remove(used);
                         new Thread(() -> {
-                            showOtherCard = true;
-                            while (cardToShow.x != Client.WINDOW_WIDTH - 200 && cardToShow.y != 20) {
+                            showDiscardCard = true;
+                            while (discardedCard.x != Client.WINDOW_WIDTH - 200 && discardedCard.y != 20) {
                                 delay(500);
                             }
-                            showOtherCard = false;
+                            showDiscardCard = false;
+                            discardedCard = null;
                         }).start();
-                        Ani.to(cardToShow, 0.75f, "x", Client.WINDOW_WIDTH - 200);
-                        Ani.to(cardToShow, 0.75f, "y", 20);
+                        Ani.to(discardedCard, 0.75f, "x", Client.WINDOW_WIDTH - 200, Ani.SINE_IN_OUT);
+                        Ani.to(discardedCard, 0.75f, "y", 20, Ani.SINE_IN_OUT);
                     } else {
                         sendMessage(GameMessage.RESPONSE_NO);
                     }
@@ -451,7 +436,7 @@ public class Applet extends PApplet {
         }
         else if (cardPointed.getCategory() == CardCategory.JIN) {
             JinCard jinCard = (JinCard) cardPointed;
-            if(jinCard.isSelfOnly() == false && jinCard.isNotTargeting() == false) {
+            if (!jinCard.isSelfOnly() && !jinCard.isNotTargeting()) {
                 return PlayerStatus.TARGETING;
             }
             else {
@@ -575,7 +560,10 @@ public class Applet extends PApplet {
                         break;
                 }
                 if (showOtherCard) {
-                    image(cardToShow.getImage(), cardToShow.x, cardToShow.y);
+                    image(otherCard.getImage(), otherCard.x, otherCard.y);
+                }
+                if (showDiscardCard) {
+                    image(discardedCard.getImage(), discardedCard.x, discardedCard.y);
                 }
                 break;
             default:
