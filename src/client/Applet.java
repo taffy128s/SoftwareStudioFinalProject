@@ -50,7 +50,6 @@ public class Applet extends PApplet {
     private TreeMap<Integer, Card> cardMap;
     private HandCard handCards;
     private Card cardPointed;
-    private Card cardUsed;
     private boolean usingACard;
     private int clickedOffsetX;
     private int clickedOffsetY;
@@ -229,17 +228,17 @@ public class Applet extends PApplet {
                 sendMessage(commandToSend);
                 yourTurn = false;
                 cp5.getController("done").setLock(true);
-            } else return;
+            } else {
+                return;
+            }
         } else if (cardPointed.getCardID() == CardID.BASIC_DODGE) {
             sendMessage(GameMessage.DODGE);
             yourTurn = false;
             cp5.getController("done").setLock(true);
         }
-        usingACard = true;
-        cardUsed = cardPointed;
-        handCards.remove(cardUsed);
-        cardPointed = null;
+        handCards.remove(cardPointed);
         System.out.println("card " + cardPointed.getName() + " used!");
+        cardPointed = null;
         usingACard = false;
     }
 
@@ -274,7 +273,7 @@ public class Applet extends PApplet {
         // 2. if a card selected, used it
         if (mouseButton == LEFT) {
             if (cardPointed != null) {
-                useCard();
+                new Thread(this::useCard);
             }
             else {
                 cardPointed = handCards.setPositions(new Point2D(event.getX(), event.getY()));
