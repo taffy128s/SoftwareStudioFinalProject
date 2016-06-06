@@ -90,7 +90,7 @@ public class Applet extends PApplet {
      */
     Applet(PrintWriter writer, BufferedReader reader, PrintWriter chatWriter, BufferedReader chatReader, String name) {
     	try {
-			bg = ImageIO.read(getClass().getResource("img/bg.jpg"));
+			bg = ImageIO.read(getClass().getResource("/client/img/bg.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -99,7 +99,7 @@ public class Applet extends PApplet {
         image.updatePixels();
         // InitialPage
         try {
-			initialPage = ImageIO.read(getClass().getResource("img/InitialPage.png"));
+			initialPage = ImageIO.read(getClass().getResource("/client/img/InitialPage.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -107,7 +107,7 @@ public class Applet extends PApplet {
         initialPage.getRGB(0, 0, imageInitial.width, imageInitial.height, imageInitial.pixels, 0, imageInitial.width);
         imageInitial.updatePixels();
         try {
-            endPage = ImageIO.read(getClass().getResource("img/End.png"));
+            endPage = ImageIO.read(getClass().getResource("/client/img/End.png"));
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -627,17 +627,17 @@ public class Applet extends PApplet {
     @Override
     public void setup() {
         minim = new Minim(this);
-        makelose = minim.loadFile(this.getClass().getResource("audio/makelose.mp3").getPath());
-        allcard = minim.loadFile(this.getClass().getResource("audio/allcard.mp3").getPath());
-        getcard = minim.loadFile(this.getClass().getResource("audio/getcard.mp3").getPath());
-        kill = minim.loadFile(this.getClass().getResource("audio/kill.mp3").getPath());
-        dodge = minim.loadFile(this.getClass().getResource("audio/dodge.mp3").getPath());
-        apple = minim.loadFile(this.getClass().getResource("audio/apple.mp3").getPath());
-        steal = minim.loadFile(this.getClass().getResource("audio/steal.mp3").getPath());
-        done = minim.loadFile(this.getClass().getResource("audio/done.mp3").getPath());
-        arrow = minim.loadFile(this.getClass().getResource("audio/arrow.mp3").getPath());
-        ride = minim.loadFile(this.getClass().getResource("audio/ride.mp3").getPath());
-        ohya = minim.loadFile(this.getClass().getResource("audio/ohya.mp3").getPath());
+        makelose = minim.loadFile(this.getClass().getResource("/client/audio/makelose.mp3").getPath());
+        allcard = minim.loadFile(this.getClass().getResource("/client/audio/allcard.mp3").getPath());
+        getcard = minim.loadFile(this.getClass().getResource("/client/audio/getcard.mp3").getPath());
+        kill = minim.loadFile(this.getClass().getResource("/client/audio/kill.mp3").getPath());
+        dodge = minim.loadFile(this.getClass().getResource("/client/audio/dodge.mp3").getPath());
+        apple = minim.loadFile(this.getClass().getResource("/client/audio/apple.mp3").getPath());
+        steal = minim.loadFile(this.getClass().getResource("/client/audio/steal.mp3").getPath());
+        done = minim.loadFile(this.getClass().getResource("/client/audio/done.mp3").getPath());
+        arrow = minim.loadFile(this.getClass().getResource("/client/audio/arrow.mp3").getPath());
+        ride = minim.loadFile(this.getClass().getResource("/client/audio/ride.mp3").getPath());
+        ohya = minim.loadFile(this.getClass().getResource("/client/audio/ohya.mp3").getPath());
         this.size(Client.WINDOW_WIDTH, Client.WINDOW_HEIGHT);
         this.smooth();
         this.cp5 = new ControlP5(this);
