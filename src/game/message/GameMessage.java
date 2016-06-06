@@ -91,4 +91,9 @@ public class GameMessage {
      */
     public static final String DONT_CARE_USER = "USERDONTCARE";
 
+    /**
+     * <p><code>Format: TURN_RESUME </code></p>
+     */
+    public static final String TURN_RESUME = "TURNRESUME";
+
 }

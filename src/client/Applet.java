@@ -63,6 +63,8 @@ public class Applet extends PApplet {
     private BufferedImage initialPage ;
     private PImage image;
     private PImage imageInitial ;
+    
+    private boolean pause;
 
     /**
      * Initialize a PApplet with writer, printer to server
@@ -105,6 +107,8 @@ public class Applet extends PApplet {
         initCardMap();
         ReadThread thread = new ReadThread();
         thread.start();
+        
+        this.pause = false;
     }
 
     public void done() {
@@ -266,6 +270,9 @@ public class Applet extends PApplet {
                         }
                     }
                     break;
+                case GameMessage.TURN_RESUME:
+                    pause = false;
+                    break;
                 default:
                     break;
             }
@@ -330,6 +337,7 @@ public class Applet extends PApplet {
                     usedSuccessfully = true;
                     sendMessage(GameMessage.CARD_EFFECT + " " +
                                         cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
+                    pause = true;
                     break;
                 default:
                     break;
@@ -351,6 +359,9 @@ public class Applet extends PApplet {
                 usedSuccessfully = true;
                 sendMessage(GameMessage.CARD_EFFECT + " " +
                             cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
+            }
+            if(typedCard.isConditional()) {
+                pause = true;
             }
         }
         else if(cardPointed.getCategory() == CardCategory.WEA) {
@@ -385,7 +396,7 @@ public class Applet extends PApplet {
 
     @Override
     public void mousePressed(MouseEvent event) {
-    	if (!yourTurn) {
+    	if (!yourTurn || pause) {
             return;
         }
         switch (playerStatus) {
