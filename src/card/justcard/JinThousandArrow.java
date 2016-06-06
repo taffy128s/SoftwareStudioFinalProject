@@ -17,7 +17,7 @@ public class JinThousandArrow extends JinCard {
               CardID.JIN_THOUSANDARROW,
               "Myriads of Arrows",
               "In your phase, you can use 'Myriads of Arrows' to all players expect you. The targets need to issue an 'Evade' according to the action order, or else the target will take one point of damage." ,
-              "jin_thouarrow.JPG",
+              "jin_thouarrow.png",
               true, true, true, true);
     }
 
