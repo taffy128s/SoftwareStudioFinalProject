@@ -353,6 +353,12 @@ public class ServerUtility {
                     int newCardIndex = cardStack.drawTop().getCardID().value();
                     connection.sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
                 }
+                Connection sourceConnection = usernameToConnection.get(source);
+                for (int i=0 ; i<2 ; i++) {
+                    int newCardIndex = cardStack.drawTop().getCardID().value();
+                    sourceConnection.sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
+                    broadCast(card.effectString(source));
+                }
             }
         }
     }

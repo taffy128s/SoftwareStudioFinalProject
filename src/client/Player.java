@@ -43,7 +43,7 @@ public class Player {
         this.colorR = random.nextInt(255);
         this.colorG = random.nextInt(255);
         this.colorB = random.nextInt(255);
-        lifePoint = 3; // TODO check whether if life point is ok
+        lifePoint = 6; // TODO check whether if life point is ok
         numberOfHandCard = 3; // TODO check whether size of handcard is ok (if initialize == life point)
     }
 
