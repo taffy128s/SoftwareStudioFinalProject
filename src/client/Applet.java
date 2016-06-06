@@ -66,6 +66,8 @@ public class Applet extends PApplet {
     private BufferedImage initialPage ;
     private PImage image;
     private PImage imageInitial ;
+    
+    private boolean pause;
 
     /**
      * Initialize a PApplet with writer, printer to server
@@ -105,14 +107,12 @@ public class Applet extends PApplet {
         this.playerStatus = PlayerStatus.INIT;
         this.yourTurn = false;
         initCardMap();
-        ReadThread thread = new ReadThread();
-        thread.start();
+        this.pause = false;
     }
 
     public void done() {
         if (yourTurn) {
             yourTurn = false;
-            cp5.getController("done").setLock(true);
             sendMessage(GameMessage.END_TURN);
         }
     }
@@ -268,6 +268,9 @@ public class Applet extends PApplet {
                         }
                     }
                     break;
+                case GameMessage.TURN_RESUME:
+                    pause = false;
+                    break;
                 default:
                     break;
             }
@@ -332,6 +335,7 @@ public class Applet extends PApplet {
                     usedSuccessfully = true;
                     sendMessage(GameMessage.CARD_EFFECT + " " +
                                         cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
+                    pause = true;
                     break;
                 default:
                     break;
@@ -353,6 +357,9 @@ public class Applet extends PApplet {
                 usedSuccessfully = true;
                 sendMessage(GameMessage.CARD_EFFECT + " " +
                             cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
+            }
+            if(typedCard.isConditional()) {
+                pause = true;
             }
         }
         else if(cardPointed.getCategory() == CardCategory.WEA) {
@@ -394,7 +401,7 @@ public class Applet extends PApplet {
 
     @Override
     public void mousePressed(MouseEvent event) {
-    	if (!yourTurn) {
+    	if (!yourTurn || pause) {
             return;
         }
         switch (playerStatus) {
@@ -514,7 +521,7 @@ public class Applet extends PApplet {
            .setSize(350, 30)
            .setPosition(25, Client.WINDOW_HEIGHT - 70)
            .setVisible(false);
-        textarea = cp5.addTextarea("txtarea")
+        textarea = cp5.addTextarea("textarea")
                       .setPosition(25, cp5.getController("textfield").getPosition()[1] - 80 - 15)
                       .setSize(350, 80)
                       .setFont(createFont("arial", 16))
@@ -538,6 +545,8 @@ public class Applet extends PApplet {
             }
         });
         chatThread.start();
+        ReadThread thread = new ReadThread();
+        thread.start();
     }
 
     public void textfield(String text) {

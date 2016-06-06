@@ -54,9 +54,7 @@ public class Server extends JFrame {
                 JOptionPane.showConfirmDialog(null, new JLabel("No client connected!"), "Error", JOptionPane.DEFAULT_OPTION);
                 return;
             }
-            System.out.println("fuck2");
             appendMessage("New game started, number of players: " + connectionCount + "\n");
-            System.out.println("fuck3");
             games.add(new ServerUtility(sockets, chatSockets, this));
             sockets.clear();
             chatSockets.clear();
