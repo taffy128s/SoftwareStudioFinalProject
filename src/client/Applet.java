@@ -207,6 +207,7 @@ public class Applet extends PApplet {
                         while (cardToShow.x != Client.WINDOW_WIDTH - 200 && cardToShow.y != 20) {
                             delay(1000);
                         }
+                        showOtherCard = false;
                     }).start();
                     Ani.to(cardToShow, 0.75f, "x", Client.WINDOW_WIDTH - 200);
                     Ani.to(cardToShow, 0.75f, "y", 20);
@@ -332,7 +333,7 @@ public class Applet extends PApplet {
             }
         }
         else if(cardPointed.getCategory() == CardCategory.WEA) {
-            
+
         }
         if (usedSuccessfully) {
             System.out.println("card " + cardPointed.getName() + " used!");
