@@ -167,7 +167,7 @@ public class ServerUtility {
                 cardStack.discardCard(CardUtility.copyCard(cardRead));
             }
             // broadcast to let all clients know its number of hand cards
-            broadCast(GameMessage.MODIFY_PLAYER + " " + args[1] + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
+            broadCast(GameMessage.MODIFY_PLAYER + " " + args[2] + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
 		}
         return true;
     }
@@ -195,7 +195,27 @@ public class ServerUtility {
             
         }
         else {
-            
+            if(card.isSelfOnly()) {
+                broadCast(card.effectString(args[3]));
+                Connection targetConnection = usernameToConnection.get(args[3]);
+                if(card.getCardID() == CardID.JIN_GETCARD) {
+                    for(int i=0 ; i<2 ; i++) {
+                        int newCardIndex = cardStack.drawTop().getCardID().value();
+                        targetConnection.sendMessage(GameMessage.RECEIVE_CARD + " " + newCardIndex);
+                    }
+                }
+            }
+            else if(card.isNotTargeting()) {
+                if(card.isSelfExclusive()) {
+                    
+                }
+                else {
+                    
+                }
+            }
+            else {
+                
+            }
         }
     }
 

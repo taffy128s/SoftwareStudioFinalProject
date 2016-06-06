@@ -300,6 +300,17 @@ public class Applet extends PApplet {
                     break;
             }
         }
+        else if(cardPointed.getCategory() == CardCategory.JIN) {
+            JinCard typedCard = (JinCard)cardPointed;
+            if(typedCard.isSelfOnly()) {
+                usedSuccessfully = true;
+                sendMessage(GameMessage.CARD_EFFECT + " " +
+                            cardPointed.getCardID().value() + " " + username + " " + username);
+            }
+        }
+        else if(cardPointed.getCategory() == CardCategory.WEA) {
+            
+        }
         if (usedSuccessfully) {
             System.out.println("card " + cardPointed.getName() + " used!");
             handCards.remove(cardPointed);

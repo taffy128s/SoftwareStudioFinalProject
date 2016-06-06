@@ -3,6 +3,7 @@ package card.justcard;
 import card.CardCategory;
 import card.CardID;
 import card.JinCard;
+import game.message.GameMessage;
 
 /**
  * Card Get Card
@@ -22,4 +23,10 @@ public class JinGetCard extends JinCard {
         
     }
 
+    @Override
+    public String effectString(String targetUsername) {
+        // TODO Auto-generated method stub
+        return GameMessage.MODIFY_PLAYER + " " + targetUsername + 
+                " " + GameMessage.NUMBER_OF_HAND_CARDS + " 2";
+    }
 }
