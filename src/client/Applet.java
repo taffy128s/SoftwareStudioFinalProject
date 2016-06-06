@@ -699,7 +699,7 @@ public class Applet extends PApplet {
                 }
                 textSize(76);
                 fill(0, 0, 0);
-                text("Player " + winner + " Wins!!!", 325, 400);
+                text("Player " + winner + " Wins!!!", 300, 400);
                 break;
             default:
                 break;
