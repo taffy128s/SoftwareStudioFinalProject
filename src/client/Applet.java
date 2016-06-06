@@ -29,22 +29,22 @@ import processing.event.MouseEvent;
 @SuppressWarnings("serial")
 public class Applet extends PApplet {
 
-    @SuppressWarnings("unused")
-    private Ani ani;
     private ControlP5 cp5;
     private Textarea textarea;
 
 	private boolean yourTurn;
-    
+
 	private boolean showOtherCard;
     private Card otherCard;
 
     private boolean showDiscardCard;
     private Card discardedCard;
-    
-    private PrintWriter writer, chatWriter;
-    private BufferedReader reader, chatReader;
-    
+
+    private PrintWriter writer;
+    private PrintWriter chatWriter;
+    private BufferedReader reader;
+    private BufferedReader chatReader;
+
     private GameStatus gameStatus;
     private PlayerStatus playerStatus;
 
@@ -289,8 +289,8 @@ public class Applet extends PApplet {
     private void makeACircle() {
         float angle = 0;
         for (Player ch : alivePlayers) {
-            ani = Ani.to(ch, 2f, "x", bigCircle.getX() + bigCircle.getRadius() * cos(angle));
-            ani = Ani.to(ch, 2f, "y", bigCircle.getY() - bigCircle.getRadius() * sin(angle));
+            Ani.to(ch, 2f, "x", bigCircle.getX() + bigCircle.getRadius() * cos(angle));
+            Ani.to(ch, 2f, "y", bigCircle.getY() - bigCircle.getRadius() * sin(angle));
             angle += (TWO_PI / (float) alivePlayers.size());
         }
     }
@@ -530,7 +530,7 @@ public class Applet extends PApplet {
         });
         chatThread.start();
     }
-    
+
     public void textfield(String text) {
         chatWriter.println(username + ": " + text);
         chatWriter.flush();
