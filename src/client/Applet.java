@@ -470,7 +470,7 @@ public class Applet extends PApplet {
                 background(245, 222, 179);
                 textSize(32);
                 fill(0, 100, 150);
-                text("Please wait until the game starts.", 225, 375);
+                text("Please wait until the game starts.", 350, 375);
                 break;
             case READY:
                 background(245, 222, 179);
@@ -487,9 +487,9 @@ public class Applet extends PApplet {
                     strokeWeight(0);
                     ellipse(15, 15, 20, 20);
                 } else {
-                	textSize(32);
-                	fill(0, 100, 150);
-                    text("Not your turn!", 225, 375);
+                	textSize(36);
+                	fill(0, 0, 0);
+                    text("Not your turn!", 280, 340);
                 }
                 if (showSystemMessage) {
                     textSize(28);
@@ -508,14 +508,14 @@ public class Applet extends PApplet {
                 switch (playerStatus) {
                     case TARGETING:
                         noFill();
-                        color(255, 0, 0);
+                        stroke(255, 0, 0);
                         strokeWeight(5.0f);
                         ellipse(mouseX, mouseY, 45, 45);
-                        ellipse(mouseX, mouseY, 60, 60);
-                        line(mouseX + 10, mouseY, mouseX + 40, mouseY);
-                        line(mouseX - 10, mouseY, mouseX - 40, mouseY);
-                        line(mouseX, mouseY + 10, mouseX, mouseY + 40);
-                        line(mouseX, mouseY - 10, mouseX, mouseY - 40);
+                        ellipse(mouseX, mouseY, 65, 65);
+                        line(mouseX + 5, mouseY, mouseX + 45, mouseY);
+                        line(mouseX - 5, mouseY, mouseX - 45, mouseY);
+                        line(mouseX, mouseY + 5, mouseX, mouseY + 45);
+                        line(mouseX, mouseY - 5, mouseX, mouseY - 45);
                         break;
                     default:
                         break;

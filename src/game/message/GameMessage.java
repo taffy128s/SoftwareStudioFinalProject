@@ -79,10 +79,16 @@ public class GameMessage {
     /**
      * <p><code>Format: RESPONSE_NO </code></p>
      */
-    public static final String RESPONSE_NO = "RESPONCEFORNO";
+    public static final String RESPONSE_NO = "RESPONSEFORNO";
+
     /**
      * <p><code>Format: RESPONSE_OK </code></p>
      */
-    public static final String RESPONSE_YES = "RESPONCEFORYES";
+    public static final String RESPONSE_YES = "RESPONSEFORYES";
+
+    /**
+     * <p><code>A string constant for user don't care when card effect</code></p>
+     */
+    public static final String DONT_CARE_USER = "USERDONTCARE";
 
 }
