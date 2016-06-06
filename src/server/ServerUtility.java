@@ -1,9 +1,12 @@
 package server;
 
 import card.Card;
+import card.CardCategory;
 import card.CardID;
 import card.CardStack;
 import card.CardUtility;
+import card.JinCard;
+import card.WeaCard;
 import game.message.GameMessage;
 
 import java.io.*;
@@ -150,8 +153,31 @@ public class ServerUtility {
                 // Note CARD_EFFECT CARD_INDEX SOURCE TARGET
                 // Idx  0           1          2      3
                 int cardIndex = Integer.parseInt(args[1]);
-                broadCast(cardMap.get(cardIndex).effectString(args[3]));
-                cardStack.discardCard(cardMap.get(cardIndex));
+                Card cardRead = cardMap.get(cardIndex);
+                if(cardRead.getCategory() == CardCategory.BASIC) {
+                    Card card = cardRead;
+                    if(card.getCardID() == CardID.BASIC_KILL) {
+                        Connection targetConnection = usernameToConnection.get(args[3]);
+                        targetConnection.sendMessage(GameMessage.ASK_FOR_CARD + " " + CardID.BASIC_DODGE.value());
+                        String responce = targetConnection.readMessage();
+                        if(responce.equals(GameMessage.RESPONCE_YES)) {
+                            cardStack.discardCard(CardUtility.newCard(CardID.BASIC_DODGE));
+                        }
+                        else if(responce.equals(GameMessage.RESPONCE_NO)) {
+                            broadCast(card.effectString(args[3]));
+                        }
+                    }
+                    else {
+                        broadCast(cardRead.effectString(args[3]));
+                    }
+                }
+                else if(cardRead.getCategory() == CardCategory.JIN) {
+                    JinCard card = (JinCard)cardRead;
+                }
+                else if(cardRead.getCategory() == CardCategory.WEA) {
+                    WeaCard card = (WeaCard)cardRead;
+                }
+                cardStack.discardCard(CardUtility.copyCard(cardRead));
             }
             // broadcast to let all clients know its number of hand cards
             broadCast(GameMessage.MODIFY_PLAYER + " " + args[1] + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
