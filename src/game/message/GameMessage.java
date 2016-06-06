@@ -79,12 +79,12 @@ public class GameMessage {
     /**
      * <p><code>Format: RESPONSE_NO </code></p>
      */
-    public static final String RESPONSE_NO = "RESPONSEFORNO";
+    public static final String RESPONSE_NO = "RESPONSENO";
 
     /**
      * <p><code>Format: RESPONSE_OK </code></p>
      */
-    public static final String RESPONSE_YES = "RESPONSEFORYES";
+    public static final String RESPONSE_YES = "RESPONSEYES";
 
     /**
      * <p><code>A string constant for user don't care when card effect</code></p>
@@ -95,19 +95,19 @@ public class GameMessage {
      * <p><code>Format: TURN_RESUME </code></p>
      */
     public static final String TURN_RESUME = "TURNRESUME";
-    
+
     /**
      * Let server know which card of yours is thrown
      * <p><code>Format: CARD_LOSS cardID </code></p>
      */
     public static final String CARD_LOSS = "CARDLOSS";
-    
+
     /**
      * Let player know they should throw some card
      * <p><code>Format: THROW_CARD throwNumber </code></p>
      */
     public static final String THROW_CARD = "THROWCARD";
-    
+
     /**
      * Let server know that you have no card
      *  <p><code>Format: THROW_FAIL </code></p>

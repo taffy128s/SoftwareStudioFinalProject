@@ -191,6 +191,16 @@ public class Applet extends PApplet {
             System.out.println("READY " + string);
             switch (param[0]) {
                 case GameMessage.YOUR_TURN:
+                    for (Player player : alivePlayers) {
+                        if (player.getUserName().equals(username)) {
+                            if (player.getLifePoint() <= 0) {
+                                sendMessage(GameMessage.RESPONSE_YES);
+                            }
+                            else {
+                                sendMessage(GameMessage.RESPONSE_NO);
+                            }
+                        }
+                    }
                     yourTurn = true;
                     if (playerStatus == PlayerStatus.KILL_USED) {
                         playerStatus = PlayerStatus.INIT;
