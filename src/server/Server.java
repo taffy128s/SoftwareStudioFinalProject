@@ -50,14 +50,12 @@ public class Server extends JFrame {
         startButton.setText("Start");
         startButton.setBounds(10, WINDOW_HEIGHT - 80, WINDOW_WIDTH - 2 * 10 - 5, 40);
         startButton.addActionListener(event -> {
-            System.out.println("fuck");
             if (sockets.isEmpty()) {
                 JOptionPane.showConfirmDialog(null, new JLabel("No client connected!"), "Error", JOptionPane.DEFAULT_OPTION);
                 return;
             }
             appendMessage("New game started, number of players: " + connectionCount + "\n");
             games.add(new ServerUtility(sockets, chatSockets, this));
-            System.out.println("fuck");
             sockets.clear();
             chatSockets.clear();
             connectionCount = 0;

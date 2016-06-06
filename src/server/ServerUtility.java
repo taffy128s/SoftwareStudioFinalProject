@@ -52,19 +52,6 @@ public class ServerUtility {
             catch (IOException e) {
                 e.printStackTrace();
             }
-            try {
-                String name = reader.readLine();
-                String intent = reader.readLine();
-                if (name == null || intent == null) {
-                    return;
-                }
-                server.appendMessage(name + " wants to " + intent + ".\n");
-                usernameToIntent.put(name, intent);
-                connectionToUsername.put(this, name);
-                usernameToConnection.put(name, this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
         /**
@@ -85,6 +72,22 @@ public class ServerUtility {
 				server.appendMessage("A client just logged out unexpectedly.\n");
                 return null;
 			}
+        }
+        
+        public void getNameAndIntent() {
+            try {
+                String name = reader.readLine();
+                String intent = reader.readLine();
+                if (name == null || intent == null) {
+                    return;
+                }
+                server.appendMessage(name + " wants to " + intent + ".\n");
+                usernameToIntent.put(name, intent);
+                connectionToUsername.put(this, name);
+                usernameToConnection.put(name, this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         
         public void startThread() {
@@ -117,6 +120,7 @@ public class ServerUtility {
         initCardMap();
         aliveNum = sockets.size();
         sockets.forEach(socket -> connections.add(new Connection(socket)));
+        connections.forEach(connection -> connection.getNameAndIntent());
         chatSockets.forEach(socket -> chatConnections.add(new Connection(socket)));
         chatConnections.forEach(connection -> connection.startThread());
         for (Connection connectionThread : connections) {
