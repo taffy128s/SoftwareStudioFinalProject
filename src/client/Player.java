@@ -128,5 +128,7 @@ public class Player {
     public void setLifePoint(int lifePoint) {
         this.lifePoint = lifePoint;
     }
+    
+    
 
 }
