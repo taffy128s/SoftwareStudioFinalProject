@@ -84,6 +84,7 @@ public class CardStack {
      * @return the card drawn
      */
     public synchronized Card drawTop() {
+        if (drawArea.isEmpty()) recycleDiscardedCards();
         return drawArea.remove(drawArea.size()-1);
     }
 

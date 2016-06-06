@@ -151,6 +151,7 @@ public class ServerUtility {
                 // Idx  0           1          2      3
                 int cardIndex = Integer.parseInt(args[1]);
                 broadCast(cardMap.get(cardIndex).effectString(args[3]));
+                cardStack.discardCard(cardMap.get(cardIndex));
             }
             // broadcast to let all clients know its number of hand cards
             broadCast(GameMessage.MODIFY_PLAYER + " " + args[1] + " " + GameMessage.NUMBER_OF_HAND_CARDS + " -1");
