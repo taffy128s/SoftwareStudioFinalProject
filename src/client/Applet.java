@@ -254,7 +254,7 @@ public class Applet extends PApplet {
                                         cardPointed.getCardID().value() + " " + username + " " + username);
                     break;
                 case BASIC_KILL:
-                    if (playerPointed.getUserName().equals(username)) {
+                    /*if (playerPointed.getUserName().equals(username)) {
                         Ani.to(cardPointed, 0.75f, "x", cardPointed.getInitialX());
                         Ani.to(cardPointed, 0.75f, "y", cardPointed.getInitialY());
                         Thread thread = new Thread(() -> {
@@ -265,10 +265,12 @@ public class Applet extends PApplet {
                         thread.start();
                         usedSuccessfully = false;
                         break;
-                    }
+                    }*/
                     usedSuccessfully = true;
                     sendMessage(GameMessage.CARD_EFFECT + " " +
                                         cardPointed.getCardID().value() + " " + username + " " + playerPointed.getUserName());
+                    break;
+                default:
                     break;
             }
         }
@@ -361,6 +363,8 @@ public class Applet extends PApplet {
                     return PlayerStatus.INIT;
                 case BASIC_KILL:
                     return PlayerStatus.TARGETING;
+                default:
+                    break;
             }
         }
         else if (cardPointed.getCategory() == CardCategory.JIN) {
