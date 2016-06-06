@@ -155,8 +155,7 @@ public class ServerUtility {
                 int cardIndex = Integer.parseInt(args[1]);
                 Card cardRead = cardMap.get(cardIndex);
                 if (cardRead.getCategory() == CardCategory.BASIC) {
-                    Card card = cardRead;
-                    if (card.getCardID() == CardID.BASIC_KILL) {
+                    if (cardRead.getCardID() == CardID.BASIC_KILL) {
                         Connection targetConnection = usernameToConnection.get(args[3]);
                         targetConnection.sendMessage(GameMessage.ASK_FOR_CARD + " " + CardID.BASIC_DODGE.value());
                         String response = targetConnection.readMessage();
@@ -164,7 +163,7 @@ public class ServerUtility {
                             cardStack.discardCard(CardUtility.newCard(CardID.BASIC_DODGE));
                         }
                         else if (response.equals(GameMessage.RESPONSE_NO)) {
-                            broadCast(card.effectString(args[3]));
+                            broadCast(cardRead.effectString(args[3]));
                         }
                     }
                     else {
