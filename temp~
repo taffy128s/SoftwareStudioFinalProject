@@ -1,0 +1,108 @@
+有修改 ：（因為花色 數字）
+jin_douchidown.JPG ： 鬥志沉淪
+wea_bigshield.JPG  ： 羅馬大盾
+wea_blackshield.JPG： 燕尾盾
+
+基本牌
+
+basic_apple.JPG : 金蘋果
+1.在自己的回合內為自己回復一點體力值。
+2.在自己的回合外當任意一名角色處於頻死階段時對其使用，使其體力回復1
+
+basic_dodge.JPG : 閃
+當受到【殺】的攻擊時，可以使用一張【閃】來抵消【殺】的效果。
+
+basic_kill.JPG : 殺
+出牌階段，在攻擊範圍內對除自己以外的一名角色使用，效果是對該角色造成1點傷害。
+
+錦囊牌
+
+
+Card's Interface:
+    CardGetable：可獲得牌的（從牌堆或從他人手上）
+    CardRemovable: 可移除被使用的人的某張卡
+    Recoverable：可回復體力的
+    Harmful: 會扣體力的
+    RoundSkipping: 會跳過被生效的人該回合
+
+Card's Attribute:
+    AreaEffective: 會影響到全體（輪流被影響）
+    Targeting( !AreaEffective ): 效果只針對一個人
+    SelfExclusive:  如為 Targeting 牌種，該張牌不能用在自己身上。
+                    如為 AreaEffective 牌種，該張牌效果會跳過出牌者本身。
+    
+    EffectiveNow: 在這個回合就要進行判定、並產生效果
+    EffectiveLater( !EffectiveNow ): 會先將該錦囊放在被指定的角色的判定區，等該角色回合開始才進行判定
+    
+    Conditional: 無論如何一定生效
+    Unconditional( !Conditional ): 只在某些條件下生效
+
+    private boolean areaEffective;
+    private boolean selfExclusive;
+    private boolean effectiveNow;
+    private boolean conditional;
+jin_battle.JPG ： 決鬥 （!AreaEffective, JudgedNow, Conditional）（Harmful）
+出牌階段，對自己以外任意一名角色使用，由目標角色先開始，輪流打出一張【殺】。【決鬥】對首先不出【殺】的一方造成1點傷害，而另一方視為此傷害的來源。
+
+in_crazybanquet.JPG ： 狂歡宴會（AreaEffective, JudgedNow, Conditional）（Recoverable）
+出牌階段，對所有角色使用。按照行動順序結算，所有受傷角色各回復1點體力。
+
+jin_douchidown.JPG ：鬥志沉淪（!AreaEffective, !JudgedNow, Conditional）（RoundSkipping）
+出牌階段，對除自己外，任意一名角色使用，將【鬥志沉淪】橫置於該角色的判定區裡。【鬥志沉淪】與該角色的判定階段開始結算，其效果是，該角色進行一次判定，除非判定結果為”武器牌“，否則跳過其出牌階段。
+
+jin_getcard.JPG ： 點石成金（!AreaEffective, JudgedNow, !Conditional）（CardGetable）
+出牌階段，對自己使用，摸兩張牌。
+
+jin_thief.JPG ： 盜取（!AreaEffective, JudgedNow, !Conditional）（CardGetable, CardRemovable）
+出牌階段，對除自己以外，選擇並獲得該角色的手牌（隨機選擇），裝備區或判定區裡的任意一張牌。
+
+jin_throw.JPG ： 繳械（!AreaEffective, JudgedNow, !Conditional）（CardRemovable）
+出牌階段，對除自己以外任意一名角色使用。棄掉該角色的手牌（隨機選擇）、裝備區或判定區裡的任意一張牌。
+
+in_thouarrow.JPG ： 萬箭齊發（AreaEffective, JudgedNow, Conditional）（Harmful）
+出牌階段，對自自己以外的所有角色使用，按行動順序結算，除非目標角色打出一張【閃】，否則該角色受到【萬劍齊發】對其造成的1點傷害。
+
+jin_tushi.JPG ： 鐵騎突襲（AreaEffective, JudgedNow, Conditional）（Harmful）
+出牌階段，對除自己以外的所有角色使用，按行動順序結算，除非目標角色打出一張【殺】，否則該角色受到【鐵騎突襲】對其造成的1點傷害。
+
+jin_wuku.JPG ： 五穀豐登（AreaEffective, JudgedNow, !Conditional）（CardGetable）
+出牌階段，對所有角色使用。從牌堆亮出等同於現存角色數量的牌，然後按行動順序結算，每名角色選擇並獲得其中的一張。
+
+
+
+武器牌 
+
+wea_bigshield.JPG ： 羅馬大盾
+每當需要使用（或打出）一張【閃】時，可以進行一次判定，若結果為“殺”或“閃”，則視為使用（或打出）了一張【閃】。
+
+wea_blackshield.JPG ：燕尾盾
+每當需要使用（或打出）一張【閃】時，可以進行一次判定，若結果為“錦囊牌”，則視為使用（或打出）了一張【閃】。
+
+wea_continue.JPG ： 連環弩
+攻擊範圍1，出牌階段，你可以使用任意數量的【殺】。
+
+wea_short.JPG ： 波斯短刀
+攻擊範圍2， 鎖定技，每當你使用【殺】時，無視目標角色的防具。
+
+wea_tensword.JPG ： 十字劍
+攻擊範圍3，目標角色使用【閃】抵消使用【殺】的效果時，可以棄兩張牌，則【殺】依然造成傷害。 
+
+
+該回合輪到自己時： 判定階段 -> 摸牌階段 -> 出牌階段 -> 棄牌階段
+
+可以做的技能：
+一、在出牌階段可以使用的技能（主動技能）
+    制衡：出牌階段,你可以棄掉任意數量的牌,然後摸取等量的牌.每回合限用一次。
+    據守：回合結束階段，你可以摸三張排，若如此做，跳過你下個回合。（使用後立即結束出牌階段，跳過棄牌階段）
+    苦肉：出牌階段，你可以失去一點體力，然後摸兩張牌。每回合中，你可以多次使用苦肉。
+    青囊：出牌階段，你可以主動棄掉一張手牌，令任一目標角色回復1點體力。每回合限用一次。
+    突襲：摸牌階段，你可以放棄摸牌，然後從至多兩名（至少一名）角色的手牌裡各抽取一張牌。
+    強襲：出牌階段，你可以自減1點體力或棄一張武器牌，然後對你攻擊範圍內的一名角色造成1點傷害。每回合限用一次。
+二、被動技能
+    咆哮：出牌階段，你可以使用任意數量的【殺】。 
+    連營：每當你失去最後一張手牌時，可立即摸一張牌。 
+    英姿：摸牌階段，你可以額外摸一張牌。
+    狂骨：鎖定技，任何時候，你每對與你距離1以內的一名角色造成1點傷害，你回復1點體力。
+    天妒：在你的判定牌生效時，你可以立即獲得它。
+    空城：鎖定技，當你沒有手牌時，你不能成為【殺】或【決鬥】的目標。 
+    

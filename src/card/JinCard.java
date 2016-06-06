@@ -45,10 +45,6 @@ public class JinCard extends Card {
         return selfExclusive;
     }
 
-    public boolean isEffectiveNow() {
-        return effectiveNow;
-    }
-
     public boolean isConditional() {
         return conditional;
     }
